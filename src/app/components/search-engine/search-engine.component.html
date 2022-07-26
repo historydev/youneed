@@ -1,0 +1,15 @@
+<div class="container">
+	<input type="search" #search placeholder="Enter text" (input)="find({key: filterKey.value, searchValue: search.value})">
+	<select #filterKey (change)="search.value = ''">
+		<option value="''" selected>select property</option>
+		<option *ngFor="let item of model" [value]="item">{{item}}</option>
+	</select>
+	<div class="search-result" *ngIf="searchResult">
+		<div class="item" *ngFor="let item of searchResult">
+			<div class="values" *ngFor="let key of Object.keys(item)">
+				<div class="key">{{ key }}:</div>
+				<pre class="value prettyprint"><code>{{ {item, key} | keys | json }}</code></pre>
+			</div>
+		</div>
+	</div>
+</div>

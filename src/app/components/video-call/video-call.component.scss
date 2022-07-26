@@ -1,0 +1,18 @@
+.container {
+	display: flex;
+	justify-content: flex-end;
+
+	::ng-deep app-video img, ::ng-deep app-video video {
+		width: 300px;
+	}
+
+	::ng-deep app-video video {
+		transform: scaleX(-1);
+		margin-right: auto;
+	}
+
+	::ng-deep app-video {
+		margin-right: auto;
+	}
+
+}

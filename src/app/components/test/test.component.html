@@ -1,0 +1,10 @@
+<h2>TEST</h2>
+<video [srcObject]="stream" autoplay></video>
+<video *ngIf="record?.url" [src]="record?.url" autoplay controls></video>
+
+{{ record | json }}
+
+<button (click)="recorder.startRecording()">Start</button>
+<button (click)="recorder.stopRecording()">Stop</button>
+<button (click)="setRecord()">Log</button>
+<button (click)="onOffVideo()">OnOffVideo</button>

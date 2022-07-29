@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { PeerjsService } from './peerjs.service';
+import { P2pService } from './p2p.service';
 
-describe('PeerjsService', () => {
-  let service: PeerjsService;
+describe('P2pService', () => {
+  let service: P2pService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(PeerjsService);
+    service = TestBed.inject(P2pService);
   });
 
   it('should be created', () => {

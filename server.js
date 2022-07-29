@@ -1,7 +1,7 @@
 const httpServer = require("http").createServer();
 const io = require('socket.io')(httpServer, {
 	cors: {
-		origin: 'http://localhost:4200'
+		origin: '*'
 	}
 });
 
@@ -13,7 +13,23 @@ io.on('connection', socket => {
 
 	socket.on('toServer', msg => {
 		socket.emit('fromServer', msg);
-	})
+	});
+
+	socket.on('joinRoom', id => {
+		console.log('Join room: ', id);
+		socket.join(id)
+	});
+
+	socket.on('message', data => {
+		console.log(data);
+		socket.to(data.id).emit('message', {
+			type: data.type,
+			message: {
+				type: data.type,
+				...data.message
+			}
+		});
+	});
 
 });
 

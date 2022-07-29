@@ -6,6 +6,6 @@
 	<div class="log" *ngFor="let log of Logger.__logs">
 		<div class="type item type-{{ log.type }}">{{ log.type }}</div>
 		<div class="name item">{{ log.name }}</div>
-		<pre class="message item prettyprint">{{  log.message | json }}</pre>
+		<pre class="message item prettyprint"><code>{{  log.message | json }}</code></pre>
 	</div>
 </div>

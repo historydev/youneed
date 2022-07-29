@@ -25,11 +25,12 @@ export class MediaStreamService {
 
 	public async create(video:boolean, audio:boolean): Promise<any> {
 		return this.getUserMedia(video, audio).catch(e => {
+			//this.mediaStream = undefined;
 			//this.Logger.error('getUserMedia', e);
-			return this.getUserMedia(false, true).catch(e => {
+			return this.getUserMedia(true, false).catch(e => {
 				this.mediaStream = undefined;
 				//this.Logger.error('getUserMedia 2', e);
-				return this.getUserMedia(true, false).catch(e => {
+				return this.getUserMedia(false, true).catch(e => {
 					//this.Logger.error('getUserMedia 3', e);
 				});
 			});

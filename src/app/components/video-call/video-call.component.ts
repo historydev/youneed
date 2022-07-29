@@ -1,18 +1,18 @@
 import {Component, OnInit} from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 
 import {MediaRecorderService} from "../../services/media-recorder/media-recorder.service";
-import {PeerjsService} from "../../services/peerjs/peerjs.service";
 import {LoggerService} from "../../services/logger/logger.service";
 import {MediaStreamService} from "../../services/media-stream/media-stream.service";
 import {SafeUrl} from "@angular/platform-browser";
+import {P2pService} from "../../services/p2p/p2p.service";
 
 @Component({
 	selector: 'app-video-call',
 	templateUrl: './video-call.component.html',
 	styleUrls: ['./video-call.component.scss'],
-	providers: [MediaStreamService, MediaRecorderService, PeerjsService]
+	providers: [MediaStreamService, MediaRecorderService, P2pService]
 })
 export class VideoCallComponent implements OnInit {
 
@@ -23,13 +23,12 @@ export class VideoCallComponent implements OnInit {
 	constructor(
 		public mediaStream: MediaStreamService,
 		public recorder: MediaRecorderService,
-		public peerjs: PeerjsService,
+		public p2p: P2pService,
 		private Logger: LoggerService,
 		private route: ActivatedRoute,
 	) {
 		this.companionId = this.route.snapshot.paramMap.get('companionId')?.toString() || '';
 		this.userId = this.route.snapshot.paramMap.get('userId')?.toString() || '';
-		this.peerjs.createPeer(this.userId, this.companionId);
 	}
 
 	public changeAudio(): void {
@@ -47,14 +46,14 @@ export class VideoCallComponent implements OnInit {
 	public ngOnInit(): void {
 		this.mediaStream.create(true, true).then(stream => {
 			this.recorder.setStream(stream);
-			this.peerjs.createConnection({
-				type: 'call',
-				data: stream
-			});
+			if(this.userId && this.companionId) {
+				this.p2p.joinRoom(this.userId, this.companionId);
+				this.p2p.setLocalStream(stream);
+			}
+			return stream
 			//this.Logger.debug('Stream', this.mediaStream.getStream());
 			//this.recorder.startRecording();
-		});
-
+		}).catch(e => this.Logger.error('VideoCall mediastream', e));
 	}
 
 }

@@ -45,6 +45,7 @@ export class VideoCallComponent implements OnInit {
 
 	public ngOnInit(): void {
 		this.mediaStream.create(true, true).then(stream => {
+			//if(!stream) this.defaultView = 'https://st.depositphotos.com/2547675/3009/i/450/depositphotos_30094505-stock-photo-time-clock.jpg';
 			this.recorder.setStream(stream);
 			if(this.userId && this.companionId) {
 				this.p2p.joinRoom(this.userId, this.companionId);

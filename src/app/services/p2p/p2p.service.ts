@@ -4,6 +4,7 @@ import {MessageModel} from "../../models/p2p/message.model";
 import {LoggerService} from "../logger/logger.service";
 import {HandleListModel} from "../../models/p2p/handleList.model";
 import {Location} from "@angular/common";
+import {Router} from "@angular/router";
 
 @Injectable({
 	providedIn: 'root'
@@ -12,9 +13,9 @@ export class P2pService implements OnInit {
 
 	private companionId?: string;
 	private userId?: string;
-	pc?: RTCPeerConnection;
-	localStream?: MediaStream;
-	remoteStream?: MediaStream;
+	public pc?: RTCPeerConnection;
+	public localStream?: MediaStream;
+	public remoteStream?: MediaStream;
 	private readonly handleList: HandleListModel[] = [
 		{
 			type: 'ready',
@@ -41,7 +42,7 @@ export class P2pService implements OnInit {
 	constructor(
 		private Logger: LoggerService,
 		private socket: Socket,
-		private location: Location
+		private router: Router
 	) {
 		this.socket.on('message', (data: MessageModel<any>) => {
 			this.Logger.debug('p2pService new message', data);
@@ -52,17 +53,20 @@ export class P2pService implements OnInit {
 	}
 
 	private async startCall(message: any): Promise<void> {
-		await this.createPeerConnection();
+		await this.createPeerConnection().then(async pc => {
 
-		const offer = await this.pc?.createOffer();
-		this.socket.emit('message', {
-			id: this.companionId,
-			type: 'offer',
-			message: {
-				sdp: offer?.sdp
-			}
+			this.Logger.debug('peerConnection', this.pc, pc);
+
+			const offer = await pc.createOffer();
+			this.socket.emit('message', {
+				id: this.companionId,
+				type: 'offer',
+				message: {
+					sdp: offer?.sdp
+				}
+			});
+			await pc.setLocalDescription(offer);
 		});
-		await this.pc?.setLocalDescription(offer);
 	}
 
 	private async createPeerConnection(): Promise<RTCPeerConnection> {
@@ -87,7 +91,7 @@ export class P2pService implements OnInit {
 				id: this.companionId,
 				type: 'candidate',
 				message: {
-					candidate: undefined
+					candidate: null
 				}
 			});
 
@@ -102,14 +106,15 @@ export class P2pService implements OnInit {
 		return this.pc
 	}
 
-	private handleClose(message: any): void {
-		if (this.pc) {
-			this.pc.close();
-			this.pc = undefined;
+	private async handleClose(message: any): Promise<void> {
+		if (this.pc?.signalingState !== 'closed') {
+			this.pc?.close();
 		}
 		this.localStream?.getTracks().forEach(track => track.stop());
 		this.localStream = undefined;
-		this.location.go('');
+		this.remoteStream = undefined;
+		this.socket.emit('leaveRoom', this.userId);
+		await this.router.navigate(['']);
 	}
 
 	private async handleReady(message: any): Promise<void> {
@@ -124,43 +129,65 @@ export class P2pService implements OnInit {
 		console.log('Candidate', message)
 
 		if (!this.pc) {
-			console.error('no peerconnection');
+			this.Logger.error('p2pService', 'handleCandidate: ', 'no peerconnection');
 			return;
 		}
 		if (!message.candidate) {
 
 			console.log('Candidate null');
 
-			await this.pc?.addIceCandidate(undefined);
+			if(this.pc.signalingState !== 'closed') {
+				await this.pc?.addIceCandidate({
+					candidate: undefined
+				}).catch(e => {
+					this.Logger.error('addIceCandidate 1', e);
+				});
+			}
+
 		} else {
-			await this.pc?.addIceCandidate(message);
+			if(this.pc.signalingState !== 'closed') {
+				await this.pc?.addIceCandidate(message).catch(e => {
+					this.Logger.error('addIceCandidate 2', e);
+				});
+			}
 		}
 	}
 
 	private async handleAnswer(message: any): Promise<void> {
 		if (!this.pc) {
-			console.error('no peerconnection');
+			this.Logger.error('p2pService', 'handleAnswer: ', 'no peerconnection');
 			return;
 		}
-		await this.pc?.setRemoteDescription(message);
+		if(this.pc.signalingState !== 'closed') {
+			await this.pc?.setRemoteDescription(message).catch(e => {
+				this.Logger.error('setRemoteDescription 1', {
+					error: e,
+					message
+				});
+			});
+		}
 	}
 
 	private async handleOffer(message: any): Promise<void> {
 		if (this.pc) {
-			console.error('existing peerconnection');
+			this.Logger.info('p2pService', 'handle offer: ', 'existing peerconnection');
 			return;
 		}
 		await this.createPeerConnection().then(async pc => {
-			await pc.setRemoteDescription(message);
+			await pc.setRemoteDescription(message).catch(e => {
+				this.Logger.error('setRemoteDescription 2', {
+					error: e,
+					message
+				});
+			});
 
 			const answer = await pc.createAnswer();
+			await pc.setLocalDescription(answer);
 			this.socket.emit('message', { id: this.companionId, type: 'answer', message: { sdp: answer.sdp } });
-			await this.pc?.setLocalDescription(answer);
 		});
 	}
 
 	public endCall() {
-		this.remoteStream = undefined;
 		this.socket.emit('message', { id: this.companionId, type: 'close', message: {} });
 	}
 
@@ -179,6 +206,12 @@ export class P2pService implements OnInit {
 
 	public ngOnInit(): void {
 
+	}
+
+	public ngOnDestroy() {
+		this.socket.emit('message', { id: this.companionId, type: 'close', message: {} });
+		this.handleClose('');
+		this.Logger.info('p2pService', 'destroyed');
 	}
 
 }

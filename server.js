@@ -20,6 +20,11 @@ io.on('connection', socket => {
 		socket.join(id)
 	});
 
+	socket.on('leaveRoom', id => {
+		console.log('Leave room: ', id);
+		socket.leave(id);
+	});
+
 	socket.on('message', data => {
 		console.log(data);
 		socket.to(data.id).emit('message', {

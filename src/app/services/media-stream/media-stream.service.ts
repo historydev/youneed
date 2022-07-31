@@ -31,7 +31,7 @@ export class MediaStreamService {
 				this.mediaStream = undefined;
 				//this.Logger.error('getUserMedia 2', e);
 				return this.getUserMedia(false, true).catch(e => {
-					//this.Logger.error('getUserMedia 3', e);
+					this.mediaStream = new MediaStream();
 				});
 			});
 		});

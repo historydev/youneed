@@ -11,8 +11,8 @@ import {StylesModel} from "../../models/video/styles.model";
 })
 export class VideoComponent implements OnInit {
 
-	@Input() mediaStream?: MediaStream | undefined;
-	@Input() src?: SafeUrl | undefined;
+	@Input() mediaStream?: MediaStream;
+	@Input() src?: SafeUrl;
 	@Input() defaultView?: SafeUrl = 'https://avatarko.ru/img/kartinka/33/multfilm_lyagushka_32117.jpg';
 	@Input() styles?: NgStyle;
 	@Input() muted?:boolean;

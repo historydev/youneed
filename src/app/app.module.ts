@@ -29,6 +29,7 @@ const config: SocketIoConfig = { url: 'http://localhost:4000', options: {} };
 	imports: [
 		BrowserModule,
 		RouterModule.forRoot([
+			{path: '', component: LoggerComponent},
 			{path: 'logger', component: LoggerComponent},
 			{path: 'video-call/:userId/:companionId', component: VideoCallComponent},
 			{path: '**', component: LoggerComponent}
@@ -44,7 +45,6 @@ export class AppModule {
 		private socket: Socket,
 		private Logger: LoggerService
 	) {
-		this.socket.on('connected', (id:string) => this.Logger.info('Socket connection id', id))
+		this.socket.on('connected', (id: string) => this.Logger.info('Socket connection id', id));
 	}
-
 }

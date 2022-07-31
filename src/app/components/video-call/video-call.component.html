@@ -3,6 +3,8 @@
 	<app-video *ngIf="p2p.remoteStream" [mediaStream]="p2p.remoteStream"></app-video>
 	<app-video *ngIf="recorder.record" [src]="recorder.record.url"></app-video>
 
+	{{p2p.remoteStream|json}}
+
 	<button (click)="p2p.endCall()">End Call</button>
 	<button (click)="recorder.startRecording()">Start</button>
 	<button (click)="recorder.stopRecording()">Stop</button>

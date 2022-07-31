@@ -5,7 +5,7 @@
   "engines": {
     "node": "16.x"
   },
-  "main": "node-js-getting-started/index.js",
+  "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },

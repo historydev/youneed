@@ -5,14 +5,14 @@
   "engines": {
     "node": "16.x"
   },
-  "main": "index.js",
+  "main": "node-js-getting-started/index.js",
   "scripts": {
-    "start": "node server.js",
-    "test": "node test.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "ejs": "^3.1.5",
-    "express": "^4.15.2"
+    "express": "^4.15.2",
+    "socket.io": "^4.5.1"
   },
   "devDependencies": {
     "got": "^11.3.0",

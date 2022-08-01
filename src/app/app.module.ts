@@ -13,7 +13,7 @@ import { HeaderComponent } from './components/header/header.component';
 import {SocketIoModule, SocketIoConfig, Socket} from 'ngx-socket-io';
 import {LoggerService} from "./services/logger/logger.service";
 
-const config: SocketIoConfig = { url: '127.0.0.1:4000/', options: {} };
+const config: SocketIoConfig = { url: 'http://localhost:4000', options: {} };
 
 @NgModule({
 	declarations: [

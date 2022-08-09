@@ -1,9 +1,8 @@
 <header>
 	<img src="https://you-need.ru/img/logo-blue.svg" alt="logo" id="logo">
 	<nav>
+		<a routerLink="">Your ID: {{ globalStore.userId || 'unset' }}</a>
 		<a routerLink="">Home</a>
-		<a routerLink="logger">Logger</a>
-		<a routerLink="video-call/1/2">Video Call 1</a>
-		<a routerLink="video-call/2/1">Video Call 2</a>
+		<a routerLink="/video/logger">Logger</a>
 	</nav>
 </header>

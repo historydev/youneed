@@ -15,6 +15,10 @@ io.on('connection', socket => {
 		socket.emit('fromServer', msg);
 	});
 
+	socket.on('mediaStreamInfo', ({id, video}) =>  {
+		socket.to(id).emit('mediaStreamInfo', video);
+	});
+
 	socket.on('joinRoom', id => {
 		console.log('Join room: ', id);
 		socket.join(id)
@@ -23,6 +27,10 @@ io.on('connection', socket => {
 	socket.on('leaveRoom', id => {
 		console.log('Leave room: ', id);
 		socket.leave(id);
+	});
+
+	socket.on('pushNotification', data => {
+		socket.to(data.recipient).emit('pushNotification', data);
 	});
 
 	socket.on('message', data => {

@@ -1,7 +1,8 @@
 <div class="container">
 	<video *ngIf="getStream()" [ngStyle]="{
 		display: defaultView ? 'none' : 'block'
-	}" [srcObject]="getStream()" autoplay [muted]="muted"></video>
-	<video *ngIf="getUrl() && !defaultView" [src]="getUrl()" autoplay></video>
-	<img *ngIf="defaultView" [src]="defaultView" alt="">
+	}" [srcObject]="getStream()" autoplay [muted]="muted" [controls]="controls"></video>
+	<img *ngIf="defaultView" [src]="defaultView" [alt]="defaultView">
+	<video *ngIf="getUrl() && !defaultView" [src]="getUrl()" [controls]="controls" autoplay></video>
+
 </div>

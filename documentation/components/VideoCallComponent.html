@@ -1,0 +1,1409 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>video-call documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">video-call documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+<ol class="breadcrumb">
+  <li>Components</li>
+  <li
+  >
+  VideoCallComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li >
+            <a href="#templateData" role="tab" id="templateData-tab" data-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li >
+            <a href="#styleData" role="tab" id="styleData-tab" data-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li >
+            <a href="#tree" role="tab" id="tree-tab" data-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/components/video-call/video-call.component.ts</code>
+</p>
+
+
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.io/api/core/OnInit" target="_blank" >OnInit</a></code>
+    </p>
+
+
+<section>
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">providers</td>
+                <td class="col-md-9">
+                                <code><a href="../injectables/MediaStreamService.html" target="_self" >MediaStreamService</a></code>
+                                <code><a href="../injectables/MediaRecorderService.html" target="_self" >MediaRecorderService</a></code>
+                                <code><a href="../injectables/P2pService.html" target="_self" >{
+    provide: , useClass: P2pService
+}</a></code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-video-call</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./video-call.component.scss</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./video-call.component.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section>
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Optional</span>
+                                <a href="#companionId" >companionId</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#companionNoVideoImage" >companionNoVideoImage</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#icons" >icons</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Optional</span>
+                                <a href="#localDefaultView" >localDefaultView</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#mediaStream" >mediaStream</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#mediaStreamConstraints" >mediaStreamConstraints</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#p2p" >p2p</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#recorder" >recorder</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Optional</span>
+                                <a href="#remoteDefaultView" >remoteDefaultView</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Optional</span>
+                                <a href="#userId" >userId</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#userNoVideoImage" >userNoVideoImage</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#changeAudio" >changeAudio</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#changeVideo" >changeVideo</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#ngOnDestroy" >ngOnDestroy</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#sendMediaStreamInfo" >sendMediaStreamInfo</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section>
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(mediaStream: <a href="../injectables/MediaStreamService.html" target="_self">MediaStreamService</a>, recorder: <a href="../injectables/MediaRecorderService.html" target="_self">MediaRecorderService</a>, p2p: <a href="../injectables/P2pService.html" target="_self">P2pService</a>, Logger: <a href="../injectables/LoggerService.html" target="_self">LoggerService</a>, route: <a href="https://angular.io/api/router/ActivatedRoute" target="_blank">ActivatedRoute</a>, socket: Socket, globalStore: <a href="../injectables/GlobalStoreService.html" target="_self">GlobalStoreService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="53" class="link-to-prism">src/app/components/video-call/video-call.component.ts:53</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>mediaStream</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/MediaStreamService.html" target="_self" >MediaStreamService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>recorder</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/MediaRecorderService.html" target="_self" >MediaRecorderService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>p2p</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/P2pService.html" target="_self" >P2pService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>Logger</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/LoggerService.html" target="_self" >LoggerService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>route</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.io/api/router/ActivatedRoute" target="_blank" >ActivatedRoute</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>socket</td>
+                                                  
+                                                        <td>
+                                                                    <code>Socket</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>globalStore</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/GlobalStoreService.html" target="_self" >GlobalStoreService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section>
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="changeAudio"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>changeAudio</b></span>
+                        <a href="#changeAudio"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>changeAudio()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="95"
+                            class="link-to-prism">src/app/components/video-call/video-call.component.ts:95</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="changeVideo"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span class="modifier">Async</span>
+                        <span ><b>changeVideo</b></span>
+                        <a href="#changeVideo"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>changeVideo()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="99"
+                            class="link-to-prism">src/app/components/video-call/video-call.component.ts:99</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>Promise&lt;void&gt;</code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnDestroy"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>ngOnDestroy</b></span>
+                        <a href="#ngOnDestroy"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>ngOnDestroy()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="104"
+                            class="link-to-prism">src/app/components/video-call/video-call.component.ts:104</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="108"
+                            class="link-to-prism">src/app/components/video-call/video-call.component.ts:108</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="sendMediaStreamInfo"></a>
+                    <span class="name">
+                        <span class="modifier">Private</span>
+                        <span ><b>sendMediaStreamInfo</b></span>
+                        <a href="#sendMediaStreamInfo"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>sendMediaStreamInfo(stream?: MediaStream)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="72"
+                            class="link-to-prism">src/app/components/video-call/video-call.component.ts:72</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>stream</td>
+                                    <td>
+                                            <code>MediaStream</code>
+                                    </td>
+
+                                    <td>
+                                        Yes
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section>
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="companionId"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Optional</span>
+                        <span ><b>companionId</b></span>
+                        <a href="#companionId"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>this.globalStore.userId</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="33" class="link-to-prism">src/app/components/video-call/video-call.component.ts:33</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="companionNoVideoImage"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>companionNoVideoImage</b></span>
+                        <a href="#companionNoVideoImage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;https://avatarko.ru/img/kartinka/33/multfilm_lyagushka_32117.jpg&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="37" class="link-to-prism">src/app/components/video-call/video-call.component.ts:37</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="icons"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>icons</b></span>
+                        <a href="#icons"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object" target="_blank" >object</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{
+		faPhoneSlash,
+		faMicrophone,
+		faVideo,
+		faFileVideo,
+		faStop,
+		faVideoSlash,
+		faMicrophoneSlash,
+	}</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="45" class="link-to-prism">src/app/components/video-call/video-call.component.ts:45</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="localDefaultView"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Optional</span>
+                        <span ><b>localDefaultView</b></span>
+                        <a href="#localDefaultView"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="34" class="link-to-prism">src/app/components/video-call/video-call.component.ts:34</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="mediaStream"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>mediaStream</b></span>
+                        <a href="#mediaStream"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../injectables/MediaStreamService.html" target="_self" >MediaStreamService</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="56" class="link-to-prism">src/app/components/video-call/video-call.component.ts:56</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="mediaStreamConstraints"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>mediaStreamConstraints</b></span>
+                        <a href="#mediaStreamConstraints"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>MediaStreamConstraints</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{
+		video: {
+			width: { min: 1024, ideal: 1280, max: 1920 },
+			height: { min: 576, ideal: 720, max: 1080 },
+		},
+		audio: true
+	}</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="38" class="link-to-prism">src/app/components/video-call/video-call.component.ts:38</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="p2p"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>p2p</b></span>
+                        <a href="#p2p"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../injectables/P2pService.html" target="_self" >P2pService</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <b>Decorators : </b>
+                        <br />
+                        <code>
+                            @Inject(&#x27;userMediaP2p&#x27;)<br />
+                        </code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="58" class="link-to-prism">src/app/components/video-call/video-call.component.ts:58</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="recorder"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>recorder</b></span>
+                        <a href="#recorder"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../injectables/MediaRecorderService.html" target="_self" >MediaRecorderService</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="57" class="link-to-prism">src/app/components/video-call/video-call.component.ts:57</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="remoteDefaultView"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Optional</span>
+                        <span ><b>remoteDefaultView</b></span>
+                        <a href="#remoteDefaultView"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="35" class="link-to-prism">src/app/components/video-call/video-call.component.ts:35</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="userId"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Optional</span>
+                        <span ><b>userId</b></span>
+                        <a href="#userId"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>this.route.snapshot.paramMap.get(&#x27;companionId&#x27;)?.toString() || &#x27;&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="32" class="link-to-prism">src/app/components/video-call/video-call.component.ts:32</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="userNoVideoImage"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>userNoVideoImage</b></span>
+                        <a href="#userNoVideoImage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;https://avatarko.ru/img/kartinka/33/multfilm_lyagushka_32117.jpg&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="36" class="link-to-prism">src/app/components/video-call/video-call.component.ts:36</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {Component, Inject, OnInit, SimpleChanges} from &#x27;@angular/core&#x27;;
+import { ActivatedRoute } from &#x27;@angular/router&#x27;;
+
+
+import {MediaRecorderService} from &quot;../../services/media-recorder/media-recorder.service&quot;;
+import {LoggerService} from &quot;../../services/logger/logger.service&quot;;
+import {MediaStreamService} from &quot;../../services/media-stream/media-stream.service&quot;;
+import {P2pService} from &quot;../../services/p2p/p2p.service&quot;;
+import {Socket} from &quot;ngx-socket-io&quot;;
+import {
+	faPhoneSlash,
+	faMicrophone,
+	faMicrophoneSlash,
+	faVideo,
+	faVideoSlash,
+	faFileVideo,
+	faStop
+} from &#x27;@fortawesome/free-solid-svg-icons&#x27;;
+import {GlobalStoreService} from &quot;../../services/global-store/global-store.service&quot;;
+
+@Component({
+	selector: &#x27;app-video-call&#x27;,
+	templateUrl: &#x27;./video-call.component.html&#x27;,
+	styleUrls: [&#x27;./video-call.component.scss&#x27;],
+	providers: [MediaStreamService, MediaRecorderService, {
+		provide: &#x27;userMediaP2p&#x27;,
+		useClass: P2pService
+	}]
+})
+export class VideoCallComponent implements OnInit {
+
+	public userId?: string &#x3D; this.route.snapshot.paramMap.get(&#x27;companionId&#x27;)?.toString() || &#x27;&#x27;;
+	public companionId?: string &#x3D; this.globalStore.userId;
+	public localDefaultView?: string;
+	public remoteDefaultView?: string;
+	private userNoVideoImage: string &#x3D; &#x27;https://avatarko.ru/img/kartinka/33/multfilm_lyagushka_32117.jpg&#x27;;
+	private companionNoVideoImage: string &#x3D; &#x27;https://avatarko.ru/img/kartinka/33/multfilm_lyagushka_32117.jpg&#x27;;
+	private mediaStreamConstraints: MediaStreamConstraints &#x3D; {
+		video: {
+			width: { min: 1024, ideal: 1280, max: 1920 },
+			height: { min: 576, ideal: 720, max: 1080 },
+		},
+		audio: true
+	};
+	public icons &#x3D; {
+		faPhoneSlash,
+		faMicrophone,
+		faVideo,
+		faFileVideo,
+		faStop,
+		faVideoSlash,
+		faMicrophoneSlash,
+	};
+
+	constructor(
+		public mediaStream: MediaStreamService,
+		public recorder: MediaRecorderService,
+		@Inject(&#x27;userMediaP2p&#x27;) public p2p: P2pService,
+		private Logger: LoggerService,
+		private route: ActivatedRoute,
+		private socket: Socket,
+		private globalStore: GlobalStoreService
+	) {
+		this.socket.on(&#x27;mediaStreamInfo&#x27;, ( video: boolean ) &#x3D;&gt; {
+			this.remoteDefaultView &#x3D; video ? undefined : this.companionNoVideoImage;
+		});
+		this.p2p.isCallStarted.subscribe(() &#x3D;&gt; {
+			this.sendMediaStreamInfo(this.mediaStream.getStream());
+		});
+	}
+
+	private sendMediaStreamInfo(stream?: MediaStream): void {
+		const videoTrack &#x3D; stream?.getTracks().find(track &#x3D;&gt; track.kind &#x3D;&#x3D;&#x3D; &#x27;video&#x27;);
+		this.Logger.debug(&#x27;videoTrack&#x27;, videoTrack);
+		if(videoTrack) {
+			this.socket.emit(&#x27;mediaStreamInfo&#x27;, {
+				id: this.companionId,
+				video: videoTrack.enabled
+			});
+			if(videoTrack.enabled) {
+				this.localDefaultView &#x3D; undefined;
+			} else {
+				this.localDefaultView &#x3D; this.userNoVideoImage;
+			}
+
+			return;
+		}
+		this.localDefaultView &#x3D; this.userNoVideoImage;
+		this.socket.emit(&#x27;mediaStreamInfo&#x27;, {
+			id: this.companionId,
+			video: false
+		});
+	}
+
+	public changeAudio(): void {
+		this.mediaStream.changeAudio();
+	}
+
+	public async changeVideo(): Promise&lt;void&gt; {
+		await this.mediaStream.changeVideo();
+		this.sendMediaStreamInfo(this.mediaStream.getStream());
+	}
+
+	public ngOnDestroy(): void {
+		this.mediaStream.getStream()?.getTracks().forEach(track &#x3D;&gt; track.stop());
+	}
+
+	public ngOnInit(): void {
+		if(this.userId &amp;&amp; this.userId !&#x3D;&#x3D; this.companionId) {
+			this.mediaStream.create(this.mediaStreamConstraints).then(stream &#x3D;&gt; {
+
+				this.Logger.info(&#x27;STREAM tracks&#x27;, stream.getTracks());
+
+				this.sendMediaStreamInfo(this.mediaStream.getStream());
+				this.recorder.setStream(stream);
+				if(this.userId &amp;&amp; this.companionId) {
+					this.p2p.joinRoom(this.userId, this.companionId);
+					this.p2p.setLocalStream(stream);
+				}
+				return stream
+			}).catch(e &#x3D;&gt; this.Logger.error(&#x27;VideoCall mediastream&#x27;, e));
+
+			return;
+		}
+
+		this.Logger.debug(&#x27;Video-call&#x27;, &quot;You can&#x27;t call your self&quot;);
+	}
+
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;container&quot; *ngIf&#x3D;&quot;userId &amp;&amp; userId !&#x3D;&#x3D; companionId&quot;&gt;
+	&lt;app-video class&#x3D;&quot;localVideo&quot; [mediaStream]&#x3D;&quot;mediaStream.getStream()&quot; [defaultView]&#x3D;&quot;localDefaultView&quot; [muted]&#x3D;&quot;true&quot;&gt;&lt;/app-video&gt;
+	&lt;app-video class&#x3D;&quot;remoteVideo&quot; [mediaStream]&#x3D;&quot;p2p.remoteStream&quot; [defaultView]&#x3D;&quot;remoteDefaultView&quot;&gt;&lt;/app-video&gt;
+
+	&lt;app-video class&#x3D;&quot;record&quot; *ngIf&#x3D;&quot;recorder.record&quot; [srcUrl]&#x3D;&quot;recorder.record.url&quot; [controls]&#x3D;&quot;true&quot;&gt;&lt;/app-video&gt;
+
+	&lt;div class&#x3D;&quot;controlPanel&quot;&gt;
+		&lt;app-button
+			#record
+			[icons]&#x3D;&quot;{
+				defaultIcon: icons.faFileVideo,
+				clickedIcon: icons.faStop
+			}&quot;
+			(onClick)&#x3D;&quot;record.statusClick ? recorder.startRecording() : recorder.stopRecording()&quot;
+		&gt;&lt;/app-button&gt;
+		&lt;app-button
+			[icons]&#x3D;&quot;{
+				defaultIcon: icons.faVideo,
+				clickedIcon: icons.faVideoSlash
+			}&quot;
+			(onClick)&#x3D;&quot;changeVideo()&quot;
+		&gt;&lt;/app-button&gt;
+		&lt;app-button
+			[icons]&#x3D;&quot;{
+				defaultIcon: icons.faMicrophone,
+				clickedIcon: icons.faMicrophoneSlash
+			}&quot;
+			(onClick)&#x3D;&quot;changeAudio()&quot;
+		&gt;&lt;/app-button&gt;
+		&lt;app-button
+			id&#x3D;&quot;hangup&quot;
+			[icons]&#x3D;&quot;{
+				defaultIcon: icons.faPhoneSlash
+			}&quot;
+			(onClick)&#x3D;&quot;p2p.endCall()&quot;
+		&gt;&lt;/app-button&gt;
+	&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;h1 class&#x3D;&quot;error&quot; *ngIf&#x3D;&quot;userId &#x3D;&#x3D;&#x3D; companionId&quot;&gt;
+	You can&#x27;t start video call with your self.
+&lt;/h1&gt;
+
+&lt;h1 class&#x3D;&quot;error&quot; *ngIf&#x3D;&quot;!userId&quot;&gt;
+	Authorization required.
+&lt;/h1&gt;
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-styleData">
+                <p class="comment">
+                    <code>./video-call.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">
+.error {
+	width: 100vw;
+	height: calc(100vh - 60px);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.container {
+	min-height: 100vh;
+	display: flex;
+	justify-content: flex-end;
+	background: url(&#x27;../../../assets/video-call-bg.png&#x27;);
+	position: relative;
+
+	::ng-deep .localVideo {
+
+		.container {
+			position: absolute;
+			z-index: 999;
+		}
+
+		video, img {
+			width: 300px;
+			height: 200px;
+		}
+
+	}
+
+	::ng-deep .localOffVideo {
+		.container {
+			position: absolute;
+			z-index: 999;
+			left: 0;
+		}
+
+		img {
+			width: 300px;
+			height: 200px;
+		}
+	}
+
+	::ng-deep app-video {
+		video {
+			transform: scaleX(-1);
+			margin-right: auto;
+			object-fit: cover;
+		}
+	}
+
+	::ng-deep .record {
+
+		.container {
+			position: absolute;
+			z-index: 999;
+			right: 0;
+		}
+
+		video {
+			width: 300px;
+			height: 200px;
+			transform: scaleX(1);
+		}
+	}
+
+	::ng-deep .remoteVideo {
+		.container {
+			width: 100%;
+
+			video, img {
+				width: 100vw;
+				height: 100vh;
+			}
+		}
+
+	}
+
+	::ng-deep .remoteOffVideo {
+		.container {
+			width: 100%;
+
+			img {
+				width: 100vw;
+				max-height: 100vh;
+			}
+		}
+
+	}
+
+	::ng-deep app-video {
+		margin-right: auto;
+	}
+
+	::ng-deep app-button {
+
+		button {
+			width: 50px;
+			height: 50px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background: #2B2A29;
+			color: #fff;
+			font-size: 17px;
+			border: 0;
+			border-radius: 50%;
+			margin-left: 10px;
+			cursor: pointer;
+
+		}
+
+		.active {
+			background: #FF392F !important;
+		}
+
+		.active:hover {
+			background: #FF6452 !important;
+		}
+
+		button:hover {
+			background: #3A3938;
+		}
+
+	}
+
+	::ng-deep #hangup {
+		button {
+			background: #FF392F;
+		}
+
+		button:hover {
+			background: #FF6452;
+		}
+	}
+
+	.controlPanel {
+		width: 100%;
+		height: 90px;
+		display: flex;
+		background: #191817;
+		justify-content: center;
+		align-items: center;
+		position: fixed;
+		bottom: 0;
+		z-index: 999;
+
+	}
+
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="container" *ngIf="userId && userId !== companionId">	<app-video class="localVideo" [mediaStream]="mediaStream.getStream()" [defaultView]="localDefaultView" [muted]="true"></app-video>	<app-video class="remoteVideo" [mediaStream]="p2p.remoteStream" [defaultView]="remoteDefaultView"></app-video>	<app-video class="record" *ngIf="recorder.record" [srcUrl]="recorder.record.url" [controls]="true"></app-video>	<div class="controlPanel">		<app-button			#record			[icons]="{				defaultIcon: icons.faFileVideo,				clickedIcon: icons.faStop			}"			(onClick)="record.statusClick ? recorder.startRecording() : recorder.stopRecording()"		></app-button>		<app-button			[icons]="{				defaultIcon: icons.faVideo,				clickedIcon: icons.faVideoSlash			}"			(onClick)="changeVideo()"		></app-button>		<app-button			[icons]="{				defaultIcon: icons.faMicrophone,				clickedIcon: icons.faMicrophoneSlash			}"			(onClick)="changeAudio()"		></app-button>		<app-button			id="hangup"			[icons]="{				defaultIcon: icons.faPhoneSlash			}"			(onClick)="p2p.endCall()"		></app-button>	</div></div><h1 class="error" *ngIf="userId === companionId">	You can\'t start video call with your self.</h1><h1 class="error" *ngIf="!userId">	Authorization required.</h1></div>'
+    var COMPONENTS = [{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ButtonComponent', 'selector': 'app-button'},{'name': 'HeaderComponent', 'selector': 'app-header'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'LoggerComponent', 'selector': 'app-logger'},{'name': 'PushNotificationComponent', 'selector': 'app-push-notification'},{'name': 'SearchEngineComponent', 'selector': 'app-search-engine'},{'name': 'VideoCallComponent', 'selector': 'app-video-call'},{'name': 'VideoComponent', 'selector': 'app-video'}];
+    var DIRECTIVES = [];
+    var ACTUAL_COMPONENT = {'name': 'VideoCallComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'VideoCallComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

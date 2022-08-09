@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {GlobalStoreService} from "../../services/global-store/global-store.service";
 
 @Component({
   selector: 'app-header',
@@ -7,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+	  public globalStore: GlobalStoreService
+  ) {}
 
   ngOnInit(): void {
   }

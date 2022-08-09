@@ -16,21 +16,23 @@ export class MediaStreamService {
 		return this.mediaStream;
 	}
 
-	private async getUserMedia(video:boolean, audio:boolean): Promise<any> {
-		return await navigator.mediaDevices.getUserMedia({video, audio}).then(stream => {
+	private async getUserMedia(constraints: MediaStreamConstraints): Promise<any> {
+		await navigator.mediaDevices.getUserMedia(constraints).then(stream => {
 			this.mediaStream = stream;
 			return stream;
+		}).catch(e => {
+			this.Logger.error('mediaStreamService', 'getUserMedia', e);
+			this.mediaStream = new MediaStream();
 		});
+		return this.mediaStream
 	}
 
-	public async create(video:boolean, audio:boolean): Promise<any> {
-		return this.getUserMedia(video, audio).catch(e => {
-			//this.mediaStream = undefined;
-			//this.Logger.error('getUserMedia', e);
-			return this.getUserMedia(true, false).catch(e => {
+	public async create(constraints: MediaStreamConstraints): Promise<any> {
+		const { video, audio } = constraints;
+		return this.getUserMedia(constraints).catch(_ => {
+			return this.getUserMedia({video, audio: false}).catch(_ => {
 				this.mediaStream = undefined;
-				//this.Logger.error('getUserMedia 2', e);
-				return this.getUserMedia(false, true).catch(e => {
+				return this.getUserMedia({video: false, audio}).catch(_ => {
 					this.mediaStream = new MediaStream();
 				});
 			});

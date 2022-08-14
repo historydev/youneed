@@ -3,23 +3,24 @@ import {BrowserModule} from '@angular/platform-browser';
 import {RouterModule} from '@angular/router';
 
 import {AppComponent} from './app.component';
-import {VideoCallComponent} from './components/video-call/video-call.component';
-import {VideoComponent} from './components/video/video.component';
-import {LoggerComponent} from './components/logger/logger.component';
-import {SearchEngineComponent} from './components/search-engine/search-engine.component';
-import {KeysPipe} from "./pipes/keys.pipe";
-import { HeaderComponent } from './components/header/header.component';
+import {VideoCallComponent} from '../video-call/video-call.component';
+import {VideoComponent} from '../video/video.component';
+import {LoggerComponent} from '../logger/logger.component';
+import {SearchEngineComponent} from '../search-engine/search-engine.component';
+import {KeysPipe} from "../../pipes/keys.pipe";
+import { HeaderComponent } from '../header/header.component';
 import {SocketIoModule, SocketIoConfig, Socket} from 'ngx-socket-io';
-import {LoggerService} from "./services/logger/logger.service";
+import {LoggerService} from "../../services/logger/logger.service";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { ButtonComponent } from './components/ui/button/button.component';
-import { PushNotificationComponent } from './components/push-notification/push-notification.component';
-import {PushNotificationService} from "./services/push-notification/push-notification.service";
-import { HomeComponent } from './components/home/home.component';
+import { ButtonComponent } from '../UI/button/button.component';
+import { PushNotificationComponent } from '../push-notification/push-notification.component';
+import {PushNotificationService} from "../../services/push-notification/push-notification.service";
+import { HomeComponent } from '../home/home.component';
 import {FormsModule} from "@angular/forms";
-import {NotificationModel} from "./models/push-notification/notification.model";
+import {NotificationModel} from "../../models/push-notification/notification.model";
+import { CallWindowComponent } from '../call-window/call-window.component';
 
-const prodUrl = 'https://you-need.ru';
+const prodUrl = '/';
 const devUrl = 'http://localhost:4000';
 const config: SocketIoConfig = { url: devUrl, options: {} };
 const routes = [
@@ -42,6 +43,7 @@ const routes = [
     	ButtonComponent,
 		PushNotificationComponent,
 		HomeComponent,
+  		CallWindowComponent,
 	],
 	imports: [
 		BrowserModule,

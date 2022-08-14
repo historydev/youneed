@@ -29,8 +29,8 @@ import {GlobalStoreService} from "../../services/global-store/global-store.servi
 })
 export class VideoCallComponent implements OnInit {
 
-	public userId?: string = this.route.snapshot.paramMap.get('companionId')?.toString() || '';
-	public companionId?: string = this.globalStore.userId;
+	public userId?: string = this.globalStore.userId;
+	public companionId?: string = this.route.snapshot.paramMap.get('companionId')?.toString() || '';
 	public localDefaultView?: string;
 	public remoteDefaultView?: string;
 	private userNoVideoImage: string = 'https://avatarko.ru/img/kartinka/33/multfilm_lyagushka_32117.jpg';

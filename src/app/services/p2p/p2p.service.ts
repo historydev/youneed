@@ -121,7 +121,6 @@ export class P2pService implements OnInit {
 		this.localStream?.getTracks().forEach(track => track.stop());
 		this.localStream = undefined;
 		this.remoteStream = undefined;
-		this.socket.emit('leaveRoom', this.userId);
 		await this.router.navigate(['']);
 	}
 
@@ -203,6 +202,10 @@ export class P2pService implements OnInit {
 		this.Logger.debug('MediaStream', stream);
 		this.localStream = stream;
 		this.socket.emit('message', { id: this.companionId, type: 'ready', message: {} });
+		this.socket.emit('acceptCall', {
+			initiator: this.companionId,
+			recipient: this.userId
+		});
 	}
 
 	public ngOnInit(): void {

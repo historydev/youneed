@@ -2,7 +2,7 @@
 	<app-video class="localVideo" [mediaStream]="mediaStream.getStream()" [defaultView]="localDefaultView" [muted]="true"></app-video>
 	<app-video class="remoteVideo" [mediaStream]="p2p.remoteStream" [defaultView]="remoteDefaultView"></app-video>
 
-	<app-video class="record" *ngIf="recorder.record" [srcUrl]="recorder.record.url" [controls]="true"></app-video>
+	<app-video class="record" *ngIf="recorder.record" [srcUrl]="recorder.record.url" [controls]="true" [defaultView]="undefined"></app-video>
 
 	<div class="controlPanel">
 		<app-button

@@ -1,0 +1,24 @@
+<div class="container">
+	<audio *ngIf="type === 'offer'" src="../../../assets/outgoing-call.mp3" autoplay loop></audio>
+	<audio *ngIf="type === 'answer'" src="../../../assets/incoming-call.m4a" autoplay loop></audio>
+	<div class="content">
+		<div class="title">Евгений Пупкин</div>
+		<img src="https://klike.net/uploads/posts/2019-05/1556708032_1.jpg" alt="">
+		<div class="controls" [ngClass]="type === 'answer' ? 'answer' : 'offer'">
+			<button *ngIf="type !== 'offer'" class="accept-call" (click)="acceptCall()">
+				<fa-icon [icon]="icons.faPhone"></fa-icon>
+			</button>
+			<div *ngIf="type !== 'answer'" class="wait-answer">
+				<div class="lds-ellipsis">
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+				</div>
+			</div>
+			<button class="end-call" (click)="endCall()">
+				<fa-icon [icon]="icons.faPhoneFlip"></fa-icon>
+			</button>
+		</div>
+	</div>
+</div>

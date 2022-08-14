@@ -2,7 +2,7 @@
 <button *ngIf="!globalStore.userId && userId" (click)="setUserId()">Set Global ID</button>
 
 <input *ngIf="globalStore.userId" type="text" placeholder="companion id" [(ngModel)]="companionId" />
-<button *ngIf="globalStore.userId && companionId" routerLink="/video/call/{{companionId}}">Call User</button>
+<button *ngIf="globalStore.userId && companionId" (click)="initiateCall()">Call User</button>
 
 <br/>
 <br/>
@@ -13,5 +13,5 @@
 <textarea type="text" placeholder="message text" [(ngModel)]="message"></textarea><br><br>
 <button (click)="sendNotification(recipient, title, message)">Send Push</button>
 
-
-{{ globalStore.userId }}{{ companionId }}
+<app-call-window *ngFor="let call of getCalls()" type="answer" [userId]="call.initiator" [companionId]="call.recipient"></app-call-window>
+<app-call-window *ngFor="let call of currentCall()" type="offer" [userId]="call.initiator" [companionId]="call.recipient"></app-call-window>

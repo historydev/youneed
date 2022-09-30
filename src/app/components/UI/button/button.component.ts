@@ -11,7 +11,7 @@ import {IconProp} from "@fortawesome/fontawesome-svg-core";
 })
 export class ButtonComponent implements OnInit {
 
-	public statusClick?: boolean = false;
+	public statusClick: boolean = false;
 	public currentIcon?: IconDefinition | IconProp;
 	public statusClass: string = 'not-active';
 

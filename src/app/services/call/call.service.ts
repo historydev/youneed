@@ -1,4 +1,5 @@
-import {Injectable} from '@angular/core';
+
+import {Inject, Injectable} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 
 import {MediaRecorderService} from "../media-recorder/media-recorder.service";
@@ -6,7 +7,6 @@ import {LoggerService} from "../logger/logger.service";
 import {MediaDevicesService} from "../media-devices/media-devices.service";
 import {P2pConnectorService} from "../p2p/p2p-connector.service";
 import {Socket} from "ngx-socket-io";
-import {GlobalStoreService} from "../global-store/global-store.service";
 import {MediaStreamElementModel} from "../../models/call/media-stream-element.model";
 
 @Injectable({
@@ -14,8 +14,8 @@ import {MediaStreamElementModel} from "../../models/call/media-stream-element.mo
 })
 export class CallService {
 
-	private _sender_id?: string = this.globalStore.userId;
-	private _receiver_id?: string = this.route.snapshot.paramMap.get('receiver_id')?.toString() || '';
+	private _sender_id?: string;
+	private _receiver_id?: string;
 	private _local_image_no_camera?: string;
 	private _remote_image_no_camera?: string;
 	private _user_media_constraints: MediaStreamConstraints;
@@ -25,12 +25,17 @@ export class CallService {
 	constructor(
 		public media_devices: MediaDevicesService,
 		public recorder: MediaRecorderService,
-		public user_media_p2p: P2pConnectorService,
+		@Inject('user_media') public user_media_p2p: P2pConnectorService,
+		//@Inject('display_media') public display_media_p2p: P2pConnectorService, TODO Add screen sharing with SFU
 		private Logger: LoggerService,
 		private route: ActivatedRoute,
-		private socket: Socket,
-		private globalStore: GlobalStoreService
+		private socket: Socket
 	) {
+		user_media_p2p.socket_input_name = 'p2p_user_media_message';
+		//display_media_p2p.socket_input_name = 'p2p_display_media_message';
+
+		// this.Logger.debug('call-service', 'user_media_p2p', user_media_p2p.sender_id, 'display_media_p2p', display_media_p2p.sender_id);
+
 		this._assets = {
 			_local_image_no_camera: 'https://avatarko.ru/img/kartinka/33/multfilm_lyagushka_32117.jpg',
 			_remote_image_no_camera: 'https://avatarko.ru/img/kartinka/33/multfilm_lyagushka_32117.jpg',
@@ -48,6 +53,7 @@ export class CallService {
 		});
 		user_media_p2p.isCallStarted.subscribe(() => {
 			this.share_media_stream_info(media_devices.user_media);
+			this.Logger.error('call-service', 'media_streams', this._media_streams);
 		});
 	}
 
@@ -138,6 +144,26 @@ export class CallService {
 
 	public start_outgoing_call(): void {
 
+		const interval = setInterval(() => {
+			const remote_stream = this._media_streams.find(el => el.type === 'remote_user_media');
+
+			if(this.user_media_p2p.remote_media_stream !== undefined) {
+
+				this.Logger.error('call-service', 'interval cleared', this.user_media_p2p.remote_media_stream.getTracks());
+
+				clearInterval(interval);
+			}
+
+			if(remote_stream) {
+				remote_stream.stream = this.user_media_p2p.remote_media_stream;
+			} else {
+				this._media_streams.push({
+					type: 'remote_user_media',
+					stream: this.user_media_p2p.remote_media_stream
+				});
+			}
+
+		}, 20);
 		this.Logger.debug('call-service', {
 			sender_id: this._sender_id,
 			receiver_id: this._receiver_id
@@ -145,13 +171,21 @@ export class CallService {
 
 		if(this._sender_id && this._receiver_id && this._sender_id !== this._receiver_id) {
 			this.media_devices.user_media_constraints = this._user_media_constraints;
-			this._media_streams.push({
-				type: 'local_user_media',
-				stream: this.media_devices.user_media
-			});
 			this.media_devices.initialize_user_media()
 				.then(_ => {
 					this.Logger.info('STREAM tracks', this.media_devices.user_media?.getTracks());
+
+					const local_stream = this._media_streams.find(el => el.type === 'local_user_media');
+
+					if(local_stream) {
+						local_stream.stream = this.media_devices.user_media;
+
+					} else {
+						this._media_streams.push({
+							type: 'local_user_media',
+							stream: this.media_devices.user_media
+						});
+					}
 
 					this.share_media_stream_info(this.media_devices.user_media);
 					this.recorder.setStream(this.media_devices.user_media);
@@ -160,6 +194,9 @@ export class CallService {
 						receiver: this._receiver_id
 					});
 					this.user_media_p2p.sender_id = this._sender_id;
+
+					this.Logger.debug('call-service', 'sender_id', this.sender_id, 'receiver_id', this.receiver_id);
+
 					this.user_media_p2p.receiver_id = this._receiver_id;
 					this.user_media_p2p.local_media_stream = this.media_devices.user_media;
 					this.user_media_p2p.connect();
@@ -169,15 +206,82 @@ export class CallService {
 			return;
 		}
 
-		this.Logger.debug('Video-call', "You can't call your self");
+		this.Logger.debug('call-service', 'You can`t call your self');
 	}
 
-	public cancel_outgoing_call(): void {
+	// public start_screen_sharing() {
+	//
+	// 	const interval = setInterval(() => {
+	// 		const remote_stream = this._media_streams.find(el => el.type === 'remote_display_media');
+	//
+	// 		if(this.display_media_p2p.remote_media_stream !== undefined) {
+	//
+	// 			this.Logger.error('call-service', 'media_streams', this._media_streams);
+	//
+	// 			this.Logger.error('call-service', 'interval cleared', this._media_streams);
+	//
+	// 			clearInterval(interval);
+	// 		}
+	//
+	// 		if(remote_stream) {
+	// 			remote_stream.stream = this.display_media_p2p.remote_media_stream;
+	// 		} else {
+	// 			this._media_streams.push({
+	// 				type: 'remote_display_media',
+	// 				stream: this.display_media_p2p.remote_media_stream
+	// 			});
+	// 		}
+	//
+	// 	}, 20);
+	//
+	// 	if(this._sender_id && this._receiver_id && this._sender_id !== this._receiver_id) {
+	// 		this.media_devices.display_media_constraints = {
+	// 			video: true,
+	// 			audio: true
+	// 		};
+	// 		this.media_devices.initialize_display_media()
+	// 			.then(_ => {
+	// 				this.Logger.info('STREAM tracks', this.media_devices.display_media?.getTracks());
+	//
+	// 				const local_stream = this._media_streams.find(el => el.type === 'local_display_media');
+	//
+	// 				if(local_stream) {
+	// 					local_stream.stream = this.media_devices.display_media;
+	//
+	// 				} else {
+	// 					this._media_streams.push({
+	// 						type: 'local_display_media',
+	// 						stream: this.media_devices.display_media
+	// 					});
+	// 				}
+	//
+	// 				this.Logger.debug('call-service', 'initialize-display-media', {
+	// 					sender: this._sender_id,
+	// 					receiver: this._receiver_id
+	// 				});
+	// 				this.display_media_p2p.socket_input_name = 'p2p_display_media_message';
+	// 				this.display_media_p2p.sender_id = this._sender_id;
+	// 				this.Logger.debug('call-service', 'sender_id', this.sender_id, 'receiver_id', this.receiver_id);
+	// 				this.display_media_p2p.receiver_id = this._receiver_id;
+	// 				this.display_media_p2p.local_media_stream = this.media_devices.display_media;
+	// 				this.display_media_p2p.connect();
+	//
+	// 				this.Logger.error('call-service', 'creator', this.display_media_p2p.is_call_creator, 'socket_name', this.display_media_p2p.socket_input_name);
+	// 				this.Logger.error('call-service', 'media_streams', this._media_streams);
+	//
+	// 			});
+	//
+	// 		return;
+	// 	}
+	//
+	// 	this.Logger.debug('call-service', 'You can`t screen sharing for your self');
+	// }
+
+	public ngOnDestroy() {
+		this._media_streams.splice(0, this._media_streams.length);
 		this.user_media_p2p.disconnect();
-	}
-
-	ngOnDestroy() {
-		this.cancel_outgoing_call();
+		//this.display_media_p2p.disconnect();
+		this.Logger.error('call-service', 'destroyed');
 	}
 
 }

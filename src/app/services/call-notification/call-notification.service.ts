@@ -1,8 +1,11 @@
-import {Injectable} from '@angular/core';
+
+import {Inject, Injectable} from '@angular/core';
 import {LoggerService} from "../logger/logger.service";
 import {Socket} from "ngx-socket-io";
 import {Call, CallListElementModel} from "../../models/call-notification/call-list-element.model";
 import {Router} from "@angular/router";
+
+import {P2pConnectorService} from "../p2p/p2p-connector.service";
 
 @Injectable({
 	providedIn: 'root'
@@ -15,16 +18,27 @@ export class CallNotificationService {
 		outgoing: new Audio('../../assets/outgoing-call.mp3')
 	}
 
+	private _in_call: Boolean = false;
+
 	constructor(
 		private Logger: LoggerService,
 		private socket: Socket,
-		private router: Router
+
+		private router: Router,
+		@Inject('user_media') private user_media_p2p: P2pConnectorService,
+		//@Inject('display_media') private display_media_p2p: P2pConnectorService,
 	) {
 		this._calls_audio.incoming.loop = true;
 		this._calls_audio.outgoing.loop = true;
 
 		socket.on('call', (data:CallListElementModel) => {
 			this.Logger.debug('call-notification-service', 'call socket', data);
+
+			if(this._in_call) {
+				this.Logger.error('call-notification-service', 'start_call', 'Now user in call');
+				return;
+			}
+
 			this._calls_list.push({
 				id: this.generate_call_id(data.call),
 				type: 'incoming',
@@ -38,7 +52,8 @@ export class CallNotificationService {
 			this._calls_list.splice(index, 1);
 			this._calls_audio.incoming.pause();
 			this._calls_audio.outgoing.pause();
-			await this.router.navigate(['/video/call/', data.call.receiver_id]);
+
+			this.router.navigate(['/video/call/', data.call.receiver_id]).then();
 		});
 		socket.on('decline-call', (data: CallListElementModel) => {
 			this.Logger.debug('call-notification-service', 'decline call socket', data);
@@ -47,6 +62,15 @@ export class CallNotificationService {
 			this._calls_audio.incoming.pause();
 			this._calls_audio.outgoing.pause();
 		});
+	}
+
+
+	public get in_call() {
+		return this._in_call;
+	}
+
+	public set in_call(val: Boolean) {
+		this._in_call = val;
 	}
 
 	public get calls_list(): CallListElementModel[] {
@@ -63,6 +87,10 @@ export class CallNotificationService {
 			type: 'outgoing',
 			call: call
 		});
+
+		this.user_media_p2p.is_call_creator = true;
+		//this.display_media_p2p.is_call_creator = true;
+		//this.router.navigate(['/video/call/', call.receiver_id]);
 		//this._calls_audio.outgoing.play().then();
 		this.socket.emit('call', {
 			id: this.generate_call_id(call),
@@ -76,7 +104,14 @@ export class CallNotificationService {
 		const index = this._calls_list.findIndex(call => call.id === id);
 		if(call) {
 			this._calls_audio.incoming.pause();
-			//this.socket.emit('accept-call', call);
+
+			// setTimeout(() => {
+			// 	this.socket.emit('accept-call', call);
+			// }, 2000);
+			this.user_media_p2p.is_call_creator = false;
+			//this.display_media_p2p.is_call_creator = false;
+			this.socket.emit('accept-call', call);
+
 			this._calls_list.splice(index, 1);
 			this.router.navigate(['/video/call/', call.call.sender_id]).then();
 			return;

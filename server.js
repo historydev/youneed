@@ -58,9 +58,20 @@ io.on('connection', socket => {
 		socket.to(data.recipient).emit('pushNotification', data);
 	});
 
-	socket.on('message', data => {
+	socket.on('p2p_user_media_message', data => {
 		console.log(data);
-		socket.to(data.id).emit('message', {
+		socket.to(data.id).emit('p2p_user_media_message', {
+			type: data.type,
+			message: {
+				type: data.type,
+				...data.message
+			}
+		});
+	});
+
+	socket.on('p2p_display_media_message', data => {
+		console.log('display ',data);
+		socket.to(data.id).emit('p2p_display_media_message', {
 			type: data.type,
 			message: {
 				type: data.type,

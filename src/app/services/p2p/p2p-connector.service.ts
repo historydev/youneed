@@ -15,7 +15,16 @@ export class P2pConnectorService {
 	private _peer_connection?: RTCPeerConnection;
 	private _local_media_stream?: MediaStream;
 	private _remote_media_stream?: MediaStream;
+	private _is_call_creator: Boolean = false;
+	private _socket_input_name: string = 'p2p_user_media_message';
+	private _sender_ready: Boolean = false;
+	private _receiver_ready: Boolean = false;
+
 	private readonly handleList: HandleListModel[] = [
+		{
+			type: 'ready',
+			call: (msg: any) => this.handle_ready(),
+		},
 		{
 			type: 'connected',
 			call: (msg: any) => this.handle_connect(),
@@ -45,12 +54,71 @@ export class P2pConnectorService {
 		private socket: Socket,
 		private router: Router
 	) {
-		this.socket.on('message', (data: MessageModel<any>) => {
+		this.socket.on(this._socket_input_name, (data: MessageModel<any>) => {
 			this.Logger.debug('p2pService new message', data);
 			const handler = this.handleList.find(el => el.type === data.type);
 			if(handler) return handler.call(data.message);
 			this.Logger.error('p2pService', 'Message type not found');
 		});
+	}
+
+
+	public disconnect(): void {
+		this.Logger.error('p2p-connector-service', 'disconnect');
+		this.Logger.error('p2p-connector-service', 'Sender: ' + this._sender_id, 'Receiver: ' + this._receiver_id);
+		this.socket.emit(this._socket_input_name, { id: this._receiver_id, type: 'disconnect', message: {} });
+		this.handle_disconnect();
+	}
+
+	public connect(): void {
+		this._sender_ready = true;
+		const interval = setInterval(() => {
+			this.Logger.debug('p2p-connector-service', this._receiver_ready, this._socket_input_name, this._peer_connection);
+			if(this._receiver_ready) {
+				this.socket.emit(this._socket_input_name, {
+					id: this.receiver_id,
+					type: 'ready',
+					message: 'ready'
+				});
+				if(this._is_call_creator) {
+					this.Logger.debug('p2p-connector-service', 'try connect');
+					this.socket.emit(this._socket_input_name, { id: this._receiver_id, type: 'connected', message: {} });
+				}
+				clearInterval(interval);
+			} else {
+				this.socket.emit(this._socket_input_name, {
+					id: this.receiver_id,
+					type: 'ready',
+					message: 'ready'
+				});
+			}
+		}, 20);
+	}
+
+	private join_socket_room(): void {
+		this.Logger.debug('p2p-connector-service', 'join-socket-room', {sender_id: this._sender_id, receiver_id: this._receiver_id});
+		this.socket.emit('joinRoom', this._sender_id);
+	}
+
+	private leave_socket_room(): void {
+		this.socket.emit('leaveRoom', this._sender_id);
+		this.Logger.debug('p2p-connector-service', 'leave-socket-room', {sender_id: this._sender_id, receiver_id: this._receiver_id});
+	}
+
+	public set socket_input_name(val: string) {
+		this._socket_input_name = val;
+	}
+
+	public get socket_input_name() {
+		return this._socket_input_name;
+	}
+
+	public set is_call_creator(val: Boolean) {
+		this._is_call_creator = val;
+	}
+
+	public get is_call_creator(): Boolean {
+		return this._is_call_creator;
 	}
 
 	public get remote_media_stream(): MediaStream | undefined {
@@ -83,9 +151,10 @@ export class P2pConnectorService {
 
 	private async initialize_connection(): Promise<void> {
 		await this.create_peer_connection().then(async pc => {
-			this.Logger.info('initialize_connection', pc);
+			this.Logger.error('initialize_connection', pc);
 			const offer = await pc.createOffer({offerToReceiveVideo: true, offerToReceiveAudio: true});
-			this.socket.emit('message', {
+			this.socket.emit(this._socket_input_name, {
+
 				id: this._receiver_id,
 				type: 'offer',
 				message: {
@@ -98,13 +167,17 @@ export class P2pConnectorService {
 
 	private async create_peer_connection(): Promise<RTCPeerConnection> {
 
-		this.Logger.info('createPeerConnection', this._peer_connection);
+		this._peer_connection?.close();
+		this._peer_connection = undefined;
+
+		this.Logger.info('p2p-connector', 'create_peer_connection', this._peer_connection);
 
 		this._peer_connection = new RTCPeerConnection();
 		this._peer_connection.onicecandidate = (e:RTCPeerConnectionIceEvent) => {
 
 			if(e.candidate) {
-				this.socket.emit('message', {
+
+				this.socket.emit(this._socket_input_name, {
 					id: this._receiver_id,
 					type: 'candidate',
 					message: {
@@ -117,7 +190,7 @@ export class P2pConnectorService {
 				return
 			}
 
-			this.socket.emit('message', {
+			this.socket.emit(this._socket_input_name, {
 				id: this._receiver_id,
 				type: 'candidate',
 				message: {
@@ -141,32 +214,37 @@ export class P2pConnectorService {
 		return this._peer_connection
 	}
 
+	private handle_ready() {
+		this.Logger.debug('p2p-connector-service', 'ready');
+		this._receiver_ready = true;
+	}
+
 	private handle_disconnect(): void {
-		if (this._peer_connection?.signalingState !== 'closed') {
-			this._peer_connection?.close();
-			this._peer_connection = undefined;
-			this.Logger.error('p2p-connector-service', 'CLOSE PEER CONNECTION', this._peer_connection);
-		}
-		this._local_media_stream?.getTracks().forEach(track => track.stop());
-		this._local_media_stream = undefined;
-		this._remote_media_stream = undefined;
-		this.Logger.error('p2p-connector-service', 'set pc undefined', this._peer_connection);
-		this.router.navigate(['']).then();
+		this.router.navigate(['']).then(_ => {
+			if (this._peer_connection?.signalingState !== 'closed') {
+				this._peer_connection?.close();
+				this._peer_connection = undefined;
+			}
+			this._local_media_stream?.getTracks().forEach(track => track.stop());
+			this._local_media_stream = undefined;
+			this._remote_media_stream = undefined;
+			this.Logger.error('p2p-connector-service', 'handle_disconnect', this._peer_connection);
+		});
 	}
 
 	private async handle_connect(): Promise<void> {
+		this.Logger.error('p2p-connector-service', 'connect', this._peer_connection);
 		if (this._peer_connection) {
-			this.Logger.error('p2p-connector-service', 'peer-connection', this._peer_connection);
-			this.Logger.error('P2pService ready', 'Already in call, ignoring');
-			//return;
+			this.Logger.error('p2p-connector', 'handle_connect: ', 'Already in call');
+			return;
 		}
-		await this.initialize_connection();
+		this.initialize_connection().then();
 	}
 
 	private async handle_candidate(message: any): Promise<void> {
 		this.isCallStarted.emit();
 		if (!this._peer_connection) {
-			this.Logger.error('p2pService', 'handleCandidate: ', 'no peerconnection');
+			this.Logger.error('p2p-connector', 'handle_candidate: ', 'no peerconnection');
 			return;
 		}
 		if (this._peer_connection.signalingState !== 'closed') {
@@ -198,64 +276,28 @@ export class P2pConnectorService {
 			await this._peer_connection?.setRemoteDescription(message).catch(e => {
 				this.Logger.error('setRemoteDescription 1', message, e);
 			});
+
+			return;
 		}
+		this.Logger.error('p2p-connector', 'handle_answer', 'signaling state closed');
+
 	}
 
 	private async handle_offer(message: any): Promise<void> {
 		if (this._peer_connection) {
 			this.Logger.error('p2pService', 'handle offer: ', 'existing peerconnection');
-			//return;
+			return;
 		}
 		await this.create_peer_connection().then(async pc => {
+			this.Logger.error('handle_offer', pc);
+
 			await pc.setRemoteDescription(message).catch(e => {
 				this.Logger.error('setRemoteDescription 2', message, e);
 			});
 
 			const answer = await pc.createAnswer();
 			await pc.setLocalDescription(answer);
-			this.socket.emit('message', { id: this._receiver_id, type: 'answer', message: { sdp: answer.sdp } });
+			this.socket.emit(this._socket_input_name, { id: this._receiver_id, type: 'answer', message: { sdp: answer.sdp } });
 		});
 	}
-
-	private join_socket_room(): void {
-		this.Logger.debug('p2p-connector-service', 'join-socket-room', {sender_id: this._sender_id, receiver_id: this._receiver_id});
-		this.socket.emit('joinRoom', this._sender_id);
-	}
-
-	private leave_socket_room(): void {
-		this.socket.emit('leaveRoom', this._sender_id);
-		this.Logger.debug('p2p-connector-service', 'leave-socket-room', {sender_id: this._sender_id, receiver_id: this._receiver_id});
-	}
-
-	public connect(): void {
-		this.join_socket_room();
-		this.socket.emit('message', { id: this._receiver_id, type: 'connected', message: {} });
-		this.socket.emit('accept-call', {
-			id: `${this._receiver_id}.-.${this._sender_id}`,
-			type: 'outgoing',
-			call: {
-				sender_id: this._receiver_id,
-				receiver_id: this._sender_id
-			}
-		});
-	}
-
-	public disconnect(): void {
-		this.Logger.error('p2p-connector-service', 'disconnect');
-		this.socket.emit('message', { id: this._receiver_id, type: 'disconnect', message: {} });
-		// this.socket.emit('decline-call', {
-		// 	id: `${this._receiver_id}.-.${this._sender_id}`,
-		// 	type: 'outgoing',
-		// 	call: {
-		// 		sender_id: this._receiver_id,
-		// 		receiver_id: this._sender_id
-		// 	}
-		// });
-		this.handle_disconnect();
-	}
-
-	ngOnDestroy() {
-		this.disconnect();
-	}
-
 }

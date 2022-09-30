@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CallNotificationComponent } from './call-notification.component';
 
-import { CallWindowComponent } from './call-notification.component';
-
-describe('CallWindowComponent', () => {
-  let component: CallWindowComponent;
-  let fixture: ComponentFixture<CallWindowComponent>;
+describe('CallNotificationComponent', () => {
+  let component: CallNotificationComponent;
+  let fixture: ComponentFixture<CallNotificationComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CallWindowComponent ]
+      declarations: [ CallNotificationComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(CallWindowComponent);
+    fixture = TestBed.createComponent(CallNotificationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

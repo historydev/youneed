@@ -25,7 +25,6 @@ import { createAction } from '@ngrx/store';
 import { createReducer, on } from '@ngrx/store';
 import {P2pConnectorService} from "../../services/p2p/p2p-connector.service";
 import {CallService} from "../../services/call/call.service";
-import {CallNotificationService} from "../../services/call-notification/call-notification.service";
 
 export const increment = createAction('[Counter Component] Increment');
 export const decrement = createAction('[Counter Component] Decrement');
@@ -74,7 +73,18 @@ const routes = [
 		FormsModule,
 		StoreModule.forRoot({}, {}),
 	],
-	providers: [LoggerService, P2pConnectorService],
+	providers: [
+		LoggerService,
+		{
+			provide: 'user_media',
+			useClass: P2pConnectorService
+		},
+		{
+			provide: 'display_media',
+			useClass: P2pConnectorService
+		},
+		CallService
+	],
 	bootstrap: [AppComponent]
 })
 
@@ -85,7 +95,6 @@ export class AppModule {
 		private Logger: LoggerService,
 		private notifications: PushNotificationService
 	) {
-
 		this.socket.on('pushNotification', (data: NotificationModel) => {
 			this.notifications.add(data);
 		});

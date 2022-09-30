@@ -103,5 +103,11 @@
         }
       }
     }
+<<<<<<< HEAD
+=======
+  },
+  "cli": {
+    "analytics": false
+>>>>>>> b4d3ff2 (refactoring)
   }
 }

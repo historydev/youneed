@@ -14,11 +14,12 @@
 	background: url('../../../assets/video-call-bg.png');
 	position: relative;
 
-	::ng-deep .localVideo {
+	::ng-deep .local_user_media {
 
 		.container {
 			position: absolute;
 			z-index: 999;
+			left: 0;
 		}
 
 		video, img {
@@ -64,7 +65,7 @@
 		}
 	}
 
-	::ng-deep .remoteVideo {
+	::ng-deep .remote_user_media {
 		.container {
 			width: 100%;
 

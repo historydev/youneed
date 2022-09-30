@@ -68,11 +68,14 @@ export class MediaDevicesService {
 	}
 
 	public async initialize_display_media(): Promise<void> {
-		return await navigator.mediaDevices.getDisplayMedia(this._display_media_constraints).then(stream => {
+		await navigator.mediaDevices.getDisplayMedia(this._display_media_constraints).then(stream => {
 			this._display_media = stream;
 		}).catch(e => {
+			this._display_media = undefined;
 			this.Logger.error('MediaDevicesService', 'initialize_display_media', e);
 		});
+
+		return;
 	}
 
 	/*

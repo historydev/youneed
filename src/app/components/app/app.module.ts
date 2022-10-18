@@ -21,32 +21,23 @@ import {NotificationModel} from "../../models/push-notification/notification.mod
 import { CallNotificationComponent } from '../call-notification/call-notification.component';
 
 import { StoreModule } from '@ngrx/store';
-import { createAction } from '@ngrx/store';
-import { createReducer, on } from '@ngrx/store';
 import {P2pConnectorService} from "../../services/p2p/p2p-connector.service";
 import {CallService} from "../../services/call/call.service";
-
-export const increment = createAction('[Counter Component] Increment');
-export const decrement = createAction('[Counter Component] Decrement');
-export const reset = createAction('[Counter Component] Reset');
-
-export const initialState = 0;
-
-export const counterReducer = createReducer(
-	initialState,
-	on(increment, (state) => state + 1),
-	on(decrement, (state) => state - 1),
-	on(reset, (state) => 0)
-);
+import {MeetingsComponent} from "../meetings/meetings.component";
+import {MeetingsListComponent} from "../meetings-list/meetings-list.component";
+import {ChatComponent} from "../chat/chat.component";
+import {SideBarComponent} from "../side-bar/side-bar.component";
+import all from '../../@NGRX/reducers/all';
 
 const prodUrl = '/';
 const devUrl = 'http://localhost:4000';
 const config: SocketIoConfig = { url: devUrl, options: {} };
 const routes = [
 	//{path: '', redirectTo: 'video', pathMatch: 'full', component: HomeComponent},
-	{path: 'video', component: HomeComponent},
-	{path: 'video/logger', component: LoggerComponent},
-	{path: 'video/call/:receiver_id', component: CallComponent},
+	{path: '', component: HomeComponent},
+	{path: 'logger', component: LoggerComponent},
+	{path: 'call/:receiver_id', component: CallComponent},
+	{path: 'meetings', component: MeetingsComponent},
 	{path: '**', component: HomeComponent}
 ];
 
@@ -63,15 +54,18 @@ const routes = [
 		PushNotificationComponent,
 		HomeComponent,
   		CallNotificationComponent,
+		MeetingsComponent,
+		MeetingsListComponent,
+		ChatComponent,
+		SideBarComponent
 	],
 	imports: [
 		BrowserModule,
 		RouterModule.forRoot(routes),
 		SocketIoModule.forRoot(config),
-		StoreModule.forRoot({ count: counterReducer }),
 		FontAwesomeModule,
 		FormsModule,
-		StoreModule.forRoot({}, {}),
+		StoreModule.forRoot(all, {}),
 	],
 	providers: [
 		LoggerService,
@@ -101,12 +95,12 @@ export class AppModule {
 
 		this.socket.on('connected', (id: string) => {
 			this.Logger.info('Socket connection id', id);
-			this.notifications.add({
-				recipient: '1',
-				type: 'global',
-				title: 'WebSocket',
-				message: 'You are subscribed on ws server, your id: ' + id
-			});
+			// this.notifications.add({
+			// 	recipient: '1',
+			// 	type: 'global',
+			// 	title: 'WebSocket',
+			// 	message: 'You are subscribed on ws server, your id: ' + id
+			// });
 		});
 
 	}

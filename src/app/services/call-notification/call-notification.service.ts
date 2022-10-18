@@ -52,8 +52,7 @@ export class CallNotificationService {
 			this._calls_list.splice(index, 1);
 			this._calls_audio.incoming.pause();
 			this._calls_audio.outgoing.pause();
-
-			this.router.navigate(['/video/call/', data.call.receiver_id]).then();
+			this.router.navigate(['call/', data.call.receiver_id]).then();
 		});
 		socket.on('decline-call', (data: CallListElementModel) => {
 			this.Logger.debug('call-notification-service', 'decline call socket', data);
@@ -90,7 +89,7 @@ export class CallNotificationService {
 
 		this.user_media_p2p.is_call_creator = true;
 		//this.display_media_p2p.is_call_creator = true;
-		//this.router.navigate(['/video/call/', call.receiver_id]);
+		//this.router.navigate(['call/', call.receiver_id]);
 		//this._calls_audio.outgoing.play().then();
 		this.socket.emit('call', {
 			id: this.generate_call_id(call),
@@ -113,7 +112,7 @@ export class CallNotificationService {
 			this.socket.emit('accept-call', call);
 
 			this._calls_list.splice(index, 1);
-			this.router.navigate(['/video/call/', call.call.sender_id]).then();
+			this.router.navigate(['call/', call.call.sender_id]).then();
 			return;
 		}
 		this.Logger.error('call-notification-service', 'accept call', 'Call not found');

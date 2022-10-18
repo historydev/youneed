@@ -1,8 +1,40 @@
 /* You can add global styles to this file, and also import other style files */
 
+@font-face {
+	font-family: 'Eastman';
+	src: url('./fonts/Eastman-Light.eot');
+	src: local('Eastman Light'), local('Eastman-Light'),
+	url('./fonts/Eastman-Light.eot?#iefix') format('embedded-opentype'),
+	url('./fonts/Eastman-Light.woff2') format('woff2'),
+	url('./fonts/Eastman-Light.woff') format('woff'),
+	url('./fonts/Eastman-Light.ttf') format('truetype');
+	font-weight: 300;
+	font-style: normal;
+}
+
+::-webkit-scrollbar {
+	width: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: rgba(13, 68, 137, .2);
+}
+
+::-webkit-scrollbar-thumb {
+	background: rgba(13, 68, 137, .7);
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: rgba(13, 68, 137);
+}
+
 * {
 	padding: 0;
 	margin: 0;
-	font-family: Arial, sans-serif;
+	font-family: 'Eastman', sans-serif;
 	box-sizing: border-box;
+}
+
+body {
+	background: #f2f2f2;
 }

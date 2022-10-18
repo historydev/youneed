@@ -48,6 +48,7 @@ export class CallComponent implements OnInit {
 		private route: ActivatedRoute,
 		private call_notification: CallNotificationService
 	) {
+		this.global_store.sidebar_display.emit(false);
 		this._document.addEventListener('fullscreenchange', _ => {
 			if(!this._document.fullscreenElement) {
 				this._in_fullscreen = false;
@@ -82,6 +83,7 @@ export class CallComponent implements OnInit {
 		this.call_notification.in_call = false;
 		//this.call.display_media_p2p.disconnect();
 		this.call.user_media_p2p.disconnect();
+		this.global_store.sidebar_display.emit(true);
 		this.Logger.error('call-component', 'destroyed');
 	}
 

@@ -1,5 +1,5 @@
 @startuml
-title Call and Screen Sharing
+title Call
 together {
 
 	package "ngx-socket-io" <<Node>> {
@@ -210,8 +210,5 @@ together {
 	P2pConnectorService::HandleList *-[#red]- HandleListModel
 
 }
-'
-'package Expert <<Rectangle>> {
-'}
 
 @enduml

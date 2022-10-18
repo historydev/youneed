@@ -1,1 +1,16 @@
-<p>meetings-list works!</p>
+<div class="container">
+	<div class="meeting" *ngFor="let meeting of meetings" (click)="select_meeting(meeting.id)" [attr.data-id]="meeting.id" [ngClass]="meeting.last_message.status">
+		<img [src]="meeting.receiver_image" alt="User Image">
+		<div class="content">
+			<div class="title">
+				<div class="user_name">{{ meeting.receiver_first_name }} {{ meeting.receiver_last_name[0] }}.</div>
+				<div class="time">
+					<fa-icon [icon]="message_icon(meeting.last_message)"></fa-icon>
+					{{ meeting.last_message.time }}
+				</div>
+			</div>
+			<div class="message">{{ meeting.last_message.message }}</div>
+			<div *ngIf="meeting.unread_messages_count > 0" class="unread_messages_count">{{ meeting.unread_messages_count }}</div>
+		</div>
+	</div>
+</div>

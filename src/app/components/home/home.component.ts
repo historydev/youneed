@@ -1,12 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit} from '@angular/core';
 import {GlobalStoreService} from "../../services/global-store/global-store.service";
 import {Socket} from "ngx-socket-io";
 import {CallNotificationService} from "../../services/call-notification/call-notification.service";
-import {CallListElementModel} from "../../models/call-notification/call-list-element.model";
 import {LoggerService} from "../../services/logger/logger.service";
 import {Observable} from "rxjs";
 import {Store} from "@ngrx/store";
-import { increment, decrement, reset } from '../app/app.module';
+import { increment, decrement, reset } from '../../@NGRX/actions/counter';
+import {v4 as uuidv4} from "uuid";
 
 @Component({
 	selector: 'app-home',
@@ -15,8 +15,8 @@ import { increment, decrement, reset } from '../app/app.module';
 })
 export class HomeComponent implements OnInit {
 
-	public userId?: string = this.globalStore.userId || '1';
-	public companionId?: string = '2';
+	public userId?: string = this.globalStore.userId;
+	public companionId?: string;
 	public recipient?: string = '2';
 	public title?: string = 'Super title';
 	public message?: string = 'Hello';
@@ -27,7 +27,8 @@ export class HomeComponent implements OnInit {
 		public globalStore: GlobalStoreService,
 		private socket: Socket,
 		private call: CallNotificationService,
-		private store: Store<{count: number}>
+		private store: Store<{count: number}>,
+		private elem: ElementRef
 	) {
 		this.count$ = store.select('count');
 	}
@@ -64,13 +65,29 @@ export class HomeComponent implements OnInit {
 		}
 	}
 
-	public setUserId(): void {
+	public generate_user_id() {
+		this.socket.emit('leaveRoom', this.userId);
+		this.userId = uuidv4();
 		this.globalStore.userId = this.userId;
 		this.socket.emit('joinRoom', this.userId);
 	}
 
 	ngOnInit(): void {
-
+		this.generate_user_id();
+		const input = this.elem.nativeElement.querySelector('#user_id');
+		const handler = function(event: any) {
+			event.preventDefault();
+			if (event.clipboardData) {
+				event.clipboardData.setData("text/plain", input.value);
+				console.log(event.clipboardData.getData("text"))
+			}
+		};
+		input.onclick = function() {
+			console.log(123)
+			input.addEventListener("copy", handler, false);
+			document.execCommand("copy");
+			input.removeEventListener("copy", handler, false);
+		}
 	}
 
 }

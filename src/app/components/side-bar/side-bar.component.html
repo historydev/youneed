@@ -1,1 +1,14 @@
-<p>side-bar works!</p>
+<div class="container">
+	<button id="open" (click)="click()"><fa-icon [icon]="icons.faBars"></fa-icon></button>
+	<div class="top_bar">
+		<div id="logo"></div>
+	</div>
+	<nav>
+		<a href="#"><fa-icon [icon]="icons.faUserGroup"></fa-icon> Лента Экспертов</a>
+		<a href="/meetings"><fa-icon [icon]="icons.faComment"></fa-icon> <div class="notifications">23</div> Встречи</a>
+		<a href="#"><fa-icon [icon]="icons.faUserCircle"></fa-icon> Мой Профиль</a>
+		<a href="#"><fa-icon [icon]="icons.faHeart"></fa-icon> Избранное</a>
+		<a href="#"><fa-icon [icon]="icons.faCog"></fa-icon> Настройки</a>
+		<a href="#"><fa-icon [icon]="icons.faInfoCircle"></fa-icon> Советы</a>
+	</nav>
+</div>

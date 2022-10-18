@@ -1,87 +1,76 @@
-const express = require('express');
-const http = require('http');
+import {Request, Response} from "express";
+import * as express from 'express';
+import * as http from "http";
+import socket_io_listener from "./socket.io/socket_io";
+import {query} from "./databases/mongodb";
+import { v4 as uuidv4 } from 'uuid';
+import * as cors from 'cors';
+
 const app = express();
-const server = http.createServer(app);
-const io = require('socket.io')(server, {
-	cors: {
-		origin: 'http://localhost:4200'
-	}
-});
+const http_server = http.createServer(app);
+socket_io_listener(http_server);
 
-app.use(express.static('dist/call'));
+app.use(express.static('../dist/video-call'));
+app.use(cors({
+	origin: 'http://localhost:4200'
+}));
+app.use(express.json());
 
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
 	res.sendFile(__dirname, '/index.html');
 });
 
-io.on('connection', socket => {
+app.post('/message', (req, res) => {
 
-	console.log(socket.id, ' connected')
+	console.log(req.body);
 
-	socket.emit('connected', socket.id);
+	res.send(req.body);
 
-	socket.on('toServer', msg => {
-		socket.emit('fromServer', msg);
-	});
+	if(req.body) {
+		const {
+			meeting_id,
+			sender_id,
+			message,
+			attachments,
+			date,
+		} = req.body;
 
-	socket.on('mediaStreamInfo', ({id, video}) =>  {
-		socket.to(id).emit('mediaStreamInfo', video);
-	});
+		query('meetings').then(data => {
 
-	socket.on('call', data => {
-		socket.to(data.call.receiver_id).emit('call', data);
-	});
+			const id = uuidv4();
 
-	socket.on('accept-call', data => {
-		socket.to(data.call.sender_id).emit('accept-call', data);
-	});
-
-	socket.on('p2p-accept-call', data => {
-		socket.to(data.call.sender_id).emit('p2p-accept-call', data);
-	});
-
-	socket.on('decline-call', data => {
-		socket.to(data.call.sender_id).emit('decline-call', data);
-	});
-
-	socket.on('joinRoom', id => {
-		console.log('Join room: ', id);
-		socket.join(id)
-	});
-
-	socket.on('leaveRoom', id => {
-		console.log('Leave room: ', id);
-		socket.leave(id);
-	});
-
-	socket.on('pushNotification', data => {
-		socket.to(data.recipient).emit('pushNotification', data);
-	});
-
-	socket.on('p2p_user_media_message', data => {
-		console.log(data);
-		socket.to(data.id).emit('p2p_user_media_message', {
-			type: data.type,
-			message: {
-				type: data.type,
-				...data.message
+			if(!meeting_id) {
+				data.collection.insertMany([{
+					id: id,
+					members: [],
+					unread_messages_count: 0
+				}]).then(console.log).catch(console.error);
 			}
-		});
-	});
 
-	socket.on('p2p_display_media_message', data => {
-		console.log('display ',data);
-		socket.to(data.id).emit('p2p_display_media_message', {
-			type: data.type,
-			message: {
-				type: data.type,
-				...data.message
-			}
-		});
-	});
+			return {
+				id, data
+			};
+		}).then(res => {
+			query('messages').then(async(data) => {
+				console.log({
+					id: req.body.id,
+					meeting_id: meeting_id || res.id,
+					...req.body,
+				});
+				return await data.collection.insertOne({
+					meeting_id: meeting_id || res.id,
+					...req.body,
+				});
+			}).then(console.log).catch(_ => console.error('messages', _));
+
+			return res;
+		}).then(data => data.data.client.close())/*.catch(_ => console.error('meetings', _));*/
+
+
+	}
 
 });
 
-server.listen(4000, () => {
+http_server.listen(4000, () => {
 	console.log('Server started on port 4000');
 });

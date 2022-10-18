@@ -1,0 +1,32 @@
+@startuml
+
+title MongoDB - you_need
+
+interface MeetingMemberModel {
+	id:string;
+	image:string;
+	first_name:string;
+	last_name:string;
+}
+
+interface MeetingModel {
+	id:string;
+	members:MeetingMemberModel[];
+	last_message:MessageModel;
+	unread_messages_count:number;
+}
+
+interface MessageModel {
+	id:string;
+	meeting_id:string;
+	sender_id:string;
+	message:string;
+	attachments:[];
+	date:Date;
+	status: 'sent' | 'received' | 'read';
+}
+
+MeetingMemberModel -[#red]-* MeetingModel::members
+MessageModel -[#red]-* MeetingModel::last_message
+
+@enduml

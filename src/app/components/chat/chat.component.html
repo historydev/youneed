@@ -1,1 +1,57 @@
-<p>chat works!</p>
+<div class="container">
+
+	<div class="top_bar" *ngIf="selected_meeting">
+		<div class="left_side">
+			<a href="#" class="user_name">Владимир Д.</a>
+<!--			{{ selected_meeting.receiver_first_name }}  {{ selected_meeting.receiver_last_name[0] }}-->
+			<div class="status status_online"><div class="status_circle"></div> В сети</div>
+		</div>
+		<div class="right_side">
+			<button id="appoint_meeting"> <fa-icon [icon]="icons.faCalendar"></fa-icon> Предложить встречу</button>
+			<button id="start_meeting"> <fa-icon [icon]="icons.faVideo"></fa-icon> Начать встречу</button>
+<!--			<button id="proceed_meeting">Продолжить встречу</button>-->
+<!--			<button id="complete_meeting">Завершить встречу</button>-->
+			<button id="complaint"><fa-icon [icon]="icons.faExclamationTriangle"></fa-icon></button>
+		</div>
+	</div>
+
+	<div class="content" *ngIf="selected_meeting">
+		<div class="date">15 Января</div>
+		<div class="messages">
+			<div *ngFor="let message of chat_service.messages" [ngClass]="['message', message.is_owner ? 'owner' : message.type, message.status]" [id]="message.id">
+<!--				<div class="attachments" *ngIf="message.attachments.length">-->
+<!--					<div class="attachment" *ngFor="let attachment of message.attachments">-->
+<!--						<img [src]="attachment" alt="">-->
+<!--					</div>-->
+<!--				</div>-->
+				<div class="message_content">
+					<img src="https://variety.com/wp-content/uploads/2022/02/Screen-Shot-2022-05-09-at-10.04.13-AM.png?w=681&h=383&crop=1&resize=681%2C383" alt="User Image">
+					<div class="text">{{ message.message }}</div>
+					<div class="time">{{ message.time }} <fa-icon *ngIf="message.is_owner" [icon]="message_icon(message)"></fa-icon> </div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="content meeting_not_selected" *ngIf="!selected_meeting">
+		<div class="text">
+			Выберите встречу для общения
+		</div>
+	</div>
+
+	<div class="input_box" *ngIf="selected_meeting">
+		<button id="file">
+			<fa-icon [icon]="icons.faPaperclip"></fa-icon>
+		</button>
+		<textarea placeholder="Введите сообщение..." oninput='this.style.height = "";this.style.height = this.scrollHeight-20 + "px"'></textarea>
+		<button id="emoji">
+			<fa-icon [icon]="icons.faFaceSmile"></fa-icon>
+		</button>
+		<button id="send" (click)="send_message()">
+			<div class="icon">
+				<fa-icon [icon]="icons.faPaperPlane"></fa-icon>
+			</div>
+		</button>
+	</div>
+
+</div>

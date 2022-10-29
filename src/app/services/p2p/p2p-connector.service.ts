@@ -295,8 +295,6 @@ export class P2pConnectorService {
 				this.Logger.error('setRemoteDescription 2', message, e);
 			});
 
-			// TODO: 123
-
 			const answer = await pc.createAnswer();
 			await pc.setLocalDescription(answer);
 			this.socket.emit(this._socket_input_name, { id: this._receiver_id, type: 'answer', message: { sdp: answer.sdp } });

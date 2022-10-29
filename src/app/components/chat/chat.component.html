@@ -17,8 +17,8 @@
 
 	<div class="content" *ngIf="selected_meeting">
 		<div class="date">15 Января</div>
-		<div class="messages">
-			<div *ngFor="let message of chat_service.messages" [ngClass]="['message', message.is_owner ? 'owner' : message.type, message.status]" [id]="message.id">
+		<div class="messages" (scroll)="on_scroll_messages()">
+			<div *ngFor="let message of messages | async" [ngClass]="['message', message.type === 'user' && message.is_owner ? 'owner' : message.type, message.status]" [id]="message.id">
 <!--				<div class="attachments" *ngIf="message.attachments.length">-->
 <!--					<div class="attachment" *ngFor="let attachment of message.attachments">-->
 <!--						<img [src]="attachment" alt="">-->
@@ -43,11 +43,11 @@
 		<button id="file">
 			<fa-icon [icon]="icons.faPaperclip"></fa-icon>
 		</button>
-		<textarea placeholder="Введите сообщение..." oninput='this.style.height = "";this.style.height = this.scrollHeight-20 + "px"'></textarea>
-		<button id="emoji">
+		<textarea placeholder="Введите сообщение..." (input)="remove_scroll_textarea()" (keydown.enter)="send_message(message_text.value, 'user')" #message_text></textarea>
+		<button id="emoji" (click)="send_message(message_text.value, 'system')">
 			<fa-icon [icon]="icons.faFaceSmile"></fa-icon>
 		</button>
-		<button id="send" (click)="send_message()">
+		<button id="send" (click)="send_message(message_text.value, 'user')">
 			<div class="icon">
 				<fa-icon [icon]="icons.faPaperPlane"></fa-icon>
 			</div>

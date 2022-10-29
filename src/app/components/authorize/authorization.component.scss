@@ -1,0 +1,282 @@
+
+@keyframes validation_error {
+	0% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.7;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+.container {
+	width: 100%;
+	min-height: calc(100% - 1px);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	.authorize {
+		width: 400px;
+		min-height: 200px;
+		background: #0D4489;
+		position: relative;
+		border-radius: 4px;
+		box-shadow: 0 0 5px #777;
+
+		.logo {
+			width: 200px;
+			height: 20px;
+			background: url('https://you-need.ru/img/logo-blue.svg') no-repeat;
+			background-size: 100% 100%;
+			position: absolute;
+			right: -25px;
+			top: 15px;
+		}
+
+		.title {
+			width: 100%;
+			height: 50px;
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			color: #fff;
+			font-size: 18px;
+			font-weight: bold;
+			border-bottom: 1px solid rgba(255, 255, 255, .2);
+			padding-left: 10%;
+		}
+
+		form {
+			width: 100%;
+			min-height: calc(100% - 51px);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+			flex-wrap: wrap;
+			padding: 20px 0 20px 0;
+
+			.terms {
+				width: 80%;
+				display: flex;
+				justify-content: flex-start;
+				flex-wrap: wrap;
+
+				.checkbox {
+					width: 15px;
+					height: 15px;
+					margin-top: 3px;
+
+					.checkmark {
+						width: 15px;
+						height: 15px;
+					}
+				}
+
+				&>.item {
+					width: 100%;
+					display: flex;
+					justify-content: flex-start;
+					align-items: flex-start;
+					padding: 0 0 10px 0;
+					position: relative;
+
+					.input_box {
+						width: 15px;
+
+						.error {
+							width: 14px;
+							height: 14px;
+							display: flex;
+							justify-content: center;
+							color: #fff;
+							background: #f63c3c;
+							border-radius: 50%;
+						}
+
+					}
+
+					input {
+						width: 15px;
+						height: 15px;
+					}
+
+					.validation {
+						left: -25px;
+						top: -4px;
+					}
+
+					.text {
+						margin-left: 15px;
+						color: #fff;
+						font-size: 12px;
+
+						a {
+							color: #fff;
+						}
+
+					}
+
+				}
+
+			}
+
+			.input_box {
+				width: 80%;
+				position: relative;
+
+				input {
+					width: 100%;
+					height: 40px;
+					font-size: 15px;
+					margin-bottom: 15px;
+					padding: 0 30px 3px 10px;
+					border: 0;
+					border-radius: 4px;
+				}
+
+				.validation {
+					width: 20px;
+					height: 20px;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					position: absolute;
+					right: 5px;
+					top: 10px;
+
+					.error {
+						width: 100%;
+						height: 100%;
+						color: #f63c3c;
+						//animation: 2s validation_error infinite;
+						//cursor: pointer;
+						pointer-events: none;
+					}
+
+					.description {
+						min-width: 200px;
+						display: none;
+						justify-content: center;
+						align-items: center;
+						flex-wrap: wrap;
+						background: #f63c3c;
+						color: #fff;
+						white-space: nowrap;
+						position: absolute;
+						bottom: 30px;
+						margin-right: 3px;
+						border-radius: 4px;
+
+						.rect {
+							width: 10px;
+							height: 10px;
+							transform: rotate(45deg);
+							background: #f63c3c;
+							position: absolute;
+							bottom: -5px;
+							left: calc(50% - 5px);
+							z-index: 0;
+						}
+
+						.item {
+							min-width: 100%;
+							font-size: 14px;
+							text-align: center;
+							padding: 5px 10px 5px 10px;
+							z-index: 2;
+						}
+
+					}
+
+				}
+
+				input:hover + .validation {
+					.description {
+						display: flex;
+					}
+				}
+
+			}
+
+			.controls {
+				width: 100%;
+				height: 40px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				flex-wrap: wrap;
+
+				button {
+					height: 40px;
+					min-width: 300px;
+					background: linear-gradient(to left, #FCB851 80%, #0D4489);
+					color: #0D4489;
+					font-size: 17px;
+					font-weight: bold;
+					border: 0;
+					position: absolute;
+					right: -10px;
+					transition-property: min-width;
+					transition-duration: 0.5s;
+					transition-delay: 0s;
+				}
+
+				button:disabled {
+					opacity: 0.2;
+					pointer-events: none;
+				}
+
+				button:hover {
+					min-width: 330px;
+					transition-delay: 0s;
+				}
+
+				.switch {
+					height: 30px;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					color: #007bff;
+					font-size: 15px;
+					font-weight: bold;
+					text-decoration: none;
+					margin: 70px auto 0 0;
+					padding: 0 10px 0 10px;
+					cursor: pointer;
+				}
+
+				.switch:hover {
+					text-decoration: underline;
+				}
+
+			}
+
+		}
+
+	}
+
+	.authorize.auth {
+		.reg_item {
+			display: none;
+		}
+
+		#reg_item {
+			display: none;
+		}
+	}
+
+	.authorize.register {
+		.auth_item {
+			display: none;
+		}
+
+		#auth_item {
+			display: none;
+		}
+	}
+
+}

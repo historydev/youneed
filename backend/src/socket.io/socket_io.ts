@@ -76,4 +76,6 @@ export default function(http_server: http.Server) {
 
 	});
 
+	return
+
 }

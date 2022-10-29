@@ -1,44 +1,56 @@
 import {Injectable} from '@angular/core';
 import {MessageModel} from "../../models/chat/message.model";
+import {Store} from "@ngrx/store";
+import {Observable} from "rxjs";
+import {v4 as uuidv4} from "uuid";
+import {Socket} from "ngx-socket-io";
+import {MeetingsListService} from "../meetings-list/meetings-list.service";
+import {add_message, get_messages} from "../../@NGRX/actions/chat";
 
 @Injectable({
 	providedIn: 'root'
 })
 export class ChatService {
 
-	private _messages:MessageModel[] = [];
-	private str1:string = 'Hello world!';
-	private str2:string = 'How are you? What u mean? What u want?';
+	private readonly _messages: Observable<MessageModel[]>;
+	private readonly _meeting_id?: string;
 
-	constructor() {
-
-		const date = new Date();
-		const hours = date.getHours().toString();
-		const minutes = date.getMinutes().toString();
-		const valid_hours = `${hours.length > 1 ? hours : '0'+hours}`;
-		const valid_minutes = `${minutes.length > 1 ? minutes : '0'+minutes}`;
-		const time = valid_hours + ':' + valid_minutes;
-
-		for(let i = 0; i < 10; i++) {
-			const sender_id = Math.floor(Math.random() * 3).toString();
-			const type = sender_id === '1' ? 'user' : 'system';
-			const message = type === 'user' ? Math.floor(Math.random() * 3) > 1 ? this.str1 : this.str2 : 'Вам звонил Евгений Д.';
-			this._messages.push({
-				id: i.toString(),
-				type,
-				sender_id,
-				receiver_id: '2',
-				message,
-				date,
-				time,
-				attachments: Math.floor(Math.random() * 3) > 1 ? ['https://bipbap.ru/wp-content/uploads/2021/07/1551512888_2-730x617.jpg'] : [],
-				is_owner: Math.floor(Math.random() * 3) > 1,
-				status: Math.floor(Math.random() * 3) > 1 ? 'sent' : Math.floor(Math.random() * 3) > 2 ? 'received' : 'read'
-			});
-		}
+	constructor(
+		private store: Store<{messages: MessageModel[]}>,
+		private meetings_list_service: MeetingsListService,
+	) {
+		this._meeting_id = meetings_list_service.selected_meeting?.id;
+		this._messages = store.select('messages');
 	}
 
-	public get messages(): MessageModel[] {
+	public send_message(text: string, type: 'user' | 'system'): void {
+		const message: MessageModel = {
+			id: uuidv4(),
+			type: type,
+			meeting_id: this._meeting_id || '',
+			sender_id: '2',
+			message: text,
+			attachments: [''],
+			time: '',
+			date: new Date(),
+			is_owner: false,
+			status: 'sent'
+		};
+		fetch('http://localhost:4000/message', {
+			method: 'post',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(message),
+		}).then(data => data.json()).then((data: MessageModel) => {
+			this.store.dispatch(add_message({
+				message: data
+			}));
+			return data
+		}).then(console.log).catch(console.error);
+	}
+
+	public get messages(): Observable<MessageModel[]> {
 		return this._messages;
 	}
 

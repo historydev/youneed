@@ -33,6 +33,86 @@
 	margin: 0;
 	font-family: 'Eastman', sans-serif;
 	box-sizing: border-box;
+	outline: none;
+}
+
+.checkbox {
+	width: 20px;
+	height: 20px;
+	display: block;
+	position: relative;
+	margin-bottom: 10px;
+	cursor: pointer;
+	user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.checkbox input {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+	height: 0;
+	width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+	width: 20px;
+	height: 20px;
+	background: #fff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+/* On mouse-over, add a grey background color */
+.checkbox:hover input ~ .checkmark {
+	background-color: #ccc;
+}
+
+/* Hide the browser's default radio button */
+.checkbox input {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+	height: 0;
+	width: 0;
+}
+
+/* On mouse-over, add a grey background color */
+.checkbox:hover input ~ .checkmark {
+	background-color: #f2f2f2;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+	justify-content: center;
+	align-items: center;
+	font-size: 13px;
+	color: #007bff;
+	position: absolute;
+	display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.checkbox input:checked ~ .checkmark:after {
+	content: '✔';
+	display: flex;
+}
+
+/* Style the indicator (dot/circle) */
+.checkbox .checkmark::after {
+	width: 100%;
+	height: 100%;
+	display: flex;
+}
+
+button {
+	cursor: pointer;
 }
 
 body {

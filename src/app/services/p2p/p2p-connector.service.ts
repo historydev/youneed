@@ -62,7 +62,6 @@ export class P2pConnectorService {
 		});
 	}
 
-
 	public disconnect(): void {
 		this.Logger.error('p2p-connector-service', 'disconnect');
 		this.Logger.error('p2p-connector-service', 'Sender: ' + this._sender_id, 'Receiver: ' + this._receiver_id);
@@ -154,7 +153,6 @@ export class P2pConnectorService {
 			this.Logger.error('initialize_connection', pc);
 			const offer = await pc.createOffer({offerToReceiveVideo: true, offerToReceiveAudio: true});
 			this.socket.emit(this._socket_input_name, {
-
 				id: this._receiver_id,
 				type: 'offer',
 				message: {
@@ -176,7 +174,6 @@ export class P2pConnectorService {
 		this._peer_connection.onicecandidate = (e:RTCPeerConnectionIceEvent) => {
 
 			if(e.candidate) {
-
 				this.socket.emit(this._socket_input_name, {
 					id: this._receiver_id,
 					type: 'candidate',
@@ -280,7 +277,6 @@ export class P2pConnectorService {
 			return;
 		}
 		this.Logger.error('p2p-connector', 'handle_answer', 'signaling state closed');
-
 	}
 
 	private async handle_offer(message: any): Promise<void> {
@@ -290,7 +286,6 @@ export class P2pConnectorService {
 		}
 		await this.create_peer_connection().then(async pc => {
 			this.Logger.error('handle_offer', pc);
-
 			await pc.setRemoteDescription(message).catch(e => {
 				this.Logger.error('setRemoteDescription 2', message, e);
 			});
@@ -300,4 +295,5 @@ export class P2pConnectorService {
 			this.socket.emit(this._socket_input_name, { id: this._receiver_id, type: 'answer', message: { sdp: answer.sdp } });
 		});
 	}
+
 }

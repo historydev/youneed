@@ -33,8 +33,8 @@ export class MeetingsListService {
 				last_message: {
 					id: i.toString(),
 					type: 'user',
+					meeting_id: '327d52c2-f2c9-42ab-b5aa-72942068a7d1',
 					sender_id: '1',
-					receiver_id: '1',
 					message: 'Hello world',
 					date: new Date(),
 					time: time,

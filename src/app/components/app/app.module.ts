@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {RouterModule} from '@angular/router';
+import {Router, RouterModule} from '@angular/router';
 
 import {AppComponent} from './app.component';
 import {CallComponent} from '../call/call.component';
@@ -16,7 +16,7 @@ import { ButtonComponent } from '../UI/button/button.component';
 import { PushNotificationComponent } from '../push-notification/push-notification.component';
 import {PushNotificationService} from "../../services/push-notification/push-notification.service";
 import { HomeComponent } from '../home/home.component';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NotificationModel} from "../../models/push-notification/notification.model";
 import { CallNotificationComponent } from '../call-notification/call-notification.component';
 
@@ -28,13 +28,15 @@ import {MeetingsListComponent} from "../meetings-list/meetings-list.component";
 import {ChatComponent} from "../chat/chat.component";
 import {SideBarComponent} from "../side-bar/side-bar.component";
 import all from '../../@NGRX/reducers/all';
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {AuthorizationComponent} from "../authorize/authorization.component";
 
 const prodUrl = '/';
 const devUrl = 'http://localhost:4000';
 const config: SocketIoConfig = { url: devUrl, options: {} };
 const routes = [
-	//{path: '', redirectTo: 'video', pathMatch: 'full', component: HomeComponent},
-	{path: '', component: HomeComponent},
+	{path: 'auth', component: AuthorizationComponent},
+	{path: 'home', component: HomeComponent, data: { animation: 'openClose' }},
 	{path: 'logger', component: LoggerComponent},
 	{path: 'call/:receiver_id', component: CallComponent},
 	{path: 'meetings', component: MeetingsComponent},
@@ -57,15 +59,18 @@ const routes = [
 		MeetingsComponent,
 		MeetingsListComponent,
 		ChatComponent,
-		SideBarComponent
+		SideBarComponent,
+		AuthorizationComponent
 	],
 	imports: [
 		BrowserModule,
+		BrowserAnimationsModule,
 		RouterModule.forRoot(routes),
 		SocketIoModule.forRoot(config),
 		FontAwesomeModule,
 		FormsModule,
 		StoreModule.forRoot(all, {}),
+		ReactiveFormsModule,
 	],
 	providers: [
 		LoggerService,
@@ -87,8 +92,10 @@ export class AppModule {
 	constructor(
 		private socket: Socket,
 		private Logger: LoggerService,
-		private notifications: PushNotificationService
+		private notifications: PushNotificationService,
+		private router: Router
 	) {
+
 		this.socket.on('pushNotification', (data: NotificationModel) => {
 			this.notifications.add(data);
 		});

@@ -1,4 +1,3 @@
-
 import {Inject, Injectable} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 
@@ -21,6 +20,7 @@ export class CallService {
 	private _user_media_constraints: MediaStreamConstraints;
 	private readonly _media_streams: MediaStreamElementModel[] = [];
 	private _assets: any;
+
 
 	constructor(
 		public media_devices: MediaDevicesService,
@@ -55,6 +55,7 @@ export class CallService {
 			this.share_media_stream_info(media_devices.user_media);
 			this.Logger.error('call-service', 'media_streams', this._media_streams);
 		});
+
 	}
 
 	public set user_media_constraints(constraints: MediaStreamConstraints) {
@@ -164,6 +165,7 @@ export class CallService {
 			}
 
 		}, 20);
+
 		this.Logger.debug('call-service', {
 			sender_id: this._sender_id,
 			receiver_id: this._receiver_id
@@ -194,9 +196,7 @@ export class CallService {
 						receiver: this._receiver_id
 					});
 					this.user_media_p2p.sender_id = this._sender_id;
-
 					this.Logger.debug('call-service', 'sender_id', this.sender_id, 'receiver_id', this.receiver_id);
-
 					this.user_media_p2p.receiver_id = this._receiver_id;
 					this.user_media_p2p.local_media_stream = this.media_devices.user_media;
 					this.user_media_p2p.connect();

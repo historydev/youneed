@@ -4,11 +4,19 @@
 		<div id="logo"></div>
 	</div>
 	<nav>
-		<a href="#"><fa-icon [icon]="icons.faUserGroup"></fa-icon> Лента Экспертов</a>
-		<a href="/meetings"><fa-icon [icon]="icons.faComment"></fa-icon> <div class="notifications">23</div> Встречи</a>
-		<a href="#"><fa-icon [icon]="icons.faUserCircle"></fa-icon> Мой Профиль</a>
-		<a href="#"><fa-icon [icon]="icons.faHeart"></fa-icon> Избранное</a>
-		<a href="#"><fa-icon [icon]="icons.faCog"></fa-icon> Настройки</a>
-		<a href="#"><fa-icon [icon]="icons.faInfoCircle"></fa-icon> Советы</a>
+		<a routerLink="/expert-tape" routerLinkActive="active"><fa-icon [icon]="icons.faUserGroup"></fa-icon> Лента Экспертов</a>
+		<div class="tip">Вы здесь! <div class="rect"></div> </div>
+		<a routerLink="/meetings" routerLinkActive="active"><fa-icon [icon]="icons.faComment"></fa-icon> <div class="notifications">23</div> Встречи</a>
+		<div class="tip">Вы здесь! <div class="rect"></div> </div>
+		<a routerLink="/profile" routerLinkActive="active"><fa-icon [icon]="icons.faUserCircle"></fa-icon> Мой Профиль</a>
+		<div class="tip">Вы здесь! <div class="rect"></div> </div>
+		<a routerLink="/favorites" routerLinkActive="active"><fa-icon [icon]="icons.faHeart"></fa-icon> Избранное</a>
+		<div class="tip">Вы здесь! <div class="rect"></div> </div>
+		<a routerLink="/settings" routerLinkActive="active"><fa-icon [icon]="icons.faCog"></fa-icon> Настройки</a>
+		<div class="tip">Вы здесь! <div class="rect"></div> </div>
+		<a routerLink="/tips" routerLinkActive="active"><fa-icon [icon]="icons.faInfoCircle"></fa-icon> Советы</a>
+		<div class="tip">Вы здесь! <div class="rect"></div> </div>
+		<a routerLink="/auth" routerLinkActive="active"> <fa-icon [icon]="icons.faKey"></fa-icon> Авторизация </a>
+		<div class="tip">Вы здесь! <div class="rect"></div> </div>
 	</nav>
 </div>

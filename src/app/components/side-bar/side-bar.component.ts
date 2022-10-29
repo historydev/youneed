@@ -6,7 +6,8 @@ import {
 	faUserCircle,
 	faHeart,
 	faCog,
-	faInfoCircle
+	faInfoCircle,
+	faKey
 } from "@fortawesome/free-solid-svg-icons";
 import {GlobalStoreService} from "../../services/global-store/global-store.service";
 
@@ -25,7 +26,8 @@ export class SideBarComponent implements OnInit {
 		faUserCircle,
 		faHeart,
 		faCog,
-		faInfoCircle
+		faInfoCircle,
+		faKey
 	}
 
 	constructor(

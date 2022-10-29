@@ -1,10 +1,8 @@
-
 import {Inject, Injectable} from '@angular/core';
 import {LoggerService} from "../logger/logger.service";
 import {Socket} from "ngx-socket-io";
 import {Call, CallListElementModel} from "../../models/call-notification/call-list-element.model";
 import {Router} from "@angular/router";
-
 import {P2pConnectorService} from "../p2p/p2p-connector.service";
 
 @Injectable({
@@ -17,13 +15,11 @@ export class CallNotificationService {
 		incoming: new Audio('../../assets/incoming-call.mp3'),
 		outgoing: new Audio('../../assets/outgoing-call.mp3')
 	}
-
 	private _in_call: Boolean = false;
 
 	constructor(
 		private Logger: LoggerService,
 		private socket: Socket,
-
 		private router: Router,
 		@Inject('user_media') private user_media_p2p: P2pConnectorService,
 		//@Inject('display_media') private display_media_p2p: P2pConnectorService,
@@ -33,12 +29,10 @@ export class CallNotificationService {
 
 		socket.on('call', (data:CallListElementModel) => {
 			this.Logger.debug('call-notification-service', 'call socket', data);
-
 			if(this._in_call) {
 				this.Logger.error('call-notification-service', 'start_call', 'Now user in call');
 				return;
 			}
-
 			this._calls_list.push({
 				id: this.generate_call_id(data.call),
 				type: 'incoming',
@@ -63,7 +57,6 @@ export class CallNotificationService {
 		});
 	}
 
-
 	public get in_call() {
 		return this._in_call;
 	}
@@ -86,7 +79,6 @@ export class CallNotificationService {
 			type: 'outgoing',
 			call: call
 		});
-
 		this.user_media_p2p.is_call_creator = true;
 		//this.display_media_p2p.is_call_creator = true;
 		//this.router.navigate(['call/', call.receiver_id]);
@@ -103,14 +95,12 @@ export class CallNotificationService {
 		const index = this._calls_list.findIndex(call => call.id === id);
 		if(call) {
 			this._calls_audio.incoming.pause();
-
 			// setTimeout(() => {
 			// 	this.socket.emit('accept-call', call);
 			// }, 2000);
 			this.user_media_p2p.is_call_creator = false;
 			//this.display_media_p2p.is_call_creator = false;
 			this.socket.emit('accept-call', call);
-
 			this._calls_list.splice(index, 1);
 			this.router.navigate(['call/', call.call.sender_id]).then();
 			return;

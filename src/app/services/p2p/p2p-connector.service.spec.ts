@@ -1,4 +1,3 @@
-
 import {TestBed} from '@angular/core/testing';
 
 import {P2pConnectorService} from './p2p-connector.service';

@@ -14,6 +14,7 @@ interface MeetingModel {
 	members:MeetingMemberModel[];
 	last_message:MessageModel;
 	unread_messages_count:number;
+	type: 'private' | 'group';
 }
 
 interface MessageModel {
@@ -24,6 +25,17 @@ interface MessageModel {
 	attachments:[];
 	date:Date;
 	status: 'sent' | 'received' | 'read';
+}
+
+interface UserModel {
+	id:string;
+	first_name:string;
+	last_name:string;
+	email:string;
+	password:string;
+	service_price:number;
+	access:boolean;
+	access_rights: 'user' | 'administrator' | 'moderator';
 }
 
 MeetingMemberModel -[#red]-* MeetingModel::members

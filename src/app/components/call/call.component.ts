@@ -1,5 +1,5 @@
-
 import {Component, Inject, OnInit, Output, SimpleChanges} from '@angular/core';
+
 import {CallService} from "../../services/call/call.service";
 import {
 	faPhoneSlash,

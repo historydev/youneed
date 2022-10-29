@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit} from '@angular/core';
+import {Component, ElementRef, NgZone, OnInit} from '@angular/core';
 import {MeetingsListService} from "../../services/meetings-list/meetings-list.service";
 import {
 	faExclamationTriangle,
@@ -12,7 +12,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {ChatService} from "../../services/chat/chat.service";
 import {MessageModel} from "../../models/chat/message.model";
-import {v4 as uuidv4} from "uuid";
+import {fromEvent, Observable} from "rxjs";
+import {Store} from "@ngrx/store";
+import {MeetingModel} from "../../models/meetings-list/meeting.model";
 
 @Component({
 	selector: 'app-chat',
@@ -34,9 +36,47 @@ export class ChatComponent implements OnInit {
 
 	constructor(
 		private meetings_list_service: MeetingsListService,
-		public chat_service: ChatService,
-		private element: ElementRef
-	) {}
+		private chat_service: ChatService,
+		private store: Store<{count: number, messages: MessageModel[]}>,
+		private element: ElementRef,
+		private zone: NgZone
+	) {
+		this.chat_service.messages.subscribe((value) => {
+			if(this.meetings_list_service.selected_meeting) {
+				setTimeout(() => {
+					this.scroll_to();
+				}, 80)
+			}
+		});
+	}
+
+	public on_scroll_messages() {
+		return false
+	}
+
+	public remove_scroll_textarea() {
+		const textarea = this.element.nativeElement.querySelector('.input_box textarea');
+		textarea.style.height = '';
+		textarea.style.height = `${textarea.scrollHeight-20}px`;
+	}
+
+	public scroll_to(val?:number): void {
+		const messages_box = this.element.nativeElement.querySelector('.messages');
+		messages_box.scrollTo(0, val || messages_box.scrollHeight);
+	}
+
+	public send_message(message: string, type: 'user' | 'system'): false {
+		this.scroll_to();
+		this.chat_service.send_message(message, type);
+		this.element.nativeElement.querySelector('.input_box textarea').value = '';
+		this.element.nativeElement.querySelector('.input_box textarea').style.height = '';
+
+		return false
+	}
+
+	public get messages(): Observable<MessageModel[]> {
+		return this.chat_service.messages;
+	}
 
 	public message_icon(message: MessageModel): IconDefinition {
 		switch (message.status) {
@@ -53,25 +93,7 @@ export class ChatComponent implements OnInit {
 		}
 	}
 
-	public send_message(): void {
-		fetch('http://localhost:4000/message', {
-			method: 'post',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				id: uuidv4(),
-				//meeting_id: uuidv4(),
-				sender_id: '1',
-				message: 'Hello',
-				attachments: [''],
-				date: new Date(),
-				status: 'sent'
-			}),
-		}).then(console.log).catch(console.error);
-	}
-
-	public get selected_meeting() {
+	public get selected_meeting(): MeetingModel | undefined {
 		return this.meetings_list_service.selected_meeting;
 	}
 

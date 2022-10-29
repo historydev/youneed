@@ -1,18 +1,3 @@
-<input type="text" id="user_id" placeholder="GET USER ID" [value]="userId || ''" readonly/>
-<button (click)="generate_user_id()">Generate ID</button><br/>
-
-<input *ngIf="globalStore.userId" type="text" placeholder="SET COMPANION ID" [(ngModel)]="companionId" />
-<button *ngIf="globalStore.userId && companionId" (click)="initiateCall()">Start Call</button>
-
-<br/>
-<br/>
-<br/>
-<div [ngStyle]="{color: 'red'}">{{ count$ | async }}</div>
-<button (click)="increment()">Increment</button>
-<button (click)="decrement()">Decrement</button>
-<button (click)="reset()">Reset</button>
-
-<!--<input type="text" placeholder="recipient id" [(ngModel)]="recipient"/> <br><br>-->
-<!--<input type="text" placeholder="title" [(ngModel)]="title" /> <br><br>-->
-<!--<textarea type="text" placeholder="message text" [(ngModel)]="message"></textarea><br><br>-->
-<!--<button (click)="sendNotification(recipient, title, message)">Send Push</button>-->
+<div class="container">
+	Home works!
+</div>

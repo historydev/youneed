@@ -1,8 +1,4 @@
 <div class="container" *ngIf="call.sender_id && call.sender_id !== call.receiver_id">
-<<<<<<< HEAD
-	<app-video class="localVideo" [mediaStream]="call.local_media_stream" [defaultView]="call.local_image_no_camera" [muted]="true"></app-video>
-	<app-video class="remoteVideo" [mediaStream]="call.remote_media_stream" [defaultView]="call.remote_image_no_camera"></app-video>
-=======
 <!--	<app-video class="localVideo" [mediaStream]="call.local_media_stream" [defaultView]="call.local_image_no_camera" [muted]="true"></app-video>-->
 <!--	<app-video class="remoteVideo" [mediaStream]="call.remote_media_stream" [defaultView]="call.remote_image_no_camera"></app-video>-->
 
@@ -11,7 +7,6 @@
 <!--		<video *ngIf="item.type.indexOf('display') > -1" [srcObject]="item.stream"></video>-->
 	</div>
 
->>>>>>> b4d3ff2 (refactoring)
 
 	<app-video class="record" *ngIf="call.recorder.record" [srcUrl]="call.recorder.record.url" [controls]="true" [defaultView]="undefined"></app-video>
 
@@ -39,8 +34,6 @@
 			(onClick)="call.switch_user_media_audio()"
 		></app-button>
 		<app-button
-<<<<<<< HEAD
-=======
 			id="fullscreen"
 			[icons]="{
 				defaultIcon: icons.faExpand,
@@ -49,7 +42,6 @@
 			(onClick)="full_screen()"
 		></app-button>
 		<app-button
->>>>>>> b4d3ff2 (refactoring)
 			id="hangup"
 			[icons]="{
 				defaultIcon: icons.faPhoneSlash

@@ -8,7 +8,7 @@ const io = require('socket.io')(server, {
 	}
 });
 
-app.use(express.static('dist/video-call'));
+app.use(express.static('dist/call'));
 
 app.get('/', (req, res) => {
 	res.sendFile(__dirname, '/index.html');
@@ -28,23 +28,20 @@ io.on('connection', socket => {
 		socket.to(id).emit('mediaStreamInfo', video);
 	});
 
-	socket.on('call', call => {
-		socket.to(call.recipient).emit('call', {
-			initiator: call.initiator,
-			recipient: call.recipient
-		});
+	socket.on('call', data => {
+		socket.to(data.call.receiver_id).emit('call', data);
 	});
 
-	socket.on('acceptCall', call => {
-		console.log('acceptCall', call)
-		socket.to(call.initiator).emit('acceptCall', call.recipient);
+	socket.on('accept-call', data => {
+		socket.to(data.call.sender_id).emit('accept-call', data);
 	});
 
-	socket.on('endCall', call => {
-		socket.to(call.initiator).emit('endCall', {
-			initiator: call.initiator,
-			recipient: call.recipient
-		});
+	socket.on('p2p-accept-call', data => {
+		socket.to(data.call.sender_id).emit('p2p-accept-call', data);
+	});
+
+	socket.on('decline-call', data => {
+		socket.to(data.call.sender_id).emit('decline-call', data);
 	});
 
 	socket.on('joinRoom', id => {

@@ -1,9 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {GlobalStoreService} from "../../services/global-store/global-store.service";
 import {Socket} from "ngx-socket-io";
-import {CallWindowService} from "../../services/call-window/call-window.service";
-import {CallModel} from "../../models/call-window/call.model";
+import {CallNotificationService} from "../../services/call-notification/call-notification.service";
+import {CallListElementModel} from "../../models/call-notification/call-list-element.model";
 import {LoggerService} from "../../services/logger/logger.service";
+import {Observable} from "rxjs";
+import {Store} from "@ngrx/store";
+import { increment, decrement, reset } from '../app/app.module';
 
 @Component({
 	selector: 'app-home',
@@ -17,13 +20,29 @@ export class HomeComponent implements OnInit {
 	public recipient?: string = '2';
 	public title?: string = 'Super title';
 	public message?: string = 'Hello';
+	count$: Observable<number>;
 
 	constructor(
 		private Logger: LoggerService,
 		public globalStore: GlobalStoreService,
 		private socket: Socket,
-		private call: CallWindowService
-	) {}
+		private call: CallNotificationService,
+		private store: Store<{count: number}>
+	) {
+		this.count$ = store.select('count');
+	}
+
+	increment() {
+		this.store.dispatch(increment());
+	}
+
+	decrement() {
+		this.store.dispatch(decrement());
+	}
+
+	reset() {
+		this.store.dispatch(reset());
+	}
 
 	public sendNotification(recipient?: string, title?: string, message?: string): void {
 		this.socket.emit('pushNotification', {
@@ -38,21 +57,11 @@ export class HomeComponent implements OnInit {
 	public initiateCall(): void {
 		this.Logger.debug('HomeComponent initiateCall', this.userId, this.companionId);
 		if(this.userId && this.companionId && this.userId !== this.companionId) {
-			this.call.initiate({
-				initiator: this.userId,
-				recipient: this.companionId
+			this.call.start_call({
+				sender_id: this.userId,
+				receiver_id: this.companionId
 			});
 		}
-	}
-
-	public getCalls(): CallModel[] {
-		this.Logger.debug('HomeComponent getCalls', this.call.calls);
-		return this.call.calls;
-	}
-
-	public currentCall(): CallModel[] {
-		this.Logger.debug('HomeComponent currentCall', this.call.currentCall);
-		return this.call.currentCall;
 	}
 
 	public setUserId(): void {

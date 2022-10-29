@@ -3,7 +3,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {RouterModule} from '@angular/router';
 
 import {AppComponent} from './app.component';
-import {VideoCallComponent} from '../video-call/video-call.component';
+import {CallComponent} from '../call/call.component';
 import {VideoComponent} from '../video/video.component';
 import {LoggerComponent} from '../logger/logger.component';
 import {SearchEngineComponent} from '../search-engine/search-engine.component';
@@ -18,7 +18,27 @@ import {PushNotificationService} from "../../services/push-notification/push-not
 import { HomeComponent } from '../home/home.component';
 import {FormsModule} from "@angular/forms";
 import {NotificationModel} from "../../models/push-notification/notification.model";
-import { CallWindowComponent } from '../call-window/call-window.component';
+import { CallNotificationComponent } from '../call-notification/call-notification.component';
+
+import { StoreModule } from '@ngrx/store';
+import { createAction } from '@ngrx/store';
+import { createReducer, on } from '@ngrx/store';
+import {P2pConnectorService} from "../../services/p2p/p2p-connector.service";
+import {CallService} from "../../services/call/call.service";
+import {CallNotificationService} from "../../services/call-notification/call-notification.service";
+
+export const increment = createAction('[Counter Component] Increment');
+export const decrement = createAction('[Counter Component] Decrement');
+export const reset = createAction('[Counter Component] Reset');
+
+export const initialState = 0;
+
+export const counterReducer = createReducer(
+	initialState,
+	on(increment, (state) => state + 1),
+	on(decrement, (state) => state - 1),
+	on(reset, (state) => 0)
+);
 
 const prodUrl = '/';
 const devUrl = 'http://localhost:4000';
@@ -27,14 +47,14 @@ const routes = [
 	//{path: '', redirectTo: 'video', pathMatch: 'full', component: HomeComponent},
 	{path: 'video', component: HomeComponent},
 	{path: 'video/logger', component: LoggerComponent},
-	{path: 'video/call/:companionId', component: VideoCallComponent},
+	{path: 'video/call/:receiver_id', component: CallComponent},
 	{path: '**', component: HomeComponent}
 ];
 
 @NgModule({
 	declarations: [
 		AppComponent,
-		VideoCallComponent,
+		CallComponent,
 		VideoComponent,
 		LoggerComponent,
 		SearchEngineComponent,
@@ -43,16 +63,18 @@ const routes = [
     	ButtonComponent,
 		PushNotificationComponent,
 		HomeComponent,
-  		CallWindowComponent,
+  		CallNotificationComponent,
 	],
 	imports: [
 		BrowserModule,
 		RouterModule.forRoot(routes),
 		SocketIoModule.forRoot(config),
+		StoreModule.forRoot({ count: counterReducer }),
 		FontAwesomeModule,
 		FormsModule,
+		StoreModule.forRoot({}, {}),
 	],
-	providers: [],
+	providers: [LoggerService, P2pConnectorService],
 	bootstrap: [AppComponent]
 })
 

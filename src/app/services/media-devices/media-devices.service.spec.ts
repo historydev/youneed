@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CallWindowService } from './call-window.service';
+import { MediaDevicesService } from './media-devices.service';
 
-describe('CallWindowService', () => {
-  let service: CallWindowService;
+describe('MediaStreamService', () => {
+  let service: MediaDevicesService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(CallWindowService);
+    service = TestBed.inject(MediaDevicesService);
   });
 
   it('should be created', () => {

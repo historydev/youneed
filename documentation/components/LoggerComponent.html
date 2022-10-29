@@ -198,15 +198,15 @@
                                         <tbody>
                                                 <tr>
                                                         <td>Logger</td>
-                                                  
+
                                                         <td>
                                                                         <code><a href="../injectables/LoggerService.html" target="_self" >LoggerService</a></code>
                                                         </td>
-                                                  
+
                                                     <td>
                                                             No
                                                     </td>
-                                                    
+
                                                 </tr>
                                         </tbody>
                                     </table>
@@ -222,7 +222,7 @@
 
 
     <section>
-    
+
     <h3 id="methods">
         Methods
     </h3>
@@ -265,7 +265,7 @@
     </table>
 </section>
     <section>
-    
+
     <h3 id="inputs">
         Properties
     </h3>
@@ -481,7 +481,7 @@ $log-background: #1A2022;
         </div>
     </div>
 
-    
+
 </div>
 
 <script src="../js/libs/vis.min.js"></script>
@@ -489,7 +489,7 @@ $log-background: #1A2022;
 <script src="../js/libs/deep-iterator.js"></script>
 <script>
         var COMPONENT_TEMPLATE = '<div><app-search-engine *ngIf="Logger.__logs?.length" [collection]="Logger.__logs"></app-search-engine><div class="container">	<div class="title">Logger v0.1</div>	<div class="log" *ngFor="let log of Logger.__logs">		<div class="type item type-{{ log.type }}">{{ log.type }}</div>		<div class="name item">{{ log.name }}</div>		<pre class="message item json-container" [innerHTML]="prettyprint.toHtml(log.message)"></pre>	</div></div></div>'
-    var COMPONENTS = [{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ButtonComponent', 'selector': 'app-button'},{'name': 'HeaderComponent', 'selector': 'app-header'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'LoggerComponent', 'selector': 'app-logger'},{'name': 'PushNotificationComponent', 'selector': 'app-push-notification'},{'name': 'SearchEngineComponent', 'selector': 'app-search-engine'},{'name': 'VideoCallComponent', 'selector': 'app-video-call'},{'name': 'VideoComponent', 'selector': 'app-video'}];
+    var COMPONENTS = [{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ButtonComponent', 'selector': 'app-button'},{'name': 'HeaderComponent', 'selector': 'app-header'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'LoggerComponent', 'selector': 'app-logger'},{'name': 'PushNotificationComponent', 'selector': 'app-push-notification'},{'name': 'SearchEngineComponent', 'selector': 'app-search-engine'},{'name': 'VideoCallComponent', 'selector': 'app-call'},{'name': 'VideoComponent', 'selector': 'app-video'}];
     var DIRECTIVES = [];
     var ACTUAL_COMPONENT = {'name': 'LoggerComponent'};
 </script>

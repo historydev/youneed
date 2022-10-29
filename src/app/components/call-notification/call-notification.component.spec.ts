@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { VideoCallComponent } from './video-call.component';
+import { CallWindowComponent } from './call-notification.component';
 
-describe('VideoCallComponent', () => {
-  let component: VideoCallComponent;
-  let fixture: ComponentFixture<VideoCallComponent>;
+describe('CallWindowComponent', () => {
+  let component: CallWindowComponent;
+  let fixture: ComponentFixture<CallWindowComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ VideoCallComponent ]
+      declarations: [ CallWindowComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(VideoCallComponent);
+    fixture = TestBed.createComponent(CallWindowComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -7,11 +7,12 @@
 <br/>
 <br/>
 <br/>
+<div>{{ count$ | async }}</div>
+<button (click)="increment()">Increment</button>
+<button (click)="decrement()">Decrement</button>
+<button (click)="reset()">Reset</button>
 
 <input type="text" placeholder="recipient id" [(ngModel)]="recipient"/> <br><br>
 <input type="text" placeholder="title" [(ngModel)]="title" /> <br><br>
 <textarea type="text" placeholder="message text" [(ngModel)]="message"></textarea><br><br>
 <button (click)="sendNotification(recipient, title, message)">Send Push</button>
-
-<app-call-window *ngFor="let call of getCalls()" type="answer" [userId]="call.initiator" [companionId]="call.recipient"></app-call-window>
-<app-call-window *ngFor="let call of currentCall()" type="offer" [userId]="call.initiator" [companionId]="call.recipient"></app-call-window>

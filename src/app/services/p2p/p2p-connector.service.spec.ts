@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { MediaStreamService } from './media-stream.service';
+import { P2pConnectorService } from './p2p-connector.service';
 
-describe('MediaStreamService', () => {
-  let service: MediaStreamService;
+describe('P2pService', () => {
+  let service: P2pConnectorService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(MediaStreamService);
+    service = TestBed.inject(P2pConnectorService);
   });
 
   it('should be created', () => {

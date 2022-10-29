@@ -1,0 +1,24 @@
+<div class="container" *ngFor="let callElem of call.calls_list">
+<!--	<audio *ngIf="callElem.type === 'outgoing'" src="../../../assets/outgoing-call.mp3" autoplay loop></audio>-->
+<!--	<audio *ngIf="callElem.type === 'incoming'" src="../../../assets/incoming-call.mp3" autoplay loop></audio>-->
+	<div class="content">
+		<div class="title">Евгений Пупкин с id звонка: {{ callElem.id }}</div>
+		<img src="https://klike.net/uploads/posts/2019-05/1556708032_1.jpg" alt="">
+		<div class="controls" [ngClass]="callElem.type === 'incoming' ? 'answer' : 'offer'">
+			<button *ngIf="callElem.type !== 'outgoing'" class="accept-call" (click)="call.accept_call(callElem.id)">
+				<fa-icon [icon]="icons.faPhone"></fa-icon>
+			</button>
+			<div *ngIf="callElem.type !== 'incoming'" class="wait-answer">
+				<div class="lds-ellipsis">
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+				</div>
+			</div>
+			<button class="end-call" (click)="call.decline_call(callElem.id)">
+				<fa-icon [icon]="icons.faPhoneFlip"></fa-icon>
+			</button>
+		</div>
+	</div>
+</div>

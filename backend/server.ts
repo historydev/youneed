@@ -8,8 +8,8 @@ import * as cors from 'cors';
 import * as fs from "fs";
 import {Validator} from "express-json-validator-middleware";
 import {validation_middleware} from "./src/controllers/validator.controller";
-import {jwt_authenticationController} from "./src/controllers/jwt_authentication.controller";
-import {basic_authenticationController} from "./src/controllers/basic_authentication.controller";
+import {jwt_authentication_controller} from "./src/controllers/jwt_authentication.controller";
+import {basic_authentication_controller} from "./src/controllers/basic_authentication.controller";
 import {messages_controller} from "./src/controllers/messages.controller";
 import {message_controller} from "./src/controllers/message.controller";
 import {register_controller} from "./src/controllers/register.controller";
@@ -22,18 +22,19 @@ socket_io_listener(http_server);
 const { validate } = new Validator({});
 const schema = (file_path: string) => JSON.parse(fs.readFileSync(__dirname + '/src/models' + file_path).toString());
 
-app.use(express.static('../dist/video-call'));
+app.use(express.static(path.resolve(__dirname, '../dist')));
 app.use(express.json());
 app.use(cors({
 	origin: ['http://localhost:4200'],
 	exposedHeaders: ['Authentication']
 }));
 
-app.use(basic_authenticationController);
-app.use('/messages', jwt_authenticationController);
+app.use(basic_authentication_controller);
+// app.use('/messages', jwt_authentication_controller);
 
 app.get('*', (req, res) => {
-	res.sendFile(__dirname, '/index.html');
+	// res.send(path.resolve(__dirname, 'dist/index.html'))
+	res.sendFile('index.html', {root: path.resolve(__dirname, '../dist')});
 });
 
 app.post('/test', (req, res) => {

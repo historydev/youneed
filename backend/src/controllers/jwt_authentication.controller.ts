@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import * as JWT from 'jsonwebtoken';
 
-export function jwt_authenticationController(req: Request, res: Response, next: NextFunction) {
+export function jwt_authentication_controller(req: Request, res: Response, next: NextFunction) {
 
 	const header = req.headers['authentication'];
 	const JWT_secret = process.env['JWT_SECRET'];

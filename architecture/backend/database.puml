@@ -1,0 +1,40 @@
+@startuml
+
+title MongoDB - you_need
+
+interface MeetingModel {
+	id:string;
+	type: 'private' | 'group';
+	members:string[];
+	last_message:MessageModel;
+	unread_messages_count:number;
+}
+
+interface MessageModel {
+	id:string;
+	type: 'user' | 'system';
+	meeting_id:string;
+	sender_id:string;
+	message:string;
+	attachments:[];
+	date:string;
+	time:string;
+	full_date:date;
+	status: 'sent' | 'received' | 'read';
+}
+
+interface UserModel {
+	id:string;
+	first_name:string;
+	last_name:string;
+	email:string;
+	image: string;
+	password:string;
+	service_price:number;
+	access:boolean;
+	access_rights: 'user' | 'administrator' | 'moderator';
+}
+
+MessageModel -[#red]-* MeetingModel::last_message
+
+@enduml

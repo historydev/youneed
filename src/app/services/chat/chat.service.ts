@@ -3,9 +3,8 @@ import {MessageModel} from "../../models/chat/message.model";
 import {Store} from "@ngrx/store";
 import {Observable} from "rxjs";
 import {v4 as uuidv4} from "uuid";
-import {Socket} from "ngx-socket-io";
 import {MeetingsListService} from "../meetings-list/meetings-list.service";
-import {add_message, get_messages} from "../../@NGRX/actions/chat";
+import {add_message} from "../../@NGRX/actions/chat";
 import {environment} from "../../../environments/environment";
 
 @Injectable({

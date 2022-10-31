@@ -14,7 +14,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {MediaStreamElementModel} from "../../models/call/media-stream-element.model";
 import {LoggerService} from "../../services/logger/logger.service";
-import {GlobalStoreService} from "../../services/global-store/global-store.service";
 import {ActivatedRoute} from "@angular/router";
 import {CallNotificationService} from "../../services/call-notification/call-notification.service";
 
@@ -44,17 +43,16 @@ export class CallComponent implements OnInit {
 	constructor(
 		public call: CallService,
 		private Logger: LoggerService,
-		private global_store: GlobalStoreService,
 		private route: ActivatedRoute,
 		private call_notification: CallNotificationService
 	) {
-		this.global_store.sidebar_display.emit(false);
+		// this.global_store.sidebar_display.emit(false);
 		this._document.addEventListener('fullscreenchange', _ => {
 			if(!this._document.fullscreenElement) {
 				this._in_fullscreen = false;
 			}
 		});
-		this.call.sender_id = this.global_store.userId;
+		// this.call.sender_id = this.global_store.userId;
 		this.call.receiver_id = this.route.snapshot.paramMap.get('receiver_id')?.toString() || '';
 		this.call_notification.in_call = true;
 	}
@@ -83,7 +81,6 @@ export class CallComponent implements OnInit {
 		this.call_notification.in_call = false;
 		//this.call.display_media_p2p.disconnect();
 		this.call.user_media_p2p.disconnect();
-		this.global_store.sidebar_display.emit(true);
 		this.Logger.error('call-component', 'destroyed');
 	}
 

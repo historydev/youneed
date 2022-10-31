@@ -1,7 +1,9 @@
 
+$side-bar-width: 60px;
+
 @keyframes open {
 	0% {
-		width: 60px;
+		width: $side-bar-width;
 	}
 	100% {
 		width: 250px;
@@ -13,7 +15,7 @@
 		width: 250px;
 	}
 	100% {
-		width: 60px;
+		width: $side-bar-width;
 	}
 }
 
@@ -36,13 +38,17 @@
 }
 
 .container {
-	width: 60px;
+	width: $side-bar-width;
 	min-height: 100vh;
 	position: relative;
 	box-shadow: 0 0 20px rgba(0,0,0, .5);
 
 	.top_bar {
-		height: 60px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		position: relative;
+		height: $side-bar-width;
 		border-bottom: 1px solid #ccc;
 		overflow: hidden;
 	}
@@ -57,11 +63,13 @@
 	}
 
 	#logo {
-		width: 250px;
-		height: 60px;
+		width: 180px;
+		height: 40px;
 		background: url('https://you-need.ru/img/logo.svg') no-repeat center;
-		background-size: auto 50%;
-		margin-left: -18px;
+		background-size: 98% auto;
+		position: absolute;
+		left: 0;
+		margin-left: 10px;
 	}
 
 	#open {
@@ -81,7 +89,7 @@
 		overflow: hidden;
 		a {
 			min-width: 250px;
-			height: 60px;
+			height: $side-bar-width;
 			display: flex;
 			justify-content: flex-start;
 			align-items: center;
@@ -93,7 +101,7 @@
 			position: relative;
 
 			fa-icon {
-				width: 60px;
+				width: $side-bar-width;
 				height: 40px;
 				display: flex;
 				justify-content: center;
@@ -178,10 +186,10 @@
 	animation: 0.2s open linear;
 	animation-fill-mode: both;
 
-	#logo {
-		animation: 0.2s openLogo linear;
-		animation-fill-mode: forwards;
-	}
+	//#logo {
+	//	animation: 0.2s openLogo linear;
+	//	animation-fill-mode: forwards;
+	//}
 
 }
 
@@ -189,10 +197,10 @@
 	animation: 0.2s close linear;
 	animation-fill-mode: both;
 
-	#logo {
-		animation: 0.2s closeLogo linear;
-		animation-fill-mode: forwards;
-	}
+	//#logo {
+	//	animation: 0.2s closeLogo linear;
+	//	animation-fill-mode: forwards;
+	//}
 
 }
 

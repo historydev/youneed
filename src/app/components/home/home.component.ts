@@ -1,5 +1,4 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
-import {GlobalStoreService} from "../../services/global-store/global-store.service";
 import {Socket} from "ngx-socket-io";
 import {CallNotificationService} from "../../services/call-notification/call-notification.service";
 import {LoggerService} from "../../services/logger/logger.service";
@@ -15,7 +14,7 @@ import {MessageModel} from "../../models/chat/message.model";
 })
 export class HomeComponent implements OnInit {
 
-	public userId?: string = this.globalStore.userId;
+	public userId?: string;
 	public companionId?: string;
 	public recipient?: string = '2';
 	public title?: string = 'Super title';
@@ -25,7 +24,6 @@ export class HomeComponent implements OnInit {
 
 	constructor(
 		private Logger: LoggerService,
-		public globalStore: GlobalStoreService,
 		private socket: Socket,
 		private call: CallNotificationService,
 		private store: Store<{count: number, messages: MessageModel[]}>,
@@ -58,7 +56,6 @@ export class HomeComponent implements OnInit {
 	public generate_user_id() {
 		this.socket.emit('leaveRoom', this.userId);
 		this.userId = uuidv4();
-		this.globalStore.userId = this.userId;
 		this.socket.emit('joinRoom', this.userId);
 	}
 

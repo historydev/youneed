@@ -9,6 +9,7 @@ import {MeetingModel} from "../../models/meetings-list/meeting.model";
 import {MessageModel} from "../../models/chat/message.model";
 import {set_messages} from "../../@NGRX/actions/chat";
 import {Store} from "@ngrx/store";
+import {environment} from "../../../environments/environment";
 
 @Component({
 	selector: 'app-meetings-list',
@@ -31,7 +32,7 @@ export class MeetingsListComponent implements OnInit {
 	}
 
 	public select_meeting(id: string): void {
-		fetch('http://localhost:4000/messages', {
+		fetch(environment.server_url + '/messages', {
 			method: 'post',
 			headers: {
 				'Content-Type': 'application/json',

@@ -6,6 +6,7 @@ import {v4 as uuidv4} from "uuid";
 import {Socket} from "ngx-socket-io";
 import {MeetingsListService} from "../meetings-list/meetings-list.service";
 import {add_message, get_messages} from "../../@NGRX/actions/chat";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
 	providedIn: 'root'
@@ -36,7 +37,7 @@ export class ChatService {
 			is_owner: false,
 			status: 'sent'
 		};
-		fetch('http://localhost:4000/message', {
+		fetch(environment.server_url + '/message', {
 			method: 'post',
 			headers: {
 				'Content-Type': 'application/json',

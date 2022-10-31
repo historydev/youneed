@@ -7,6 +7,7 @@ import {
 } from "@angular/forms";
 
 import {faCircleExclamation} from "@fortawesome/free-solid-svg-icons";
+import {environment} from "../../../environments/environment";
 
 class CustomValidators {
 	static MatchValidator(source: string, target: string): ValidatorFn {
@@ -20,13 +21,13 @@ class CustomValidators {
 }
 
 @Component({
-	selector: 'app-authorize',
+	selector: 'app-authorization',
 	templateUrl: './authorization.component.html',
 	styleUrls: ['./authorization.component.scss']
 })
 export class AuthorizationComponent implements OnInit {
 
-	private _form_type: boolean = false;
+	private _form_type: boolean = true;
 	private readonly _register_form: FormGroup;
 	private readonly _auth_form: FormGroup;
 	private _validation_errors = [
@@ -170,7 +171,7 @@ export class AuthorizationComponent implements OnInit {
 
 		if(fields_valid) {
 
-			const url = this._form_type ? 'http://localhost:4000/auth' : 'http://localhost:4000/register';
+			const url = this._form_type ? environment.server_url + '/auth' : environment.server_url + '/register';
 
 			fetch(url, {
 				method: 'post',
@@ -178,11 +179,9 @@ export class AuthorizationComponent implements OnInit {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify(form.value)
-			}).then(res => {
-				return res;
 			}).then(async res => {
 				const data = await res.json();
-				if(data.error && url !== 'http://localhost:4000/auth') {
+				if(data.error && url !== environment.server_url + '/auth') {
 					form.controls['email'].setErrors({'email_busy': true});
 					return data;
 				}
@@ -191,6 +190,7 @@ export class AuthorizationComponent implements OnInit {
 					form.setErrors({'email_busy': true});
 					return data;
 				}
+				if(res.headers.get('Authentication')) document.cookie = `yn_token=${res.headers.get('Authentication')}`;
 				form.reset();
 				return data;
 			}).then(console.log).catch(console.error);

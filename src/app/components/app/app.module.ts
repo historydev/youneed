@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {Router, RouterModule} from '@angular/router';
-
 import {AppComponent} from './app.component';
 import {CallComponent} from '../call/call.component';
 import {VideoComponent} from '../video/video.component';
@@ -19,7 +18,6 @@ import { HomeComponent } from '../home/home.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NotificationModel} from "../../models/push-notification/notification.model";
 import { CallNotificationComponent } from '../call-notification/call-notification.component';
-
 import { StoreModule } from '@ngrx/store';
 import {P2pConnectorService} from "../../services/p2p/p2p-connector.service";
 import {CallService} from "../../services/call/call.service";
@@ -29,11 +27,11 @@ import {ChatComponent} from "../chat/chat.component";
 import {SideBarComponent} from "../side-bar/side-bar.component";
 import all from '../../@NGRX/reducers/all';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {AuthorizationComponent} from "../authorize/authorization.component";
+import {AuthorizationComponent} from "../authorization/authorization.component";
+import { environment } from '../../../environments/environment';
 
-const prodUrl = '/';
-const devUrl = 'http://localhost:4000';
-const config: SocketIoConfig = { url: devUrl, options: {} };
+
+const config: SocketIoConfig = { url: environment.server_url, options: {} };
 const routes = [
 	{path: 'auth', component: AuthorizationComponent},
 	{path: 'home', component: HomeComponent, data: { animation: 'openClose' }},
@@ -101,7 +99,7 @@ export class AppModule {
 		});
 
 		this.socket.on('connected', (id: string) => {
-			this.Logger.info('Socket connection id', id);
+			// this.Logger.info('Socket connection id', id);
 			// this.notifications.add({
 			// 	recipient: '1',
 			// 	type: 'global',

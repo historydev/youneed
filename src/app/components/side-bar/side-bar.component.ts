@@ -7,9 +7,9 @@ import {
 	faHeart,
 	faCog,
 	faInfoCircle,
-	faKey
+	faKey,
+	faQuestionCircle
 } from "@fortawesome/free-solid-svg-icons";
-import {GlobalStoreService} from "../../services/global-store/global-store.service";
 
 @Component({
 	selector: 'app-side-bar',
@@ -27,18 +27,14 @@ export class SideBarComponent implements OnInit {
 		faHeart,
 		faCog,
 		faInfoCircle,
-		faKey
+		faKey,
+		faQuestionCircle
 	}
 
 	constructor(
-		private elem: ElementRef,
-		private global_store: GlobalStoreService
+		private elem: ElementRef
 	) {
-		this.global_store.sidebar_display.subscribe(val => {
-			if(!val) return this.elem.nativeElement.querySelector('.container').classList.add('sidebar_minimize');
 
-			return this.elem.nativeElement.querySelector('.container').classList.remove('sidebar_minimize');
-		});
 	}
 
 	click() {

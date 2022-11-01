@@ -29,11 +29,12 @@ app.use(cors({
 	exposedHeaders: ['Authentication']
 }));
 
-app.use(basic_authentication_controller);
+// app.use(basic_authentication_controller);
 // app.use('/messages', jwt_authentication_controller);
 
 app.get('*', (req, res) => {
 	// res.send(path.resolve(__dirname, 'dist/index.html'))
+	console.log(req.originalUrl)
 	res.sendFile('index.html', {root: path.resolve(__dirname, '../dist')});
 });
 

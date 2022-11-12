@@ -1,0 +1,192 @@
+<div class="container">
+	<div class="authorize">
+		<div class="logo"></div>
+		<div class="title" *ngIf="!form_type">Регистрация</div>
+		<div class="title" *ngIf="form_type">Вход</div>
+		<form action="http://localhost:4000/register" method="post" [formGroup]="register_form" *ngIf="!form_type" (ngSubmit)="debounce(register)($event)">
+			<div class="input_box" *ngIf="!form_type">
+				<input
+					type="text"
+					name="first_name"
+					placeholder="Имя"
+					formControlName="first_name"
+				/>
+				<div class="validation" *ngIf="validate('first_name').length">
+					<fa-icon [icon]="icons.faCircleExclamation" class="error"></fa-icon>
+					<div class="description">
+						<div class="item" *ngFor="let item of validate('first_name')">
+							{{ item }}
+						</div>
+						<div class="rect"></div>
+					</div>
+				</div>
+			</div>
+			<div class="input_box" *ngIf="!form_type">
+				<input
+					type="text"
+					name="last_name"
+					placeholder="Фамилия"
+					formControlName="last_name"
+				/>
+				<div class="validation" *ngIf="validate('last_name').length">
+					<fa-icon [icon]="icons.faCircleExclamation" class="error"></fa-icon>
+					<div class="description">
+						<div class="item" *ngFor="let item of validate('last_name')">
+							{{ item }}
+						</div>
+						<div class="rect"></div>
+					</div>
+				</div>
+			</div>
+			<div class="input_box">
+				<input type="email"
+					   name="email"
+					   placeholder="Электронная почта"
+					   formControlName="email"
+				/>
+				<div class="validation" *ngIf="validate('email').length">
+					<fa-icon [icon]="icons.faCircleExclamation" class="error"></fa-icon>
+					<div class="description">
+						<div class="item" *ngFor="let item of validate('email')">
+							{{ item }}
+						</div>
+						<div class="rect"></div>
+					</div>
+				</div>
+			</div>
+			<div class="input_box">
+				<input
+					type="password"
+					name="password"
+					placeholder="Пароль"
+					formControlName="password"
+				/>
+				<div class="validation" *ngIf="validate('password').length || register_form.errors?.['mismatch'] && !form_type">
+					<fa-icon [icon]="icons.faCircleExclamation" class="error"></fa-icon>
+					<div class="description">
+						<div class="item" *ngFor="let item of validate('password')">
+							{{ item }}
+						</div>
+						<div class="item" *ngIf="register_form.errors?.['mismatch']">
+							Пароли не совпадают.
+						</div>
+						<div class="rect"></div>
+					</div>
+				</div>
+			</div>
+			<div class="input_box" *ngIf="!form_type">
+				<input
+					type="password"
+					name="confirm_password"
+					placeholder="Повторите пароль"
+					formControlName="confirm_password"
+				/>
+				<div class="validation" *ngIf="validate('confirm_password').length || register_form.errors?.['mismatch'] && !form_type">
+					<fa-icon [icon]="icons.faCircleExclamation" class="error"></fa-icon>
+					<div class="description">
+						<div class="item" *ngFor="let item of validate('confirm_password')">
+							{{ item }}
+						</div>
+						<div class="item" *ngIf="register_form.errors?.['mismatch']">
+							Пароли не совпадают.
+						</div>
+						<div class="rect"></div>
+					</div>
+				</div>
+			</div>
+			<div class="terms">
+				<div class="item">
+					<div class="input_box" *ngIf="!form_type">
+						<label class="checkbox">
+							<input type="checkbox" formControlName="personal_data">
+							<div class="validation" *ngIf="!register_form.controls['personal_data'].value || register_form.controls['personal_data'].errors">
+								<fa-icon [icon]="icons.faCircleExclamation" class="error"></fa-icon>
+								<div class="description">
+									<div class="item">
+										Поставьте галочку :)
+									</div>
+									<div class="rect"></div>
+								</div>
+							</div>
+							<span class="checkmark"></span>
+						</label>
+					</div>
+					<div class="text">
+						Я согласен с <a href="https://you-need.ru/privacy">пользовательским соглашением</a>, на <a href="https://you-need.ru/ctpopd">обработку</a> и <a href="https://you-need.ru/ctpopd-subject">распространение</a> персональных данных
+					</div>
+				</div>
+				<div class="item">
+					<label class="checkbox">
+						<input type="checkbox" formControlName="advertising">
+						<span class="checkmark"></span>
+					</label>
+					<div class="text">
+						Я согласен на получение рекламно-информационной рассылки
+					</div>
+				</div>
+			</div>
+			<div class="controls">
+				<button
+					type="submit"
+					[disabled]="!register_form.valid && register_submitted"
+				>Регистрация</button>
+				<div
+					class="switch"
+					(click)="switch_form_type()"
+				>У меня есть аккаунт</div>
+			</div>
+		</form>
+		<form action="http://localhost:4000/auth" method="post" [formGroup]="auth_form" *ngIf="form_type" (ngSubmit)="debounce(login)($event)">
+			<div class="input_box">
+				<input type="email"
+					   name="email"
+					   placeholder="Электронная почта"
+					   formControlName="email"
+				/>
+				<div class="validation" *ngIf="validate('email').length || auth_form.errors">
+					<fa-icon [icon]="icons.faCircleExclamation" class="error"></fa-icon>
+					<div class="description">
+						<div class="item" *ngFor="let item of validate('email')">
+							{{ item }}
+						</div>
+						<div class="item" *ngFor="let item of errors_list(auth_form)">
+							Неверный электронный адрес или пароль
+						</div>
+						<div class="rect"></div>
+					</div>
+				</div>
+			</div>
+			<div class="input_box">
+				<input
+					type="password"
+					name="password"
+					placeholder="Пароль"
+					formControlName="password"
+				/>
+				<div class="validation" *ngIf="validate('password').length || register_form.errors?.['mismatch'] && !form_type">
+					<fa-icon [icon]="icons.faCircleExclamation" class="error"></fa-icon>
+					<div class="description">
+						<div class="item" *ngFor="let item of validate('password')">
+							{{ item }}
+						</div>
+						<div class="item" *ngIf="register_form.errors?.['mismatch']">
+							Пароли не совпадают.
+						</div>
+						<div class="rect"></div>
+					</div>
+				</div>
+			</div>
+
+			<div class="controls">
+				<button
+					type="submit"
+					[disabled]="!auth_form.valid && auth_submitted"
+				>Войти</button>
+				<div
+					class="switch"
+					(click)="switch_form_type()"
+				>Регистрация</div>
+			</div>
+		</form>
+	</div>
+</div>

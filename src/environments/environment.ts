@@ -4,7 +4,8 @@
 
 export const environment = {
 	production: false,
-	server_url: 'http://localhost:4000'
+	server_url: 'http://localhost:4000',
+	ban_router: false
 };
 
 /*

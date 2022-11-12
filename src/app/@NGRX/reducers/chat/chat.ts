@@ -1,8 +1,8 @@
 import {createReducer, on} from "@ngrx/store";
 import {add_message, get_messages, set_messages} from "../../actions/chat";
-import {MessageModel} from "../../../models/chat/message.model";
+import {MessageOutputModel} from "../../../models/chat/message_output.model";
 
-export const initialState:MessageModel[] = [];
+export const initialState:MessageOutputModel[] = [];
 
 export const messages_reducer = createReducer(
 	initialState,

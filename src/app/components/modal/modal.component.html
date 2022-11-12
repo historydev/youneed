@@ -1,0 +1,9 @@
+<div class="container">
+	<div class="modal">
+		<div class="title">{{ title }}</div>
+		<div class="content">{{ text_content }}</div>
+		<div class="buttons">
+			<button *ngFor="let button of buttons" [ngClass]="button.style" (click)="button.onclick()">{{ button.name }}</button>
+		</div>
+	</div>
+</div>

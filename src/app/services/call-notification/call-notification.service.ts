@@ -1,7 +1,7 @@
 import {Inject, Injectable} from '@angular/core';
 import {LoggerService} from "../logger/logger.service";
 import {Socket} from "ngx-socket-io";
-import {Call, CallListElementModel} from "../../models/call-notification/call-list-element.model";
+import {Call, CallListElementModel} from "../../models/call-notification/call_list_element.model";
 import {Router} from "@angular/router";
 import {P2pConnectorService} from "../p2p/p2p-connector.service";
 
@@ -38,7 +38,7 @@ export class CallNotificationService {
 				type: 'incoming',
 				call: data.call
 			});
-			//this._calls_audio.incoming.play().then();
+			this._calls_audio.incoming.play().then();
 		});
 		socket.on('accept-call', async (data: CallListElementModel) => {
 			this.Logger.debug('call-notification-service', 'accept call socket', data);
@@ -52,6 +52,7 @@ export class CallNotificationService {
 			this.Logger.debug('call-notification-service', 'decline call socket', data);
 			const index = this._calls_list.findIndex(call => call.id === data.id);
 			this._calls_list.splice(index, 1);
+			this.router.navigate(['/meetings']).then();
 			this._calls_audio.incoming.pause();
 			this._calls_audio.outgoing.pause();
 		});
@@ -70,10 +71,13 @@ export class CallNotificationService {
 	}
 
 	private generate_call_id(call: Call): string {
-		return `${call.sender_id}.-.${call.receiver_id}`;
+		return `${call.sender_id}-${call.receiver_id}`;
 	}
 
 	public start_call(call: Call): void {
+
+		console.log(call);
+
 		this._calls_list.push({
 			id: this.generate_call_id(call),
 			type: 'outgoing',
@@ -82,26 +86,26 @@ export class CallNotificationService {
 		this.user_media_p2p.is_call_creator = true;
 		//this.display_media_p2p.is_call_creator = true;
 		//this.router.navigate(['call/', call.receiver_id]);
-		//this._calls_audio.outgoing.play().then();
+		this._calls_audio.outgoing.play().then();
 		this.socket.emit('call', {
 			id: this.generate_call_id(call),
 			type: 'outgoing',
 			call: call
 		});
+
 	}
 
 	public accept_call(id: string): void {
 		const call = this._calls_list.find(call => call.id === id);
 		const index = this._calls_list.findIndex(call => call.id === id);
 		if(call) {
-			this._calls_audio.incoming.pause();
-			// setTimeout(() => {
-			// 	this.socket.emit('accept-call', call);
-			// }, 2000);
 			this.user_media_p2p.is_call_creator = false;
-			//this.display_media_p2p.is_call_creator = false;
 			this.socket.emit('accept-call', call);
 			this._calls_list.splice(index, 1);
+			if(!this._calls_list.length) {
+				this._calls_audio.incoming.pause();
+				this._calls_audio.outgoing.pause();
+			}
 			this.router.navigate(['call/', call.call.sender_id]).then();
 			return;
 		}
@@ -111,10 +115,21 @@ export class CallNotificationService {
 	public decline_call(id: string): void {
 		const call = this._calls_list.find(call => call.id === id);
 		const index = this._calls_list.findIndex(call => call.id === id);
-		if(index > -1) {
+		if(call && index > -1) {
 			this.socket.emit('decline-call', call);
+			this.socket.emit('decline-call', {
+				...call,
+				call: {
+					sender_id: call.call.receiver_id,
+					receiver_id: call.call.sender_id,
+				}
+			});
 			this._calls_list.splice(index, 1);
-
+			if(!this._calls_list.length) {
+				this._calls_audio.incoming.pause();
+				this._calls_audio.outgoing.pause();
+			}
+			this.router.navigate(['/meetings']).then();
 			return;
 		}
 		this.Logger.error('call-notification-service', 'decline call', 'Call not found');

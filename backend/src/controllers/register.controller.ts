@@ -1,9 +1,11 @@
 import {NextFunction, Request, Response} from "express";
-import {RegisterInputModel} from "../models/authorization/register_input.model";
-import {RegisterOutputModel} from "../models/authorization/register_output.model";
+import {RegisterInputModel} from "../models/authentication/register_input.model";
+import {RegisterOutputModel} from "../models/authentication/register_output.model";
 import {v4 as uuidv4} from "uuid";
 import * as argon2 from "argon2";
 import {query} from "../databases/mongodb";
+
+
 
 export async function register_controller(req: Request<{}, {}, RegisterInputModel>, res: Response, next: NextFunction) {
 	if(req.body) {
@@ -29,7 +31,7 @@ export async function register_controller(req: Request<{}, {}, RegisterInputMode
 				const response = await data.collection.insertOne(user);
 				res.status(200);
 				res.send({
-					message: response
+					message: 'User register successful'
 				});
 				res.end();
 			} else {

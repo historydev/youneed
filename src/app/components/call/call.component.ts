@@ -16,12 +16,12 @@ import {MediaStreamElementModel} from "../../models/call/media-stream-element.mo
 import {LoggerService} from "../../services/logger/logger.service";
 import {ActivatedRoute} from "@angular/router";
 import {CallNotificationService} from "../../services/call-notification/call-notification.service";
+import {AuthenticationService} from "../../services/authentication/authentication.service";
 
 @Component({
 	selector: 'app-call',
 	templateUrl: './call.component.html',
-	styleUrls: ['./call.component.scss'],
-	providers: []
+	styleUrls: ['./call.component.scss']
 })
 export class CallComponent implements OnInit {
 
@@ -44,15 +44,15 @@ export class CallComponent implements OnInit {
 		public call: CallService,
 		private Logger: LoggerService,
 		private route: ActivatedRoute,
-		private call_notification: CallNotificationService
+		private call_notification: CallNotificationService,
+		private auth: AuthenticationService
 	) {
-		// this.global_store.sidebar_display.emit(false);
 		this._document.addEventListener('fullscreenchange', _ => {
 			if(!this._document.fullscreenElement) {
 				this._in_fullscreen = false;
 			}
 		});
-		// this.call.sender_id = this.global_store.userId;
+		this.call.sender_id = this.auth.user?.id;
 		this.call.receiver_id = this.route.snapshot.paramMap.get('receiver_id')?.toString() || '';
 		this.call_notification.in_call = true;
 	}
@@ -71,15 +71,14 @@ export class CallComponent implements OnInit {
 	}
 
 	public ngOnInit(): void {
-		setInterval(() => {
-			this.Logger.error('call-component', 'fullscreen', this._in_fullscreen);
-		}, 1000)
+		this.Logger.error('call-component', 'CALL INIT');
 		this.call.start_outgoing_call();
 	}
 
 	public ngOnDestroy(): void {
 		this.call_notification.in_call = false;
 		//this.call.display_media_p2p.disconnect();
+		this.call_notification.decline_call(`${this.call.receiver_id}-${this.call.sender_id}`);
 		this.call.user_media_p2p.disconnect();
 		this.Logger.error('call-component', 'destroyed');
 	}

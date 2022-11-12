@@ -25,18 +25,18 @@ export function authentication_controller(req: Request, res: Response, next: Nex
 					service_price: response['service_price']
 				};
 
-				JWT.sign(user, JWT_secret, { expiresIn: 10 }, (err, token) => {
+				JWT.sign(user, JWT_secret, { expiresIn: 60*60 }, (err, token) => {
 					console.log(token);
 					if(token) {
-						res.setHeader('Authentication', token);
-						res.status(200);
-						res.send({
-							message: {
-								...user,
-								token
-							}
+
+						JWT.verify(token, JWT_secret, (err, data) => {
+							res.setHeader('Authentication', token);
+							res.status(200);
+							res.send({
+								message: data
+							});
+							res.end();
 						});
-						res.end();
 
 						return;
 					}

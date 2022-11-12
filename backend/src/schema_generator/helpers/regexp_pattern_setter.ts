@@ -1,4 +1,4 @@
-import * as TJS from "typescript-json-schema";
+import * as TJS from "../../../../src/assets/typescript-json-schema";
 import {Pattern} from "../../models/schema_generator/generate_schema_options.model";
 
 export function set_regexp_pattern(schema: TJS.Definition | null, reg_exp_patterns: Pattern[]): TJS.Definition | null {

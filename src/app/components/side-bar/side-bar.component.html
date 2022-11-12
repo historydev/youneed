@@ -1,4 +1,4 @@
-<div class="container">
+<div [ngClass]="['container', class_name]">
 	<button id="open" (click)="click()"><fa-icon [icon]="icons.faBars"></fa-icon></button>
 	<div class="top_bar">
 		<div id="logo"></div>
@@ -18,7 +18,7 @@
 		<div class="tip">Вы здесь! <div class="rect"></div> </div>
 		<a routerLink="/faq" routerLinkActive="active"><fa-icon [icon]="icons.faQuestionCircle"></fa-icon> FAQ</a>
 		<div class="tip">Вы здесь! <div class="rect"></div> </div>
-		<a routerLink="/auth" routerLinkActive="active"> <fa-icon [icon]="icons.faKey"></fa-icon> Авторизация </a>
-		<div class="tip">Вы здесь! <div class="rect"></div> </div>
+		<a routerLink="/auth" *ngIf="user" routerLinkActive="active"> <fa-icon [icon]="icons.faKey"></fa-icon> Авторизация </a>
+		<div class="tip" *ngIf="user">Вы здесь! <div class="rect"></div> </div>
 	</nav>
 </div>

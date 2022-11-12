@@ -1,7 +1,8 @@
+<app-modal></app-modal>
 <div class="container">
-	<app-side-bar></app-side-bar>
+	<app-side-bar *ngIf="user"></app-side-bar>
 	<div class="box">
-		<app-header></app-header>
+		<app-header *ngIf="user"></app-header>
 		<router-outlet></router-outlet>
 		<app-push-notification></app-push-notification>
 		<app-call-notification></app-call-notification>

@@ -66,6 +66,8 @@ export class P2pConnectorService {
 		this.Logger.error('p2p-connector-service', 'disconnect');
 		this.Logger.error('p2p-connector-service', 'Sender: ' + this._sender_id, 'Receiver: ' + this._receiver_id);
 		this.socket.emit(this._socket_input_name, { id: this._receiver_id, type: 'disconnect', message: {} });
+		this._receiver_ready = false;
+		this._sender_ready = false;
 		this.handle_disconnect();
 	}
 
@@ -217,7 +219,7 @@ export class P2pConnectorService {
 	}
 
 	private handle_disconnect(): void {
-		this.router.navigate(['']).then(_ => {
+		this.router.navigate(['/meetings']).then(_ => {
 			if (this._peer_connection?.signalingState !== 'closed') {
 				this._peer_connection?.close();
 				this._peer_connection = undefined;

@@ -1,4 +1,5 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
+import {AuthenticationService} from "../../services/authentication/authentication.service";
 
 @Component({
 	selector: 'app-root',
@@ -6,9 +7,19 @@ import {Component, ElementRef, OnInit} from '@angular/core';
 	styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-	title = 'YouNeed - Добро Пожаловать!';
+	private _user?: any;
 
-	constructor() {}
+	constructor(
+		private auth: AuthenticationService
+	) {
+		auth.user_sub.subscribe(user => {
+			this._user = user;
+		});
+	}
+
+	public get user() {
+		return this._user;
+	}
 
 	ngOnInit() {
 

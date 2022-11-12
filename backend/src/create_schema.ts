@@ -6,7 +6,7 @@ const models: SchemaGeneratorOptionsModel[] = [
 		input_file_name: 'register_input.model.ts',
 		output_file_name: 'register_input.schema.json',
 		model_name: 'RegisterInputModel',
-		path: '/authorization/',
+		path: '/authentication/',
 		reg_exp_patterns: [
 			{
 				field: 'first_name',
@@ -30,7 +30,7 @@ const models: SchemaGeneratorOptionsModel[] = [
 		input_file_name: 'authorization_input.model.ts',
 		output_file_name: 'authorization_input.schema.json',
 		model_name: 'AuthorizationInputModel',
-		path: '/authorization/',
+		path: '/authentication/',
 		reg_exp_patterns: [
 			{
 				field: 'email',
@@ -46,7 +46,7 @@ const models: SchemaGeneratorOptionsModel[] = [
 		input_file_name: 'register_output.model.ts',
 		output_file_name: 'register_output.schema.json',
 		model_name: 'RegisterOutputModel',
-		path: '/authorization/',
+		path: '/authentication/',
 		reg_exp_patterns: [
 			{
 				field: 'first_name',

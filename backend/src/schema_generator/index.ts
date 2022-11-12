@@ -1,6 +1,6 @@
 
 import { resolve } from "path";
-import * as TJS from "typescript-json-schema";
+import * as TJS from "../../../src/assets/typescript-json-schema";
 import * as fs from 'fs';
 import {SchemaGeneratorOptionsModel} from "../models/schema_generator/schema_generator_options.model";
 import {generate_schema} from "./helpers/generator";

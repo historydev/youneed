@@ -1,5 +1,6 @@
 import {Server, Socket} from "socket.io";
 import * as http from 'http';
+import {query} from "../databases/mongodb";
 
 export default function(http_server: http.Server) {
 	const io = new Server(http_server, {
@@ -30,12 +31,25 @@ export default function(http_server: http.Server) {
 			socket.to(data.call.sender_id).emit('accept-call', data);
 		});
 
+		socket.on('message', async meeting_id => {
+			const meetings = await query('meetings');
+			const response = await meetings.collection.findOne({id: meeting_id});
+
+			console.log(response);
+
+			response?.['members'].forEach((user_id: string) => {
+				console.log(user_id);
+				socket.to(user_id).emit('message', meeting_id);
+			});
+		});
+
 		socket.on('p2p-accept-call', data => {
 			socket.to(data.call.sender_id).emit('p2p-accept-call', data);
 		});
 
 		socket.on('decline-call', data => {
 			socket.to(data.call.sender_id).emit('decline-call', data);
+			socket.to(data.call.receiver_id).emit('decline-call', data);
 		});
 
 		socket.on('joinRoom', id => {

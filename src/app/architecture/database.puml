@@ -2,6 +2,18 @@
 
 title MongoDB - you_need
 
+interface CallModel {
+	id: string;
+	type: 'private' | 'group';
+	date: string;
+	time: string;
+	full_date: Date;
+	duration: string;
+	members: string[];
+	expert?: string;
+	status: 'active' | 'not_finished' | 'finished';
+}
+
 interface MeetingMemberModel {
 	id:string;
 	image:string;
@@ -37,6 +49,7 @@ interface UserModel {
 	access:boolean;
 	access_rights: 'user' | 'administrator' | 'moderator';
 }
+
 
 MeetingMemberModel -[#red]-* MeetingModel::members
 MessageModel -[#red]-* MeetingModel::last_message

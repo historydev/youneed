@@ -1,0 +1,214 @@
+@startuml
+title Call
+together {
+
+	package "ngx-socket-io" <<Node>> {
+	}
+
+	package SocketServer <<Cloud>> {
+	}
+
+	package "Database" <<Database>> {
+	}
+	package "Private API" <<Cloud>> {
+	}
+
+	package "@ngrx/store" <<Rectangle>> {
+	}
+
+	interface MediaStreamElementModel {
+		type: 'local_user_media' | 'local_display_media' | 'remote_user_media' | 'remote_display_media';
+		stream: MediaStream;
+	}
+
+	interface Call {
+		sender_id: number;
+		receiver_id: number;
+	}
+
+	interface CallListElementModel {
+		readonly id:string;
+		readonly type: 'incoming' | 'outgoing';
+		call: Call;
+	}
+
+	interface HandleListModel {
+    	type: string;
+    	call: Function;
+    }
+
+    json HandleList {
+		"": [
+			{
+				"type": "connected",
+				"call": "(msg: any) => handle_connected()"
+			},
+			{
+				"type": "offer",
+				"call": "(msg: any) => handle_offer(msg)"
+			},
+			{
+				"type": "answer",
+				"call": "(msg: any) => handle_answer(msg)"
+			},
+			{
+				"type": "candidate",
+				"call": "(msg: any) => handle_candidate(msg)"
+			},
+			{
+				"type": "disconnect",
+				"call": "(msg: any) => handle_disconnect()"
+			}
+		]
+    }
+
+	class DatabaseQueryService {}
+
+	class P2pConnectorService {
+		-_sender_id?:string;
+		-_receiver_id?:string;
+		-_peer_connection?:RTCPeerConnection;
+		-_local_media_stream?:MediaStream;
+		-_remote_media_stream?:MediaStream;
+		-readonly handleList: HandleListModel[];
+
+		+set sender_id(id:string);
+		+set receiver_id(id:string);
+
+		+set local_media_stream(stream: MediaStream);
+		+get local_media_stream():MediaStream;
+
+		+get remote_media_stream():MediaStream;
+
+		-async initialize_connection():Promise<void>;
+		-async create_peer_connection():Promise<RTCPeerConnection>;
+
+		-handle_disconnect():void;
+		-private async handle_connected():Promise<void>;
+
+		-async handle_candidate(message: any): Promise<void>;
+		-async handle_answer(message: any): Promise<void>;
+
+		-async handle_offer(message: any): Promise<void>;
+
+		-join_socket_room():void;
+		-leave_socket_room():void;
+
+		+connect():void;
+		+disconnect():void;
+	}
+
+	class CallService {
+		'-_room_id?:string; TODO: meetings with SFU
+		-_sender_id?:string;
+		-_receiver_id?:string;
+		-_media_streams:Observable<MediaStreamElement[]>;
+
+		+get sender_id(id:string);
+		+get receiver_id(id:string);
+
+		-add_media_stream(stream:MediaStreamElementModel):void;
+		+get media_streams():MediaStreamElement[];
+
+		+start_recording_user_media():void;
+		+end_recording_user_media():void;
+
+		+start_recording_display_media():void;
+		+end_recording_display_media():void;
+
+		+start_outgoing_call():void;
+
+		+start_screen_sharing():void;
+		+end_screen_sharing():void;
+
+		+switch_user_media_audio():void;
+		+switch_user_media_video():void;
+		'+switch_user_media_facing_mode():void; TODO: Add change facing mode button
+
+		+switch_display_media_audio():void;
+		+switch_display_media_video():void;
+	}
+
+	class CallNotificationService {
+		-_calls_list:CallListElement[] = [];
+
+		+get calls_list():CallListElement[];
+
+		+start_call(call: Call):void;
+		+cancel_call(id:number):void;
+
+		+accept_call(id:number):void;
+		+decline_call(id:number):void;
+	}
+
+	class MediaDevicesService {
+		-_user_media?:MediaStream;
+		-_user_media_constraints:MediaStreamConstraints;
+		-_user_media_audio:boolean = false;
+		-_user_media_video:boolean = false;
+
+		-_display_media?:MediaStream;
+		-_display_media_constraints:MediaStreamConstraints;
+		-_display_media_audio:boolean = false;
+		-_display_media_video:boolean = false;
+
+		+set user_media_constraints(constraints:MediaStreamConstraints);
+		+get user_media_constraints():MediaStreamConstraints;
+
+		+get user_media():MediaStream | undefined;
+
+		+async initialize_user_media():Promise<void>;
+		-async check_user_media_permission(constraints:MediaStreamConstraints):Promise<MediaStream | void>;
+
+		+set display_media_constraints(constraints:MediaStreamConstraints);
+		+get display_media_constraints():MediaStreamConstraints;
+
+		+get display_media():MediaStream | undefined;
+		+async initialize_display_media():Promise<void>;
+
+		+set user_media_audio(audio:boolean);
+		+get user_media_audio():boolean;
+
+		+set user_media_video(video:boolean);
+		+get user_media_video():boolean;
+
+'		+set display_media_audio(audio:boolean);
+'		+get display_media_audio():boolean;
+'
+'		+set display_media_video(video:boolean);
+'		+get display_media_video():boolean;
+
+	}
+
+	class CallComponent {
+		-_media_streams:MediaStreamElement[];
+		-set media_streams();
+		+get media_streams():MediaStreamElement[];
+	}
+
+	MediaStreamElementModel -[#red]-* CallService::_media_streams
+	MediaStreamElementModel -[#red]-* CallService::media_streams
+	MediaStreamElementModel -[#red]-* CallService::add_media_stream
+	MediaStreamElementModel -[#red]-* CallComponent::_media_streams
+	MediaStreamElementModel -[#red]-* CallComponent::media_streams
+    P2pConnectorService <.[#green]. CallService
+    CallService <.[#green]. CallComponent
+    CallService::_sender_id .[#green].> "@ngrx/store"
+    P2pConnectorService::_sender_id .[#green].> "@ngrx/store"
+	P2pConnectorService::join_socket_room *-[#red]- "ngx-socket-io"
+	P2pConnectorService::leave_socket_room *-[#red]- "ngx-socket-io"
+	"ngx-socket-io" <-[#green]-> "Private API"
+	"Private API" <-[#green]-> SocketServer
+	CallNotificationService <.[#green]. CallService
+	CallListElementModel::call *-[#red]- Call
+	CallService .[#green].> MediaDevicesService
+	CallNotificationService::_calls_list *-[#red]- CallListElementModel
+	"@ngrx/store" .[#green].> DatabaseQueryService
+	"Private API" <-[#green]-> DatabaseQueryService
+	"Private API" <-[#green]-{ "Database"
+	P2pConnectorService::HandleList <|-[#orange]- HandleList
+	P2pConnectorService::HandleList *-[#red]- HandleListModel
+
+}
+
+@enduml

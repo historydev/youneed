@@ -1,15 +1,25 @@
-<div class="container">
-	<div class="meeting" *ngFor="let meeting of meetings" (click)="select_meeting(meeting.id)" [attr.data-id]="meeting.id" [ngClass]="meeting.last_message.status">
-		<img [src]="meeting.receiver_image" alt="User Image">
+<div [ngClass]="['container', !meetings.length && 'meetings_empty' || '' ]">
+	<div *ngIf="!meetings.length" class="empty_text">
+		<div class="text">
+			Список встреч пуст, напишите первым!
+		</div>
+		<br>
+		<button>
+			<a routerLink="/expert-tape">Выбрать эксперта</a>
+		</button>
+	</div>
+	<div class="meeting" *ngFor="let meeting of meetings" (click)="select_meeting(meeting.id)" [attr.data-id]="meeting.id" [ngClass]="meeting.last_message?.status || 'hide_last_message_dependencies'">
+		<img [src]="member_data(meeting.members).image" alt="User Image">
 		<div class="content">
 			<div class="title">
-				<div class="user_name">{{ meeting.receiver_first_name }} {{ meeting.receiver_last_name[0] }}.</div>
+				<div class="user_name">{{ member_data(meeting.members).first_name }} {{ member_data(meeting.members).last_name[0] }}.</div>
+				<div class="warning">!</div>
 				<div class="time">
-					<fa-icon [icon]="message_icon(meeting.last_message)"></fa-icon>
-					{{ meeting.last_message.time }}
+					<fa-icon *ngIf="meeting.last_message" [icon]="message_icon(meeting.last_message)"></fa-icon>
+					{{ meeting.last_message?.time }}
 				</div>
 			</div>
-			<div class="message">{{ meeting.last_message.message }}</div>
+			<div class="message">{{ meeting.last_message?.message || 'Сообщений нет' }}</div>
 			<div *ngIf="meeting.unread_messages_count > 0" class="unread_messages_count">{{ meeting.unread_messages_count }}</div>
 		</div>
 	</div>

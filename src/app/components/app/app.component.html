@@ -1,7 +1,9 @@
+<app-modal *ngIf="modals.length"></app-modal>
+
 <div class="container">
-	<app-side-bar></app-side-bar>
+	<app-side-bar *ngIf="user && !route.includes('call')"></app-side-bar>
 	<div class="box">
-		<app-header></app-header>
+		<app-header *ngIf="user && !route.includes('call')"></app-header>
 		<router-outlet></router-outlet>
 		<app-push-notification></app-push-notification>
 		<app-call-notification></app-call-notification>

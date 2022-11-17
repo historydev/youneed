@@ -1,57 +1,84 @@
 import {Injectable} from '@angular/core';
-import {MessageModel} from "../../models/chat/message.model";
+import {MessageInputModel} from "../../models/chat/message_input.model";
 import {Store} from "@ngrx/store";
-import {Observable} from "rxjs";
-import {v4 as uuidv4} from "uuid";
-import {Socket} from "ngx-socket-io";
+import {filter, Observable, Subscription} from "rxjs";
 import {MeetingsListService} from "../meetings-list/meetings-list.service";
-import {add_message, get_messages} from "../../@NGRX/actions/chat";
+import {add_message} from "../../@NGRX/actions/chat";
 import {environment} from "../../../environments/environment";
+import {MessageOutputModel} from "../../models/chat/message_output.model";
+import {Socket} from "ngx-socket-io";
+import {UserModel} from "../../models/chat/user.model";
+import {HttpClient, HttpResponse} from "@angular/common/http";
 
 @Injectable({
 	providedIn: 'root'
 })
 export class ChatService {
 
-	private readonly _messages: Observable<MessageModel[]>;
-	private readonly _meeting_id?: string;
+	private readonly _messages: Observable<MessageOutputModel[]>;
 
 	constructor(
-		private store: Store<{messages: MessageModel[]}>,
+		private store: Store<{messages: MessageOutputModel[]}>,
 		private meetings_list_service: MeetingsListService,
+		private socket: Socket,
+		private http: HttpClient
 	) {
-		this._meeting_id = meetings_list_service.selected_meeting?.id;
 		this._messages = store.select('messages');
 	}
 
 	public send_message(text: string, type: 'user' | 'system'): void {
-		const message: MessageModel = {
-			id: uuidv4(),
+
+		console.log('user', this.meetings_list_service.receivers);
+
+		const token = document.cookie
+			.split('; ')
+			.find((row) => row.startsWith('yn_token='))
+			?.split('=')[1];
+		const meeting_id = this.meetings_list_service.selected_meeting?.id !== 'temporary' && this.meetings_list_service.selected_meeting?.id || undefined;
+		const receivers = this.meetings_list_service.receivers?.length && this.meetings_list_service.receivers || undefined;
+
+		const message: MessageInputModel = {
 			type: type,
-			meeting_id: this._meeting_id || '',
-			sender_id: '2',
+			meeting_id,
+			receivers,
 			message: text,
-			attachments: [''],
-			time: '',
-			date: new Date(),
-			is_owner: false,
-			status: 'sent'
+			attachments: ['']
 		};
 		fetch(environment.server_url + '/message', {
 			method: 'post',
 			headers: {
 				'Content-Type': 'application/json',
+				'Authentication': token || ''
 			},
 			body: JSON.stringify(message),
-		}).then(data => data.json()).then((data: MessageModel) => {
+		}).then(data => data.json()).then(async (data: MessageOutputModel) => {
 			this.store.dispatch(add_message({
 				message: data
 			}));
-			return data
+			if(receivers) {
+				await this.meetings_list_service.request_meetings();
+				this.meetings_list_service.select_meeting(this.meetings_list_service.meetings[0].id);
+			}
+			if(this.meetings_list_service.selected_meeting) this.socket.emit('message', this.meetings_list_service.selected_meeting.id);
+			return data;
 		}).then(console.log).catch(console.error);
 	}
 
-	public get messages(): Observable<MessageModel[]> {
+	public member_info(member_id: string): Observable<HttpResponse<UserModel>> {
+		const token = document.cookie
+			.split('; ')
+			.find((row) => row.startsWith('yn_token='))
+			?.split('=')[1];
+		return this.http.post<UserModel>(environment.server_url + '/user', {id: member_id}, {
+			observe: 'response',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authentication': token || ''
+			}
+		});
+	}
+
+	public get messages(): Observable<MessageOutputModel[]> {
 		return this._messages;
 	}
 

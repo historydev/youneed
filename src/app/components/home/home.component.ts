@@ -5,7 +5,7 @@ import {LoggerService} from "../../services/logger/logger.service";
 import {Observable} from "rxjs";
 import {Store} from "@ngrx/store";
 import {v4 as uuidv4} from "uuid";
-import {MessageModel} from "../../models/chat/message.model";
+import {MessageOutputModel} from "../../models/chat/message_output.model";
 
 @Component({
 	selector: 'app-home',
@@ -26,7 +26,7 @@ export class HomeComponent implements OnInit {
 		private Logger: LoggerService,
 		private socket: Socket,
 		private call: CallNotificationService,
-		private store: Store<{count: number, messages: MessageModel[]}>,
+		private store: Store<{count: number, messages: MessageOutputModel[]}>,
 		private elem: ElementRef
 	) {
 		this.count$ = store.select('count');
@@ -43,15 +43,15 @@ export class HomeComponent implements OnInit {
 		});
 	}
 
-	public initiateCall(): void {
-		this.Logger.debug('HomeComponent initiateCall', this.userId, this.companionId);
-		if(this.userId && this.companionId && this.userId !== this.companionId) {
-			this.call.start_call({
-				sender_id: this.userId,
-				receiver_id: this.companionId
-			});
-		}
-	}
+	// public initiateCall(): void {
+	// 	this.Logger.debug('HomeComponent initiateCall', this.userId, this.companionId);
+	// 	if(this.userId && this.companionId && this.userId !== this.companionId) {
+	// 		this.call.start_call({
+	// 			sender_id: this.userId,
+	// 			receiver_id: this.companionId
+	// 		});
+	// 	}
+	// }
 
 	public generate_user_id() {
 		this.socket.emit('leaveRoom', this.userId);

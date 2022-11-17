@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 
-export function basic_authenticationController(req: Request, res: Response, next: NextFunction) {
+export function basic_authentication_controller(req: Request, res: Response, next: NextFunction) {
 	const authheader = req.headers.authorization;
 
 	if (!authheader) {

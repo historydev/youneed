@@ -4,6 +4,7 @@ import {MessageModel} from "../../models/p2p-connector/message.model";
 import {LoggerService} from "../logger/logger.service";
 import {HandleListModel} from "../../models/p2p-connector/handle-list.model";
 import {Router} from "@angular/router";
+import {ChatService} from "../chat/chat.service";
 
 @Injectable({
 	providedIn: 'root'
@@ -52,7 +53,8 @@ export class P2pConnectorService {
 	constructor(
 		private Logger: LoggerService,
 		private socket: Socket,
-		private router: Router
+		private router: Router,
+		private chat_service: ChatService
 	) {
 		this.socket.on(this._socket_input_name, (data: MessageModel<any>) => {
 			this.Logger.debug('p2pService new message', data);
@@ -66,6 +68,8 @@ export class P2pConnectorService {
 		this.Logger.error('p2p-connector-service', 'disconnect');
 		this.Logger.error('p2p-connector-service', 'Sender: ' + this._sender_id, 'Receiver: ' + this._receiver_id);
 		this.socket.emit(this._socket_input_name, { id: this._receiver_id, type: 'disconnect', message: {} });
+		this._receiver_ready = false;
+		this._sender_ready = false;
 		this.handle_disconnect();
 	}
 
@@ -81,6 +85,7 @@ export class P2pConnectorService {
 				});
 				if(this._is_call_creator) {
 					this.Logger.debug('p2p-connector-service', 'try connect');
+					this.chat_service.send_message('Начало звонка', 'system');
 					this.socket.emit(this._socket_input_name, { id: this._receiver_id, type: 'connected', message: {} });
 				}
 				clearInterval(interval);
@@ -217,7 +222,7 @@ export class P2pConnectorService {
 	}
 
 	private handle_disconnect(): void {
-		this.router.navigate(['']).then(_ => {
+		this.router.navigate(['/meetings']).then(_ => {
 			if (this._peer_connection?.signalingState !== 'closed') {
 				this._peer_connection?.close();
 				this._peer_connection = undefined;

@@ -2,13 +2,15 @@
 
 	<div class="top_bar" *ngIf="selected_meeting">
 		<div class="left_side">
-			<a href="#" class="user_name">Владимир Д.</a>
-<!--			{{ selected_meeting.receiver_first_name }}  {{ selected_meeting.receiver_last_name[0] }}-->
+			<a routerLink="/expert-tape" class="user_name">{{ member_data(selected_meeting.members).first_name }} {{ member_data(selected_meeting.members).last_name[0] }}.</a>
 			<div class="status status_online"><div class="status_circle"></div> В сети</div>
 		</div>
 		<div class="right_side">
-			<button id="appoint_meeting"> <fa-icon [icon]="icons.faCalendar"></fa-icon> Предложить встречу</button>
-			<button id="start_meeting"> <fa-icon [icon]="icons.faVideo"></fa-icon> Начать встречу</button>
+			<button id="appoint_meeting"><a href="#"><fa-icon [icon]="icons.faCalendar"></fa-icon> Предложить встречу</a></button>
+			<button id="start_meeting" (click)="call(member_data(selected_meeting.members).id)">
+					<fa-icon [icon]="icons.faVideo"></fa-icon>
+					Начать встречу
+			</button>
 <!--			<button id="proceed_meeting">Продолжить встречу</button>-->
 <!--			<button id="complete_meeting">Завершить встречу</button>-->
 			<button id="complaint"><fa-icon [icon]="icons.faExclamationTriangle"></fa-icon></button>

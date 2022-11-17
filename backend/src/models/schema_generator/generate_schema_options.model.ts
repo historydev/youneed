@@ -1,5 +1,5 @@
 
-import * as TJS from 'typescript-json-schema';
+import * as TJS from '../../../../src/assets/typescript-json-schema';
 
 export type Pattern = {
 	field: string;

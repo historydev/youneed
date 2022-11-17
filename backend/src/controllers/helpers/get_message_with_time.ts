@@ -1,5 +1,6 @@
 export function get_message_with_time(el: any) {
 	const date = el['date'];
+	const curr_date = date.getDate();
 	const hours = date.getHours().toString();
 	const minutes = date.getMinutes().toString();
 	const valid_hours = `${hours.length > 1 ? hours : '0'+hours}`;

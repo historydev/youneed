@@ -6,10 +6,14 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {MeetingsListService} from "../../services/meetings-list/meetings-list.service";
 import {MeetingModel} from "../../models/meetings-list/meeting.model";
-import {MessageModel} from "../../models/chat/message.model";
 import {set_messages} from "../../@NGRX/actions/chat";
 import {Store} from "@ngrx/store";
 import {environment} from "../../../environments/environment";
+import {MessageOutputModel} from "../../models/chat/message_output.model";
+import {Socket} from "ngx-socket-io";
+import {request} from "express";
+import {MemberModel} from "../../models/meetings-list/member.model";
+import {AuthenticationService} from "../../services/authentication/authentication.service";
 
 @Component({
 	selector: 'app-meetings-list',
@@ -26,41 +30,57 @@ export class MeetingsListComponent implements OnInit {
 	constructor(
 		private meetings_service: MeetingsListService,
 		private element: ElementRef,
-		private store: Store
+		private store: Store,
+		private socket: Socket,
+		private auth: AuthenticationService
 	) {
-
+		socket.on('message', (meeting_id: string) => {
+			this.request_meeting_messages(meeting_id);
+		});
+		this.meetings_service.meetings_element = this.element;
 	}
 
-	public select_meeting(id: string): void {
+	public member_data(members: MemberModel[]) {
+		return members.filter(member => member.id !== this.auth.user?.id)[0];
+	}
+
+	public request_meeting_messages(id: string) {
+		const token = document.cookie
+			.split('; ')
+			.find((row) => row.startsWith('yn_token='))
+			?.split('=')[1];
+
 		fetch(environment.server_url + '/messages', {
 			method: 'post',
 			headers: {
 				'Content-Type': 'application/json',
+				'Authentication': token || ''
 			},
 			body: JSON.stringify({
 				meeting_id: id
 			})
-		}).then(data => data.json()).then(data => {
+		}).then(data => {
+			console.log(data);
+			return data
+		}).then(data => data.json()).then((data: MessageOutputModel[]) => {
 			console.log(data);
 			this.store.dispatch(set_messages({
 				messages: data
 			}));
 		}).then(_ => {
 
+			console.log(this.meetings_service.meetings.find(meeting => meeting.id === id));
 		}).catch(console.error);
-		const current_meeting = this.meetings_service.meetings.find(meeting => meeting.id === id);
-		if(current_meeting && current_meeting.unread_messages_count > 0) current_meeting.unread_messages_count = 0;
-		this.element.nativeElement.querySelectorAll('.meeting').forEach((meeting: HTMLElement) => {
-			if(meeting.dataset['id'] === id) {
-				meeting.classList.add('meeting_active');
-				return;
-			}
-			meeting.classList.remove('meeting_active');
-		});
-		this.meetings_service.select_meeting(id);
 	}
 
-	public message_icon(message: MessageModel): IconDefinition {
+	public select_meeting(id: string): void {
+
+		this.request_meeting_messages(id);
+		this.meetings_service.select_meeting(id);
+
+	}
+
+	public message_icon(message: MessageOutputModel): IconDefinition {
 		switch (message.status) {
 			case 'sent': {
 				return this.icons.faCheck;
@@ -80,6 +100,11 @@ export class MeetingsListComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
+		this.meetings_service.request_meetings();
+	}
+
+	ngOnDestroy() {
+
 	}
 
 }

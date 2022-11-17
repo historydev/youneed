@@ -1,0 +1,9 @@
+<div class="container">
+	<div class="modal" *ngFor="let modal of modals;" [id]="modal.id">
+		<div class="title">{{ modal.title }}</div>
+		<div class="content">{{ modal.text_content }}</div>
+		<div class="buttons">
+			<button *ngFor="let button of modal.buttons" [ngClass]="button.style" (click)="button.onclick(); remove_modal(modal.id)">{{ button.name }}</button>
+		</div>
+	</div>
+</div>

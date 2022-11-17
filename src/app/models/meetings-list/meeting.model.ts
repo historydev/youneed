@@ -1,11 +1,10 @@
-import {MessageModel} from "../chat/message.model";
+import {MessageOutputModel} from "../chat/message_output.model";
+import {MemberModel} from "./member.model";
 
 export interface MeetingModel {
 	id: string;
-	receiver_id: string;
-	receiver_image: string;
-	receiver_first_name: string;
-	receiver_last_name: string;
-	last_message: MessageModel;
+	type: 'private' | 'group';
+	members: MemberModel[];
+	last_message?: MessageOutputModel;
 	unread_messages_count: number;
 }

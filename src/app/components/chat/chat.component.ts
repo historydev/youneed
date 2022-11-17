@@ -1,4 +1,4 @@
-import {Component, ElementRef, NgZone, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit} from '@angular/core';
 import {MeetingsListService} from "../../services/meetings-list/meetings-list.service";
 import {
 	faExclamationTriangle,
@@ -11,10 +11,15 @@ import {
 	faPaperclip, IconDefinition
 } from "@fortawesome/free-solid-svg-icons";
 import {ChatService} from "../../services/chat/chat.service";
-import {MessageModel} from "../../models/chat/message.model";
-import {fromEvent, Observable} from "rxjs";
+import {Observable} from "rxjs";
 import {Store} from "@ngrx/store";
 import {MeetingModel} from "../../models/meetings-list/meeting.model";
+import {MessageOutputModel} from "../../models/chat/message_output.model";
+import {CallNotificationService} from "../../services/call-notification/call-notification.service";
+import {AuthenticationService} from "../../services/authentication/authentication.service";
+import {MemberModel} from "../../models/meetings-list/member.model";
+import {ModalService} from "../../services/modal-service/modal.service";
+import {UserModel} from "../../models/chat/user.model";
 
 @Component({
 	selector: 'app-chat',
@@ -37,17 +42,54 @@ export class ChatComponent implements OnInit {
 	constructor(
 		private meetings_list_service: MeetingsListService,
 		private chat_service: ChatService,
-		private store: Store<{count: number, messages: MessageModel[]}>,
+		private store: Store<{count: number, messages: MessageOutputModel[]}>,
 		private element: ElementRef,
-		private zone: NgZone
+		private call_notification: CallNotificationService,
+		private auth: AuthenticationService,
+		private modal_service: ModalService
 	) {
-		this.chat_service.messages.subscribe((value) => {
+		this.chat_service.messages.subscribe(() => {
 			if(this.meetings_list_service.selected_meeting) {
 				setTimeout(() => {
 					this.scroll_to();
 				}, 80)
 			}
 		});
+	}
+
+	public member_data(members: MemberModel[]) {
+		return members.filter(member => member.id !== this.auth.user?.id)[0];
+	}
+
+	public call(receiver_id: string) {
+		this.chat_service.member_info(receiver_id).subscribe(data => {
+			this.modal_service.add_modal({
+				id: 'my_modal1',
+				title: 'Подтвердите действие',
+				text_content: `После начала разговора с вашей карты ****0134 будет списано ${data.body?.service_price || 0} рублей за час консультации.`,
+				buttons: [
+					{
+						name: 'Отмена',
+						onclick: () => {
+							//alert();
+						},
+						style: 'cancel'
+					},
+					{
+						name: 'Начать разговор',
+						onclick: () => {
+							this.call_notification.start_call({
+								title: `Звоним ${data.body?.first_name} ${data.body?.last_name[0]}.`,
+								sender_id: this.auth.user?.id || '',
+								receiver_id: receiver_id
+							});
+						},
+						style: 'accept'
+					},
+				]
+			});
+		}, console.error);
+
 	}
 
 	public on_scroll_messages() {
@@ -62,7 +104,11 @@ export class ChatComponent implements OnInit {
 
 	public scroll_to(val?:number): void {
 		const messages_box = this.element.nativeElement.querySelector('.messages');
-		messages_box.scrollTo(0, val || messages_box.scrollHeight);
+		if(messages_box) {
+			messages_box.scrollTo(0, val || messages_box.scrollHeight);
+			return;
+		}
+		console.error('Message box error');
 	}
 
 	public send_message(message: string, type: 'user' | 'system'): false {
@@ -74,11 +120,11 @@ export class ChatComponent implements OnInit {
 		return false
 	}
 
-	public get messages(): Observable<MessageModel[]> {
+	public get messages(): Observable<MessageOutputModel[]> {
 		return this.chat_service.messages;
 	}
 
-	public message_icon(message: MessageModel): IconDefinition {
+	public message_icon(message: MessageOutputModel): IconDefinition {
 		switch (message.status) {
 			case 'sent': {
 				return this.icons.faCheck;

@@ -1302,7 +1302,7 @@ export class P2pService implements OnInit {
 		private socket: Socket,
 		private router: Router
 	) {
-		this.socket.on(&#x27;message&#x27;, (data: MessageModel&lt;any&gt;) &#x3D;&gt; {
+		this.socket.on(&#x27;message&#x27;, (data: Message_inputModel&lt;any&gt;) &#x3D;&gt; {
 			this.Logger.debug(&#x27;p2pService new message&#x27;, data);
 			const elem &#x3D; this.handleList.find(el &#x3D;&gt; el.type &#x3D;&#x3D;&#x3D; data.type);
 			if(elem) return elem.call(data.message);

@@ -1,5 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit} from '@angular/core';
 import {ButtonModel} from "../../models/modal/button.model";
+import {ModalService} from "../../services/modal-service/modal.service";
+import {ModalModel} from "../../models/modal/modal.model";
 
 @Component({
 	selector: 'app-modal',
@@ -8,38 +10,20 @@ import {ButtonModel} from "../../models/modal/button.model";
 })
 export class ModalComponent implements OnInit {
 
-	private _buttons: ButtonModel[] = [
-		{
-			name: 'Отмена',
-			onclick: () => {
-				alert();
-			},
-			style: 'cancel'
-		},
-		{
-			name: 'Начать разговор',
-			onclick: () => {
-				alert();
-			},
-			style: 'accept'
-		},
-	];
-	private _title: string = 'Подтвердите действие';
-	private _text_content: string = 'После начала разговора с вашей карты ****0134 будет списано 6500  рублей за час консультации.';
+	constructor(
+		private modal_service: ModalService,
+		private elem: ElementRef
+	) {
 
-	public get title(): string {
-		return this._title;
 	}
 
-	public get text_content(): string {
-		return this._text_content;
+	public remove_modal(modal_id: string): void {
+		this.elem.nativeElement.querySelector('.container').classList.add('close');
+		this.modal_service.remove_modal(modal_id);
 	}
 
-	public get buttons(): ButtonModel[] {
-		return this._buttons;
-	}
-
-	constructor() {
+	public get modals(): ModalModel[] {
+		return this.modal_service.modals;
 	}
 
 	ngOnInit(): void {

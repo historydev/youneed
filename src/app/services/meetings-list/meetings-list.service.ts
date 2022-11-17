@@ -7,6 +7,7 @@ import {Element} from "@angular/compiler";
 import {Store} from "@ngrx/store";
 import {MessageOutputModel} from "../../models/chat/message_output.model";
 import {Socket} from "ngx-socket-io";
+import {AuthenticationService} from "../authentication/authentication.service";
 
 @Injectable({
 	providedIn: 'root'
@@ -20,12 +21,21 @@ export class MeetingsListService {
 
 	constructor(
 		private http: HttpClient,
-		private store: Store<{messages: MessageOutputModel[]}>
+		private store: Store<{messages: MessageOutputModel[]}>,
+		private auth: AuthenticationService
 	) {
 		this.store.select('messages').subscribe(messages => {
 			const meeting = this._meetings.find(m => m.id === messages[messages.length-1].meeting_id);
 			if(meeting) meeting.last_message = messages[messages.length-1];
 		});
+	}
+
+	public find_and_select(member_id: string): void {
+		const meeting_id = this._meetings.find(m => m.members.filter(el => {
+			if(m.type === 'private') return el.id === this.auth.user?.id || el.id === member_id;
+			return;
+		}))?.id || '';
+		this.select_meeting(meeting_id);
 	}
 
 	public async request_meetings() {

@@ -35,6 +35,17 @@ $cancel_color: #e16969;
 	}
 }
 
+@keyframes hide_modal {
+	0% {
+		transform: translate(-50%, -50%) rotate(360deg);
+	}
+	100% {
+		top: -100%;
+		left: 200%;
+		transform: translate(0, 0) rotate(-30deg);
+	}
+}
+
 .container {
 	height: 100%;
 	width: 100%;
@@ -65,12 +76,13 @@ $cancel_color: #e16969;
 
 		.title {
 			min-width: 200px;
-			height: 40px;
+			height: 35px;
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			background: $main_color;
 			color: #fff;
+			font-size: 14px;
 			font-weight: bold;
 			//box-shadow: inset 0 0 5px #1d3277;
 			padding: 5px 10px 5px 10px;
@@ -83,15 +95,16 @@ $cancel_color: #e16969;
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			text-align: center;
+			text-align: left;
 			padding: 20px;
 		}
 
 		.buttons {
 			width: 100%;
 			display: flex;
-			justify-content: space-around;
+			justify-content: space-between;
 			align-items: flex-start;
+			flex-wrap: wrap;
 			padding: 10px;
 
 			button {
@@ -100,6 +113,7 @@ $cancel_color: #e16969;
 				background: $accept_color;
 				border: 0;
 				color: #fff;
+				font-weight: bold;
 				border-radius: 5px;
 				margin: 10px;
 			}
@@ -114,6 +128,14 @@ $cancel_color: #e16969;
 
 		}
 
-	}
 
+	}
+}
+
+.close {
+	animation: 1s hide_all;
+	.modal {
+		background: #ccc;
+		animation: 1s hide_modal;
+	}
 }

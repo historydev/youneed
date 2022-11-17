@@ -4,6 +4,7 @@ import {Socket} from "ngx-socket-io";
 import {Call, CallListElementModel} from "../../models/call-notification/call_list_element.model";
 import {Router} from "@angular/router";
 import {P2pConnectorService} from "../p2p/p2p-connector.service";
+import {AuthenticationService} from "../authentication/authentication.service";
 
 @Injectable({
 	providedIn: 'root'
@@ -22,10 +23,12 @@ export class CallNotificationService {
 		private socket: Socket,
 		private router: Router,
 		@Inject('user_media') private user_media_p2p: P2pConnectorService,
-		//@Inject('display_media') private display_media_p2p: P2pConnectorService,
+		private auth: AuthenticationService
 	) {
 		this._calls_audio.incoming.loop = true;
 		this._calls_audio.outgoing.loop = true;
+		this._calls_audio.incoming.volume = 0.2;
+		this._calls_audio.outgoing.volume = 0.2;
 
 		socket.on('call', (data:CallListElementModel) => {
 			this.Logger.debug('call-notification-service', 'call socket', data);
@@ -89,8 +92,11 @@ export class CallNotificationService {
 		this._calls_audio.outgoing.play().then();
 		this.socket.emit('call', {
 			id: this.generate_call_id(call),
-			type: 'outgoing',
-			call: call
+			type: 'incoming',
+			call: {
+				...call,
+				title: `Вам звонит ${this.auth.user?.first_name} ${this.auth.user?.last_name[0]}.`
+			}
 		});
 
 	}

@@ -43,15 +43,15 @@ export class HomeComponent implements OnInit {
 		});
 	}
 
-	public initiateCall(): void {
-		this.Logger.debug('HomeComponent initiateCall', this.userId, this.companionId);
-		if(this.userId && this.companionId && this.userId !== this.companionId) {
-			this.call.start_call({
-				sender_id: this.userId,
-				receiver_id: this.companionId
-			});
-		}
-	}
+	// public initiateCall(): void {
+	// 	this.Logger.debug('HomeComponent initiateCall', this.userId, this.companionId);
+	// 	if(this.userId && this.companionId && this.userId !== this.companionId) {
+	// 		this.call.start_call({
+	// 			sender_id: this.userId,
+	// 			receiver_id: this.companionId
+	// 		});
+	// 	}
+	// }
 
 	public generate_user_id() {
 		this.socket.emit('leaveRoom', this.userId);

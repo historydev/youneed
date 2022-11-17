@@ -18,6 +18,8 @@ import {MessageOutputModel} from "../../models/chat/message_output.model";
 import {CallNotificationService} from "../../services/call-notification/call-notification.service";
 import {AuthenticationService} from "../../services/authentication/authentication.service";
 import {MemberModel} from "../../models/meetings-list/member.model";
+import {ModalService} from "../../services/modal-service/modal.service";
+import {UserModel} from "../../models/chat/user.model";
 
 @Component({
 	selector: 'app-chat',
@@ -43,7 +45,8 @@ export class ChatComponent implements OnInit {
 		private store: Store<{count: number, messages: MessageOutputModel[]}>,
 		private element: ElementRef,
 		private call_notification: CallNotificationService,
-		private auth: AuthenticationService
+		private auth: AuthenticationService,
+		private modal_service: ModalService
 	) {
 		this.chat_service.messages.subscribe(() => {
 			if(this.meetings_list_service.selected_meeting) {
@@ -59,10 +62,34 @@ export class ChatComponent implements OnInit {
 	}
 
 	public call(receiver_id: string) {
-		this.call_notification.start_call({
-			sender_id: this.auth.user?.id || '',
-			receiver_id: receiver_id
-		});
+		this.chat_service.member_info(receiver_id).subscribe(data => {
+			this.modal_service.add_modal({
+				id: 'my_modal1',
+				title: 'Подтвердите действие',
+				text_content: `После начала разговора с вашей карты ****0134 будет списано ${data.body?.service_price || 0} рублей за час консультации.`,
+				buttons: [
+					{
+						name: 'Отмена',
+						onclick: () => {
+							//alert();
+						},
+						style: 'cancel'
+					},
+					{
+						name: 'Начать разговор',
+						onclick: () => {
+							this.call_notification.start_call({
+								title: `Звоним ${data.body?.first_name} ${data.body?.last_name[0]}.`,
+								sender_id: this.auth.user?.id || '',
+								receiver_id: receiver_id
+							});
+						},
+						style: 'accept'
+					},
+				]
+			});
+		}, console.error);
+
 	}
 
 	public on_scroll_messages() {

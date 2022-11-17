@@ -46,7 +46,7 @@
 			[icons]="{
 				defaultIcon: icons.faPhoneSlash
 			}"
-			(onClick)="call.user_media_p2p.disconnect()"
+			(onClick)="call.user_media_p2p.disconnect(); send_end_call_message()"
 		></app-button>
 	</div>
 

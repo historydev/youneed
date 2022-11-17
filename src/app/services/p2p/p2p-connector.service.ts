@@ -4,6 +4,7 @@ import {MessageModel} from "../../models/p2p-connector/message.model";
 import {LoggerService} from "../logger/logger.service";
 import {HandleListModel} from "../../models/p2p-connector/handle-list.model";
 import {Router} from "@angular/router";
+import {ChatService} from "../chat/chat.service";
 
 @Injectable({
 	providedIn: 'root'
@@ -52,7 +53,8 @@ export class P2pConnectorService {
 	constructor(
 		private Logger: LoggerService,
 		private socket: Socket,
-		private router: Router
+		private router: Router,
+		private chat_service: ChatService
 	) {
 		this.socket.on(this._socket_input_name, (data: MessageModel<any>) => {
 			this.Logger.debug('p2pService new message', data);
@@ -83,6 +85,7 @@ export class P2pConnectorService {
 				});
 				if(this._is_call_creator) {
 					this.Logger.debug('p2p-connector-service', 'try connect');
+					this.chat_service.send_message('Начало звонка', 'system');
 					this.socket.emit(this._socket_input_name, { id: this._receiver_id, type: 'connected', message: {} });
 				}
 				clearInterval(interval);

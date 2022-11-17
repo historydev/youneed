@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {Router, RouterModule, ActivatedRoute} from '@angular/router';
+import {Event, NavigationEnd, Router, RouterModule} from '@angular/router';
 import {AppComponent} from './app.component';
 import {CallComponent} from '../call/call.component';
 import {VideoComponent} from '../video/video.component';
@@ -20,7 +20,6 @@ import {NotificationModel} from "../../models/push-notification/notification.mod
 import { CallNotificationComponent } from '../call-notification/call-notification.component';
 import { StoreModule } from '@ngrx/store';
 import {P2pConnectorService} from "../../services/p2p/p2p-connector.service";
-import {CallService} from "../../services/call/call.service";
 import {MeetingsComponent} from "../meetings/meetings.component";
 import {MeetingsListComponent} from "../meetings-list/meetings-list.component";
 import {ChatComponent} from "../chat/chat.component";
@@ -31,11 +30,11 @@ import {AuthenticationComponent} from "../authentication/authentication.componen
 import { environment } from '../../../environments/environment';
 import {HttpClientModule} from "@angular/common/http";
 import {AuthenticationService} from "../../services/authentication/authentication.service";
-import {map} from "rxjs";
 import {Location} from "@angular/common";
 import { ExpertTapeComponent } from '../expert-tape/expert-tape.component';
 import {MeetingsListService} from "../../services/meetings-list/meetings-list.service";
 import { ModalComponent } from '../modal/modal.component';
+import {ChatService} from "../../services/chat/chat.service";
 
 
 const config: SocketIoConfig = { url: environment.server_url, options: {} };
@@ -68,7 +67,7 @@ const routes = [
 		SideBarComponent,
 		AuthenticationComponent,
   		ExpertTapeComponent,
-    ModalComponent
+    	ModalComponent
 	],
 	imports: [
 		BrowserModule,
@@ -92,7 +91,8 @@ const routes = [
 			useClass: P2pConnectorService
 		},
 		AuthenticationService,
-		MeetingsListService
+		MeetingsListService,
+		ChatService
 	],
 	bootstrap: [AppComponent]
 })
@@ -105,7 +105,8 @@ export class AppModule {
 		private notifications: PushNotificationService,
 		private router: Router,
 		private auth: AuthenticationService,
-		private location: Location
+		private location: Location,
+		private meetings_service: MeetingsListService
 	) {
 
 		if(!auth.user) auth.check_user();
@@ -114,13 +115,19 @@ export class AppModule {
 			router.navigate(['/auth']).then();
 		}
 
-		let timer;
 		let state = true;
 
-		router.events.subscribe(_ => {
+		router.events.subscribe((event: Event) => {
 			if(state) {
 				state = false;
 				setTimeout(() => {
+
+					if(event instanceof NavigationEnd) {
+						if(this.meetings_service.selected_meeting && !this.router.url.includes('call')) {
+							this.meetings_service.select_meeting('');
+						}
+					}
+
 					if(!auth.user) {
 						router.navigate(['/auth']).then();
 					} else {
@@ -143,7 +150,7 @@ export class AppModule {
 			this.notifications.add(data);
 		});
 
-		this.socket.on('connected', (id: string) => {
+		this.socket.on('connected', (/*id: string*/) => {
 			// this.Logger.info('Socket connection id', id);
 			// this.notifications.add({
 			// 	recipient: '1',

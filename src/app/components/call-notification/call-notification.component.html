@@ -2,7 +2,7 @@
 <!--	<audio *ngIf="callElem.type === 'outgoing'" src="../../../assets/outgoing-call.mp3" autoplay loop></audio>-->
 <!--	<audio *ngIf="callElem.type === 'incoming'" src="../../../assets/incoming-call.mp3" autoplay loop></audio>-->
 	<div class="content">
-		<div class="title">Евгений Пупкин с id звонка: {{ callElem.id }}</div>
+		<div class="title">{{ callElem.call.title }}</div>
 		<img src="https://klike.net/uploads/posts/2019-05/1556708032_1.jpg" alt="">
 		<div class="controls" [ngClass]="callElem.type === 'incoming' ? 'answer' : 'offer'">
 			<button *ngIf="callElem.type !== 'outgoing'" class="accept-call" (click)="call.accept_call(callElem.id)">

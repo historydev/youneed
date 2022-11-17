@@ -1,12 +1,14 @@
 import {Injectable} from '@angular/core';
 import {MessageInputModel} from "../../models/chat/message_input.model";
 import {Store} from "@ngrx/store";
-import {Observable} from "rxjs";
+import {filter, Observable, Subscription} from "rxjs";
 import {MeetingsListService} from "../meetings-list/meetings-list.service";
 import {add_message} from "../../@NGRX/actions/chat";
 import {environment} from "../../../environments/environment";
 import {MessageOutputModel} from "../../models/chat/message_output.model";
 import {Socket} from "ngx-socket-io";
+import {UserModel} from "../../models/chat/user.model";
+import {HttpClient, HttpResponse} from "@angular/common/http";
 
 @Injectable({
 	providedIn: 'root'
@@ -18,11 +20,11 @@ export class ChatService {
 	constructor(
 		private store: Store<{messages: MessageOutputModel[]}>,
 		private meetings_list_service: MeetingsListService,
-		private socket: Socket
+		private socket: Socket,
+		private http: HttpClient
 	) {
 		this._messages = store.select('messages');
 	}
-
 
 	public send_message(text: string, type: 'user' | 'system'): void {
 
@@ -60,6 +62,20 @@ export class ChatService {
 			if(this.meetings_list_service.selected_meeting) this.socket.emit('message', this.meetings_list_service.selected_meeting.id);
 			return data;
 		}).then(console.log).catch(console.error);
+	}
+
+	public member_info(member_id: string): Observable<HttpResponse<UserModel>> {
+		const token = document.cookie
+			.split('; ')
+			.find((row) => row.startsWith('yn_token='))
+			?.split('=')[1];
+		return this.http.post<UserModel>(environment.server_url + '/user', {id: member_id}, {
+			observe: 'response',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authentication': token || ''
+			}
+		});
 	}
 
 	public get messages(): Observable<MessageOutputModel[]> {

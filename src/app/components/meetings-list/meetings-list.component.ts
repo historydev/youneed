@@ -104,7 +104,7 @@ export class MeetingsListComponent implements OnInit {
 	}
 
 	ngOnDestroy() {
-		this.meetings_service.select_meeting('');
+
 	}
 
 }

@@ -1,4 +1,4 @@
-import {Pattern} from "./generate_schema_options.model";
+import {Pattern} from "./options.model";
 
 export interface SchemaGeneratorOptionsModel {
 	input_file_name: string;

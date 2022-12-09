@@ -35,6 +35,7 @@ import { ExpertTapeComponent } from '../expert-tape/expert-tape.component';
 import {MeetingsListService} from "../../services/meetings-list/meetings-list.service";
 import { ModalComponent } from '../modal/modal.component';
 import {ChatService} from "../../services/chat/chat.service";
+import {TimerComponent} from "../timer/timer.component";
 
 
 const config: SocketIoConfig = { url: environment.server_url, options: {} };
@@ -67,7 +68,8 @@ const routes = [
 		SideBarComponent,
 		AuthenticationComponent,
   		ExpertTapeComponent,
-    	ModalComponent
+    	ModalComponent,
+		TimerComponent
 	],
 	imports: [
 		BrowserModule,

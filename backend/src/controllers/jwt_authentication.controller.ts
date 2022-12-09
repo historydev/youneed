@@ -10,7 +10,7 @@ export function jwt_authentication_controller(req: Request, res: Response, next:
 	const header = req.headers['authentication'];
 	const JWT_secret = process.env['JWT_SECRET'];
 
-	console.log(req.method, req.originalUrl, !!header);
+	// console.log(req.method, req.originalUrl, !!header);
 
 	if(JWT_secret) {
 		JWT.verify(header?.toString() || '', JWT_secret, (err, data) => {
@@ -47,7 +47,7 @@ export function jwt_authentication_controller(req: Request, res: Response, next:
 
 			}
 
-			console.log(data);
+			// console.log(data);
 
 			res.locals['user'] = data;
 			return next();

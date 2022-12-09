@@ -20,7 +20,7 @@ export class CallService {
 	private _user_media_constraints: MediaStreamConstraints;
 	private readonly _media_streams: MediaStreamElementModel[] = [];
 	private _assets: any;
-
+	private _timer: {hours: string; minutes: string; seconds: string} = {hours: '00', minutes: '00', seconds: '00'};
 
 	constructor(
 		public media_devices: MediaDevicesService,
@@ -56,6 +56,28 @@ export class CallService {
 			this.Logger.error('call-service', 'media_streams', this._media_streams);
 		});
 
+		socket.on('start_timer', (timer: {hours: string; minutes: string; seconds: string}) => {
+			console.log('timer', timer);
+			this._timer = timer;
+		});
+
+		// setInterval(() => {
+		// 	this._timer.seconds =
+		// 		(parseInt(this._timer.seconds)+1).toString().length < 2
+		// 			? '0' + (parseInt(this._timer.seconds)+1).toString()
+		// 			: (parseInt(this._timer.seconds)+1).toString();
+		// 	if(parseInt(this._timer.seconds) === 60) {
+		// 		this._timer.seconds = '00';
+		// 		this._timer.minutes = (parseInt(this._timer.minutes)+1).toString().length < 2
+		// 			? '0' + (parseInt(this._timer.minutes)+1).toString()
+		// 			: (parseInt(this._timer.minutes)+1).toString();
+		// 	}
+		// }, 10);
+
+	}
+
+	public get timer() {
+		return this._timer;
 	}
 
 	public set user_media_constraints(constraints: MediaStreamConstraints) {
@@ -149,6 +171,8 @@ export class CallService {
 			const remote_stream = this._media_streams.find(el => el.type === 'remote_user_media');
 
 			if(this.user_media_p2p.remote_media_stream !== undefined) {
+
+				this.socket.emit('start_timer', {sender_id: this._sender_id, receiver_id: this._receiver_id});
 
 				this.Logger.error('call-service', 'interval cleared', this.user_media_p2p.remote_media_stream.getTracks());
 

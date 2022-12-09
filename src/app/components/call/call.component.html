@@ -11,6 +11,7 @@
 	<app-video class="record" *ngIf="call.recorder.record" [srcUrl]="call.recorder.record.url" [controls]="true" [defaultView]="undefined"></app-video>
 
 	<div class="controlPanel">
+		<app-timer [timer]="call.timer"></app-timer>
 		<app-button
 			#record
 			[icons]="{

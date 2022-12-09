@@ -1,17 +1,17 @@
 import {NextFunction, Request, Response} from "express";
-import {RegisterInputModel} from "../models/authentication/register_input.model";
-import {RegisterOutputModel} from "../models/authentication/register_output.model";
+import {RegisterRequestModel} from "../models/controllers/register/request.model";
+import {RegisterInsertModel} from "../models/controllers/register/insert.model";
 import {v4 as uuidv4} from "uuid";
 import * as argon2 from "argon2";
 import {query} from "../databases/mongodb";
 
 
 
-export async function register_controller(req: Request<{}, {}, RegisterInputModel>, res: Response, next: NextFunction) {
+export async function register_controller(req: Request<{}, {}, RegisterRequestModel>, res: Response, next: NextFunction) {
 	if(req.body) {
 
 		const default_image = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Faenza-avatar-default-symbolic.svg/1024px-Faenza-avatar-default-symbolic.svg.png';
-		const user: RegisterOutputModel = {
+		const user: RegisterInsertModel = {
 			id: uuidv4(),
 			...req.body,
 			image: default_image,

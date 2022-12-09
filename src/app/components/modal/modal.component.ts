@@ -1,5 +1,4 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
-import {ButtonModel} from "../../models/modal/button.model";
 import {ModalService} from "../../services/modal-service/modal.service";
 import {ModalModel} from "../../models/modal/modal.model";
 

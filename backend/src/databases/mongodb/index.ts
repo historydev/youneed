@@ -1,5 +1,5 @@
-import {MongoClient} from "mongodb";
-import {QueryModel} from "../../models/databases/mongodb/query.model";
+import { MongoClient } from "mongodb";
+import { QueryModel } from "../../models/databases/mongodb/query.model";
 
 const url = 'mongodb://localhost:27017';
 const dbName = 'you_need';

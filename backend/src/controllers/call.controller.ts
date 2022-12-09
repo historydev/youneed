@@ -1,62 +1,82 @@
 import {IRouter, NextFunction, Request, Response} from "express";
-import {query} from "../databases/mongodb";
-import {QueryModel} from "../models/databases/mongodb/query.model";
+import {Controller} from "./controller";
+import {ValidatorModel} from "../models/controllers/controller/validators.model";
+import {Collection, MongoClient} from "mongodb";
+import {ControllerResponseModel} from "../models/controllers/response.model";
+import {CallResponseModel} from "../models/controllers/call/response.model";
+import {v4 as uuidv4} from "uuid";
+import {CallPostRequestModel} from "../models/controllers/call/post.request.model";
+import {formatted_date_time} from "./helpers/formatted_date_time";
+import {CallPatchRequestModel} from "../models/controllers/call/patch.request.model";
+import {CallDeleteRequestModel} from "../models/controllers/call/delete.request.model";
 
-export class CallController {
+export class CallController extends Controller {
 
-	private _calls?: QueryModel;
-
-	constructor(router: IRouter, route_name: string) {
-		this.init().then(_ => {
-			this.handle_http_methods(router, route_name);
-		});
+	constructor(router: IRouter, route_name: string, collection: Collection, client: MongoClient, validator: ValidatorModel) {
+		super(router, route_name, collection, client, validator);
 	}
 
-	private async get(req: Request, res: Response, next: NextFunction): Promise<void> {
-		res.sendStatus(200);
-	}
-
-	private async post(req: Request, res: Response, next: NextFunction): Promise<void> {
-		if(req.body) {
-			const call = await this._calls?.collection.findOne({type: req.body.type, members: {$in: req.body.members}});
-			if(!call) {
-				await this._calls?.collection.insertOne(req.body);
-				res.sendStatus(201);
-				return;
-			}
-			res.sendStatus(200);
+	override async get(req: Request, res: Response<ControllerResponseModel<CallResponseModel[], any>>, next: NextFunction) {
+		const calls:CallResponseModel[] = await this._collection.find({members: {$all: res.locals['user'].id}}, { projection: {_id: 0}}).toArray()
+			.then(data => JSON.parse(JSON.stringify(data)));
+		try {
+			if(calls.length) res.status(200).send({ data: calls })
+			else res.status(200).send({ data: null });
 			res.end();
+		} catch (e) {
+			res.status(500).send({ error: e }).end();
 		}
 	}
 
-	private async put(): Promise<void>  {
+	override async post(req: Request<any, CallPostRequestModel>, res: Response<ControllerResponseModel<CallResponseModel, any>>, next: NextFunction) {
+		try {
+			const {date, time, full_date} = formatted_date_time();
+			const expires = new Date(full_date);
+			expires.setMilliseconds(12 * 60 * 60 * 1000);
+			const members = [res.locals['user'].id, ...req.body.members];
 
+			const data:CallResponseModel = {
+				id: uuidv4(),
+				type: req.body.members.length > 2 ? 'group' : 'private',
+				date,
+				time,
+				full_date,
+				expires,
+				members,
+				experts: req.body.members,
+				status: 'active'
+			}
+			await this._collection.insertOne(data);
+			res.status(200).send({ data }).end();
+		} catch (e) {
+			res.status(500).send({error: e}).end();
+		}
 	}
 
-	private async patch(): Promise<void> {
-
+	override async patch(req: Request<any, CallPatchRequestModel>, res: Response<ControllerResponseModel<CallResponseModel, any>>, next: NextFunction) {
+		try {
+			const members = req.body.members ? [res.locals['user'].id, ...req.body.members] : undefined;
+			await this._collection.updateOne(
+				{id: req.body.id},
+				{
+					$set: members ? { ...req.body, type: members.length > 2 ? 'group' : 'private', members } : req.body
+				}
+			);
+			const call = await this._collection.findOne({id: req.body.id});
+			res.status(200).send({ data: JSON.parse(JSON.stringify(call)) }).end();
+		} catch (e) {
+			res.status(500).send({ error: e }).end();
+		}
 	}
 
-	private async delete(): Promise<void> {
-		return
-	}
-
-	private invalid_body(req: Request, res: Response, next: NextFunction): void {
-		if(!(req.body instanceof Object)) throw Error('Invalid body');
-	}
-
-	private handle_http_methods(router: IRouter, route_name: string) {
-		router.route(route_name)
-			.all(this.invalid_body.bind(this))
-			.get(this.get.bind(this))
-			.post(this.post.bind(this))
-			.put(this.put.bind(this))
-			.patch(this.patch.bind(this))
-			.delete(this.delete.bind(this));
-	}
-
-	async init(): Promise<void> {
-		this._calls = await query('calls');
+	override async delete(req: Request<any, CallDeleteRequestModel>, res: Response<ControllerResponseModel<CallResponseModel, any>>, next: NextFunction) {
+		try {
+			const call = await this._collection.findOne({id: req.body.id});
+			await this._collection.deleteOne({id: req.body.id});
+			res.status(200).send({ data: JSON.parse(JSON.stringify(call)) }).end();
+		} catch (e) {
+			res.status(500).send({ error: e }).end();
+		}
 	}
 
 }

@@ -1,1 +1,0 @@
-{"type":"object","properties":{"email":{"type":"string","pattern":"^[a-zA-Zа-яА-Я0-9_@.-]+$"},"password":{"type":"string","pattern":"^[a-zA-Zа-яА-Я0-9_@.+!#$%^&*(){}-]+$"}},"additionalProperties":false,"required":["email","password"],"$schema":"http://json-schema.org/draft-07/schema#"}

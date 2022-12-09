@@ -8,10 +8,10 @@ interface CallModel {
 	date: string;
 	time: string;
 	full_date: Date;
-	duration: string;
+	expires: Date;
 	members: string[];
-	expert?: string;
-	status: 'active' | 'not_finished' | 'finished';
+	experts?: string[];
+	status: 'active' | 'not_active' | 'finished';
 }
 
 interface MeetingMemberModel {

@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const schema_generator_1 = require("./schema_generator");
 const models = [
     {
-        input_file_name: 'register_input.model.ts',
-        output_file_name: 'register_input.schema.json',
+        input_file_name: 'post.request.model.ts',
+        output_file_name: 'register_request.schema.json',
         model_name: 'RegisterInputModel',
         path: '/authentication/',
         reg_exp_patterns: [
@@ -27,8 +27,8 @@ const models = [
         ]
     },
     {
-        input_file_name: 'authorization_input.model.ts',
-        output_file_name: 'authorization_input.schema.json',
+        input_file_name: 'post.request.model.ts',
+        output_file_name: 'authentication_input.schema.json',
         model_name: 'AuthorizationInputModel',
         path: '/authentication/',
         reg_exp_patterns: [
@@ -43,7 +43,7 @@ const models = [
         ]
     },
     {
-        input_file_name: 'register_output.model.ts',
+        input_file_name: 'insert.model.ts',
         output_file_name: 'register_output.schema.json',
         model_name: 'RegisterOutputModel',
         path: '/authentication/',

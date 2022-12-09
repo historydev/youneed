@@ -19,6 +19,9 @@ import {users_controller} from "./src/controllers/users.controller";
 import {meetings_controller} from "./src/controllers/meetings.controller";
 import {user_controller} from "./src/controllers/user.controller";
 import {CallController} from "./src/controllers/call.controller";
+import {query} from './src/databases/mongodb';
+import {ControllerResponseModel} from "./src/models/controllers/response.model";
+import {Response} from "express";
 
 const app = express();
 const http_server = http.createServer(app);
@@ -38,25 +41,32 @@ app.use(cors({
 	origin: ['http://localhost:4200'],
 	exposedHeaders: ['Authentication']
 }));
-
-new CallController(app, '/call');
+// app.use(basic_authentication_controller);
+app.use(jwt_authentication_controller);
 
 app.use('/auth', brute_force_defense({freeRetries: 1}));
 app.use('/register', brute_force_defense({freeRetries: 1}));
 app.use('/messages', brute_force_defense({freeRetries: 80}));
 
-// app.use(basic_authentication_controller);
-app.use(jwt_authentication_controller);
 
-// app.get('*', (req, res) => {
-// 	res.sendFile('index.html', {root: path.resolve(__dirname, '../dist')});
-// });
+
+query('calls').then(data => {
+	new CallController(
+		app,
+		'/call',
+		data.collection,
+		data.client,
+		{
+			// 'post': validate({body: schema('/controllers/authentication/request.schema.json')}),
+		}
+	);
+});
 
 app.post('/user', user_controller);
 app.post('/meetings', meetings_controller)
 app.post('/users', users_controller);
-app.post('/auth', validate({body: schema('/authentication/authorization_input.schema.json')}), authentication_controller);
-app.post('/register', validate({body: schema('/authentication/register_input.schema.json')}), register_controller);
+app.post('/auth', validate({body: schema('/controllers/authentication/request.schema.json')}), authentication_controller);
+app.post('/register', validate({body: schema('/controllers/register/request.schema.json')}), register_controller);
 app.post('/messages', messages_controller);
 app.post('/message', message_controller);
 app.use(validation_middleware);

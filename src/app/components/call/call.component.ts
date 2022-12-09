@@ -19,6 +19,7 @@ import {CallNotificationService} from "../../services/call-notification/call-not
 import {AuthenticationService} from "../../services/authentication/authentication.service";
 import {ChatService} from "../../services/chat/chat.service";
 import {MeetingsListService} from "../../services/meetings-list/meetings-list.service";
+import {Socket} from "ngx-socket-io";
 
 @Component({
 	selector: 'app-call',
@@ -49,7 +50,8 @@ export class CallComponent implements OnInit {
 		private call_notification: CallNotificationService,
 		private auth: AuthenticationService,
 		private chat_service: ChatService,
-		private meeting_service: MeetingsListService
+		private meeting_service: MeetingsListService,
+		private socket: Socket
 	) {
 		this._document.addEventListener('fullscreenchange', _ => {
 			if(!this._document.fullscreenElement) {
@@ -89,6 +91,7 @@ export class CallComponent implements OnInit {
 		//this.call.display_media_p2p.disconnect();
 		this.call_notification.decline_call(`${this.call.receiver_id}-${this.call.sender_id}`);
 		this.call.user_media_p2p.disconnect();
+		this.socket.emit('stop_timer');
 		this.Logger.error('call-component', 'destroyed');
 	}
 

@@ -1,4 +1,4 @@
-import {GenerateSchemaOptionsModel} from "../../models/schema_generator/generate_schema_options.model";
+import {GenerateSchemaOptionsModel} from "../../models/schema_generator/options.model";
 import * as TJS from "../../../../src/assets/typescript-json-schema";
 import {set_regexp_pattern} from "./regexp_pattern_setter";
 

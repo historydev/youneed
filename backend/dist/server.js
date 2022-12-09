@@ -47,8 +47,8 @@ app.post('/user', (req, res) => {
 });
 app.post('/meetings', meetings_controller_1.meetings_controller);
 app.post('/users', users_controller_1.users_controller);
-app.post('/auth', validate({ body: schema('/authentication/authorization_input.schema.json') }), authentication_controller_1.authentication_controller);
-app.post('/register', validate({ body: schema('/authentication/register_input.schema.json') }), register_controller_1.register_controller);
+app.post('/auth', validate({ body: schema('/authentication/authentication_input.schema.json') }), authentication_controller_1.authentication_controller);
+app.post('/register', validate({ body: schema('/authentication/register_request.schema.json') }), register_controller_1.register_controller);
 app.post('/messages', messages_controller_1.messages_controller);
 app.post('/message', message_controller_1.message_controller);
 app.use(validator_controller_1.validation_middleware);

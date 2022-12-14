@@ -9,45 +9,104 @@ import {CallPostRequestModel} from "../models/controllers/call/post.request.mode
 import {formatted_date_time} from "./helpers/formatted_date_time";
 import {CallPatchRequestModel} from "../models/controllers/call/patch.request.model";
 import {CallDeleteRequestModel} from "../models/controllers/call/delete.request.model";
+import {CallGetRequestModel} from "../models/controllers/call/get.request.model";
+import {query} from "../databases/mongodb";
 
 export class CallController extends Controller {
 
-	constructor(router: IRouter, route_name: string, collection: Collection, client: MongoClient, validator: ValidatorModel) {
-		super(router, route_name, collection, client, validator);
+	constructor(
+		router: IRouter,
+		route: {
+			name: string;
+			params: string[];
+		},
+		collection: Collection,
+		client: MongoClient,
+		validator: ValidatorModel
+	) {
+		super(router, route, collection, client, validator);
 	}
 
-	override async get(req: Request, res: Response<ControllerResponseModel<CallResponseModel[], any>>, next: NextFunction) {
-		const calls:CallResponseModel[] = await this._collection.find({members: {$all: res.locals['user'].id}}, { projection: {_id: 0}}).toArray()
-			.then(data => JSON.parse(JSON.stringify(data)));
+	override async get(req: Request<any, CallGetRequestModel>, res: Response<ControllerResponseModel<CallResponseModel[], any>>, next: NextFunction) {
+
+		if(!req.params.meeting_id || !+req.params.meeting_id) {
+			try {
+				const calls:CallResponseModel[] = await this._collection
+					.find({}, { projection: {_id: 0}})
+					.sort({_id: +req.params.last ? -1 : 1})
+					.limit(+req.params.limit || 50)
+					.toArray()
+					.then(data => JSON.parse(JSON.stringify(data)));
+				if(+req.params.last) {
+					calls.reverse();
+				}
+				if(calls.length) res.status(200).send({ data: calls });
+				else res.status(200).send({ data: null });
+				res.end();
+			} catch (error) {
+				res.status(500).send({ error }).end();
+			}
+			return;
+		}
+
 		try {
-			if(calls.length) res.status(200).send({ data: calls })
+			const calls:CallResponseModel[] = await this._collection
+				.find({meeting_id: req.params.meeting_id}, { projection: {_id: 0}})
+				.sort({_id: +req.params.last ? -1 : 1})
+				.limit(+req.params.limit || 50)
+				.toArray()
+				.then(data => JSON.parse(JSON.stringify(data)));
+			if(+req.params.last) {
+				calls.reverse();
+			}
+			if(calls.length) res.status(200).send({ data: calls });
 			else res.status(200).send({ data: null });
 			res.end();
-		} catch (e) {
-			res.status(500).send({ error: e }).end();
+		} catch (error) {
+			res.status(500).send({ error }).end();
 		}
 	}
+
+
 
 	override async post(req: Request<any, CallPostRequestModel>, res: Response<ControllerResponseModel<CallResponseModel, any>>, next: NextFunction) {
 		try {
 			const {date, time, full_date} = formatted_date_time();
 			const expires = new Date(full_date);
 			expires.setMilliseconds(12 * 60 * 60 * 1000);
-			const members = [res.locals['user'].id, ...req.body.members];
 
-			const data:CallResponseModel = {
-				id: uuidv4(),
-				type: req.body.members.length > 2 ? 'group' : 'private',
-				date,
-				time,
-				full_date,
-				expires,
-				members,
-				experts: req.body.members,
-				status: 'active'
+			const meeting_id = req.body.meeting_id;
+			const _query = await query('meetings');
+			const m_coll = await _query.collection;
+			const meeting = await m_coll.findOne({id: meeting_id}, {projection: { _id: 0 }});
+
+			if(meeting) {
+				const members = meeting['members'];
+				const type = meeting['type'];
+				const experts = members.filter((member: any) => member !== res.locals['user'].id);
+
+				console.log(res.locals['user'].id);
+
+				const data:CallResponseModel = {
+					id: uuidv4(),
+					meeting_id,
+					type,
+					date,
+					time,
+					full_date,
+					expires,
+					members,
+					experts,
+					status: 'active'
+				}
+				await this._collection.insertOne(data);
+				res.status(200).send({ data }).end();
+
+				return;
 			}
-			await this._collection.insertOne(data);
-			res.status(200).send({ data }).end();
+
+			throw new Error();
+
 		} catch (e) {
 			res.status(500).send({error: e}).end();
 		}

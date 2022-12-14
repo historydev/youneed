@@ -6,5 +6,6 @@ export interface MeetingModel {
 	type: 'private' | 'group';
 	members: MemberModel[];
 	last_message?: MessageOutputModel;
+	last_call_status?: string;
 	unread_messages_count: number;
 }

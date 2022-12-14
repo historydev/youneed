@@ -1,5 +1,6 @@
 export interface CallResponseModel {
 	id: string;
+	meeting_id: string;
 	type: 'private' | 'group';
 	date: string;
 	time: string;

@@ -45,6 +45,7 @@ app.use(cors({
 app.use(jwt_authentication_controller);
 
 app.use('/auth', brute_force_defense({freeRetries: 1}));
+// app.use('/call', brute_force_defense({freeRetries: 1}));
 app.use('/register', brute_force_defense({freeRetries: 1}));
 app.use('/messages', brute_force_defense({freeRetries: 80}));
 
@@ -53,7 +54,14 @@ app.use('/messages', brute_force_defense({freeRetries: 80}));
 query('calls').then(data => {
 	new CallController(
 		app,
-		'/call',
+		{
+			name: '/call',
+			params: [
+				'meeting_id?',
+				'limit?',
+				'last?'
+			]
+		},
 		data.collection,
 		data.client,
 		{

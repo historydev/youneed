@@ -20,6 +20,10 @@ import {AuthenticationService} from "../../services/authentication/authenticatio
 import {MemberModel} from "../../models/meetings-list/member.model";
 import {ModalService} from "../../services/modal-service/modal.service";
 import {UserModel} from "../../models/chat/user.model";
+import {HttpClient} from "@angular/common/http";
+import {environment} from "../../../environments/environment";
+import {CallService} from "../../services/call/call.service";
+import {ButtonModel} from "../../models/modal/button.model";
 
 @Component({
 	selector: 'app-chat',
@@ -39,6 +43,8 @@ export class ChatComponent implements OnInit {
 		faPaperclip
 	}
 
+	private _call_status: 'expert' | 'client' | false = false;
+
 	constructor(
 		private meetings_list_service: MeetingsListService,
 		private chat_service: ChatService,
@@ -46,15 +52,275 @@ export class ChatComponent implements OnInit {
 		private element: ElementRef,
 		private call_notification: CallNotificationService,
 		private auth: AuthenticationService,
-		private modal_service: ModalService
+		private modal_service: ModalService,
+		private http: HttpClient,
 	) {
+
+		const token = document.cookie
+			.split('; ')
+			.find((row) => row.startsWith('yn_token='))
+			?.split('=')[1];
+
+
 		this.chat_service.messages.subscribe(() => {
 			if(this.meetings_list_service.selected_meeting) {
+				const res = this.http.get<any>( environment.server_url + `/call/${this.meetings_list_service.selected_meeting.id}/1/1`, {
+					observe: 'body',
+					headers: {
+						'Authentication': token || ''
+					}
+				});
+				res.subscribe(({data}) => {
+					console.log(' MEETINGS DATA',data);
+					if(data.length > 0) {
+						if(data[0].status !== 'finished') {
+							this._call_status = data[0].experts.includes(this.auth.user?.id) ? 'expert' : 'client';
+						} else {
+							this._call_status = false;
+						}
+					} else {
+						this._call_status = false;
+					}
+
+				}, console.error);
+
 				setTimeout(() => {
 					this.scroll_to();
 				}, 80)
 			}
 		});
+	}
+
+	private create_modal(title: string, text_content: string, buttons: ButtonModel[]): Function {
+		return () => this.modal_service.add_modal({
+			id: 'chat_modal',
+			title,
+			text_content,
+			buttons
+		});
+	}
+
+	public end_meeting() {
+
+		const delay = 550;
+
+		const rating = this.create_modal(
+			'Оценка Эксперта',
+			`Пожалуйста, оцените Эксперта.`,
+			[
+				{
+					name: 'Пропустить',
+					style: 'default',
+					onclick() {
+
+					}
+				},
+				{
+					name: 'Продолжить',
+					style: 'accept',
+					onclick() {
+
+					}
+				}
+			]
+		);
+		const rating_later = this.create_modal(
+			'Оценить позже',
+			`У Вас будет 12 часов на то, чтобы подать жалобу на Эксперта.`,
+			[
+				{
+					name: 'Назад',
+					style: 'cancel',
+					onclick: () => {
+						setTimeout(() => {
+							benefit();
+						}, delay);
+					}
+				},
+				{
+					name: 'Продолжить',
+					style: 'accept',
+					onclick() {
+						setTimeout(() => {
+							rating();
+						}, delay);
+					}
+				}
+			]
+		);
+		const want_complaint = this.create_modal(
+			'Хотите пожаловаться на эксперта?',
+			'',
+			[
+				{
+					name: 'Да',
+					style: 'accept',
+					onclick: () => {
+						setTimeout(() => {
+							complaint();
+						}, delay);
+					}
+				},
+				{
+					name: 'Нет',
+					style: 'cancel',
+					onclick: () => {
+						setTimeout(() => {
+							rating_later();
+						}, delay);
+					}
+				}
+			]
+		);
+		const complaint = this.create_modal(
+			'Подать жалобу',
+			' ',
+			[
+				{
+					name: 'Назад',
+					style: 'cancel',
+					onclick() {
+						setTimeout(() => {
+							want_complaint();
+						}, delay);
+					}
+				},
+				{
+					name: 'Продолжить',
+					style: 'accept',
+					onclick: () => {
+						setTimeout(() => {
+							this.create_modal(
+								'Жалоба отправлена',
+								`Спасибо, что поделились своим впечатлением с нами. Нам очень жаль, что консультация не соответствовала Вашим ожиданиям.
+
+								Мы не оставим это просто так. Ваши деньги за консультацию не будут отправлены Эксперту, до выяснения обстоятельств.
+
+								На основании Вашей жалобы мы просмотрим видеозапись разговора на соответствие изложенных фактов и проведем независимую экспертизу.
+
+								Если Ваши претензии окажутся обоснованными, то мы вернем Вам деньги в полном объеме.
+
+								О результатах проверки мы сообщим отдельно на электронную почту и на you-need.ru`,
+								[
+									{
+										name: 'Назад',
+										style: 'cancel',
+										onclick() {
+											setTimeout(() => {
+												complaint();
+											}, delay);
+										}
+									},
+									{
+										name: 'Продолжить',
+										style: 'accept',
+										onclick: () => {
+											setTimeout(() => {
+												rating();
+											}, delay);
+										}
+									}
+								]
+							)();
+						}, delay);
+					}
+				}
+			]
+		);
+		const accept_pay = this.create_modal(
+			'Подтвердить оплату',
+			`При нажатии кнопки «Продолжить» Вы не сможете пожаловаться на Эксперта и вернуть деньги за консультацию.`,
+			[
+				{
+					name: 'Назад',
+					style: 'cancel',
+					onclick() {
+						setTimeout(() => {
+							benefit();
+						}, delay);
+					}
+				},
+				{
+					name: 'Продолжить',
+					style: 'accept',
+					onclick: () => {
+						setTimeout(() => {
+							rating();
+						}, delay);
+					}
+				}
+			]
+		);
+		const benefit = this.create_modal(
+			'Разговор был полезным?',
+			`Оцените, пожалуйста, консультация оказалась полезной для Вас?`,
+			[
+				{
+					name: 'Да',
+					style: 'accept',
+					onclick: () => {
+						setTimeout(() => {
+							accept_pay();
+						}, delay);
+					}
+				},
+				{
+					name: 'Нет',
+					style: 'cancel',
+					onclick: () => {
+						setTimeout(() => {
+							want_complaint();
+						}, delay);
+					}
+				},
+				{
+					name: 'Оценить позже',
+					style: 'default',
+					onclick() {
+						setTimeout(() => {
+							rating_later();
+						}, delay);
+					}
+				},
+			]
+		);
+
+		benefit();
+
+		// const token = document.cookie
+		// 	.split('; ')
+		// 	.find((row) => row.startsWith('yn_token='))
+		// 	?.split('=')[1];
+		//
+		// const call = this.http.get<any>(`${environment.server_url}/call/${this.meetings_list_service.selected_meeting?.id}/1/1`, {
+		// 	observe: 'body',
+		// 	headers: {
+		// 		'Authentication': token || ''
+		// 	}
+		// });
+		//
+		// call.subscribe(({data}) => {
+		// 	console.log('END MEETING DATA', data);
+		// 	if(data.length > 0) {
+		// 		const res = this.http.patch<any>(`${environment.server_url}/call`, {
+		// 			id: data[0].id,
+		// 			status: 'finished'
+		// 		}, {
+		// 			observe: 'body',
+		// 			headers: {
+		// 				'Authentication': token || ''
+		// 			}
+		// 		});
+		//
+		// 		res.subscribe(({data}) => {
+		// 			console.log('END MEETING RES DATA', data);
+		// 		}, console.error);
+		// 	}
+		// }, console.error);
+	}
+
+	public get call_status(): 'expert' | 'client' | false {
+		return this._call_status;
 	}
 
 	public member_data(members: MemberModel[]) {
@@ -65,7 +331,7 @@ export class ChatComponent implements OnInit {
 		this.chat_service.member_info(receiver_id).subscribe(data => {
 			this.modal_service.add_modal({
 				id: 'my_modal1',
-				title: 'Подтвердите действие',
+				title: 'Подтвердить оплату',
 				text_content: `После начала разговора с вашей карты ****0134 будет списано ${data.body?.service_price || 0} рублей за час консультации.`,
 				buttons: [
 					{

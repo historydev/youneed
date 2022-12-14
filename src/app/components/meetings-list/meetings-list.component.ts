@@ -14,6 +14,7 @@ import {Socket} from "ngx-socket-io";
 import {request} from "express";
 import {MemberModel} from "../../models/meetings-list/member.model";
 import {AuthenticationService} from "../../services/authentication/authentication.service";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
 	selector: 'app-meetings-list',
@@ -32,7 +33,8 @@ export class MeetingsListComponent implements OnInit {
 		private element: ElementRef,
 		private store: Store,
 		private socket: Socket,
-		private auth: AuthenticationService
+		private auth: AuthenticationService,
+		private http: HttpClient
 	) {
 		socket.on('message', (meeting_id: string) => {
 			this.request_meeting_messages(meeting_id);
@@ -100,7 +102,27 @@ export class MeetingsListComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		this.meetings_service.request_meetings();
+
+		const token = document.cookie
+			.split('; ')
+			.find((row) => row.startsWith('yn_token='))
+			?.split('=')[1];
+
+		this.meetings_service.request_meetings().then(_ => {
+			this.meetings_service.meetings.forEach(meeting => {
+				const res = this.http.get<any>( environment.server_url + `/call/${meeting.id}/1/1`, {
+					observe: 'body',
+					headers: {
+						'Authentication': token || ''
+					}
+				});
+				res.subscribe(({data}) => {
+					if(data.length > 0) {
+						meeting.last_call_status = data[0].status;
+					}
+				}, console.error);
+			});
+		});
 	}
 
 	ngOnDestroy() {

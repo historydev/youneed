@@ -6,13 +6,13 @@
 			<div class="status status_online"><div class="status_circle"></div> В сети</div>
 		</div>
 		<div class="right_side">
-			<button id="appoint_meeting"><a href="#"><fa-icon [icon]="icons.faCalendar"></fa-icon> Предложить встречу</a></button>
-			<button id="start_meeting" (click)="call(member_data(selected_meeting.members).id)">
+			<button *ngIf="!call_status" id="appoint_meeting"><a href="#"><fa-icon [icon]="icons.faCalendar"></fa-icon> Предложить встречу</a></button>
+			<button *ngIf="!call_status" id="start_meeting" (click)="call(member_data(selected_meeting.members).id)">
 					<fa-icon [icon]="icons.faVideo"></fa-icon>
 					Начать встречу
 			</button>
-<!--			<button id="proceed_meeting">Продолжить встречу</button>-->
-<!--			<button id="complete_meeting">Завершить встречу</button>-->
+			<button *ngIf="call_status" id="proceed_meeting" (click)="call(member_data(selected_meeting.members).id)">Продолжить встречу</button>
+			<button *ngIf="call_status && call_status !== 'expert'" id="complete_meeting" (click)="end_meeting()">Завершить встречу</button>
 			<button id="complaint"><fa-icon [icon]="icons.faExclamationTriangle"></fa-icon></button>
 		</div>
 	</div>

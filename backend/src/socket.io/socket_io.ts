@@ -46,7 +46,7 @@ export default function(http_server: http.Server) {
 					seconds: seconds.length < 2 ? '0' + timer.seconds : seconds,
 				}
 
-				console.log(timer_string);
+				// console.log(timer_string);
 
 				socket.to(data.sender_id).emit('start_timer', timer_string);
 				socket.to(data.receiver_id).emit('start_timer', timer_string);

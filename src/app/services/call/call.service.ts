@@ -7,6 +7,9 @@ import {MediaDevicesService} from "../media-devices/media-devices.service";
 import {P2pConnectorService} from "../p2p/p2p-connector.service";
 import {Socket} from "ngx-socket-io";
 import {MediaStreamElementModel} from "../../models/call/media-stream-element.model";
+import {HttpClient} from "@angular/common/http";
+import {environment} from "../../../environments/environment";
+import {MeetingsListService} from "../meetings-list/meetings-list.service";
 
 @Injectable({
 	providedIn: 'root'
@@ -21,6 +24,7 @@ export class CallService {
 	private readonly _media_streams: MediaStreamElementModel[] = [];
 	private _assets: any;
 	private _timer: {hours: string; minutes: string; seconds: string} = {hours: '00', minutes: '00', seconds: '00'};
+	public call:any;
 
 	constructor(
 		public media_devices: MediaDevicesService,
@@ -29,7 +33,9 @@ export class CallService {
 		//@Inject('display_media') public display_media_p2p: P2pConnectorService, TODO Add screen sharing with SFU
 		private Logger: LoggerService,
 		private route: ActivatedRoute,
-		private socket: Socket
+		private socket: Socket,
+		private http: HttpClient,
+		private meeting_list_service: MeetingsListService
 	) {
 		user_media_p2p.socket_input_name = 'p2p_user_media_message';
 		//display_media_p2p.socket_input_name = 'p2p_display_media_message';
@@ -57,7 +63,7 @@ export class CallService {
 		});
 
 		socket.on('start_timer', (timer: {hours: string; minutes: string; seconds: string}) => {
-			console.log('timer', timer);
+			// console.log('timer', timer);
 			this._timer = timer;
 		});
 
@@ -172,7 +178,45 @@ export class CallService {
 
 			if(this.user_media_p2p.remote_media_stream !== undefined) {
 
+				const token = document.cookie
+					.split('; ')
+					.find((row) => row.startsWith('yn_token='))
+					?.split('=')[1];
+
 				this.socket.emit('start_timer', {sender_id: this._sender_id, receiver_id: this._receiver_id});
+
+				if(this.user_media_p2p.is_call_creator) {
+
+					const token = document.cookie
+						.split('; ')
+						.find((row) => row.startsWith('yn_token='))
+						?.split('=')[1];
+
+					const call = this.http.get<any>(`${environment.server_url}/call/${this.meeting_list_service.selected_meeting?.id}/1/1`, {
+						observe: 'body',
+						headers: {
+							'Authentication': token || ''
+						}
+					});
+
+					call.subscribe(({data}) => {
+						console.log('CALL DATA', data);
+						if(data.length > 0 && data[0].status === 'finished') {
+							const res = this.http.post<any>(`${environment.server_url}/call`, {
+								meeting_id: this.meeting_list_service.selected_meeting?.id || ''
+							}, {
+								observe: 'body',
+								headers: {
+									'Authentication': token || ''
+								}
+							});
+
+							res.subscribe(data => {
+								console.log(data);
+							}, console.error);
+						}
+					}, console.error);
+				}
 
 				this.Logger.error('call-service', 'interval cleared', this.user_media_p2p.remote_media_stream.getTracks());
 
@@ -300,12 +344,5 @@ export class CallService {
 	//
 	// 	this.Logger.debug('call-service', 'You can`t screen sharing for your self');
 	// }
-
-	public ngOnDestroy() {
-		this._media_streams.splice(0, this._media_streams.length);
-		this.user_media_p2p.disconnect();
-		//this.display_media_p2p.disconnect();
-		this.Logger.error('call-service', 'destroyed');
-	}
 
 }

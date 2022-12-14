@@ -20,6 +20,8 @@ import {AuthenticationService} from "../../services/authentication/authenticatio
 import {ChatService} from "../../services/chat/chat.service";
 import {MeetingsListService} from "../../services/meetings-list/meetings-list.service";
 import {Socket} from "ngx-socket-io";
+import {environment} from "../../../environments/environment";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
 	selector: 'app-call',
@@ -51,7 +53,8 @@ export class CallComponent implements OnInit {
 		private auth: AuthenticationService,
 		private chat_service: ChatService,
 		private meeting_service: MeetingsListService,
-		private socket: Socket
+		private socket: Socket,
+		private http: HttpClient,
 	) {
 		this._document.addEventListener('fullscreenchange', _ => {
 			if(!this._document.fullscreenElement) {
@@ -89,6 +92,37 @@ export class CallComponent implements OnInit {
 	public ngOnDestroy(): void {
 		this.call_notification.in_call = false;
 		//this.call.display_media_p2p.disconnect();
+		const token = document.cookie
+			.split('; ')
+			.find((row) => row.startsWith('yn_token='))
+			?.split('=')[1];
+
+		const call = this.http.get<any>(`${environment.server_url}/call/${this.meeting_service.selected_meeting?.id}/1/1`, {
+			observe: 'body',
+			headers: {
+				'Authentication': token || ''
+			}
+		});
+
+		call.subscribe(({data}) => {
+			console.log('CALL DATA', data);
+			if(data.length > 0) {
+				const res = this.http.patch<any>(`${environment.server_url}/call`, {
+					id: data[0].id,
+					status: 'not_active'
+				}, {
+					observe: 'body',
+					headers: {
+						'Authentication': token || ''
+					}
+				});
+
+				res.subscribe(({data}) => {
+					console.log('RES DATA', data);
+				}, console.error);
+			}
+		}, console.error);
+
 		this.call_notification.decline_call(`${this.call.receiver_id}-${this.call.sender_id}`);
 		this.call.user_media_p2p.disconnect();
 		this.socket.emit('stop_timer');

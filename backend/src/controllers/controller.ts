@@ -6,20 +6,26 @@ import {ControllerResponseModel} from "../models/controllers/response.model";
 export class Controller {
 
 	private readonly _router: IRouter;
-	private readonly _route_name: string;
+	private readonly _route: {
+		name: string;
+		params: string[];
+	};
 	protected readonly _collection: Collection;
 	protected readonly _client: MongoClient;
 	private readonly _validator: ValidatorModel;
 
 	constructor(
 		router: IRouter,
-		route_name: string,
+		route: {
+			name: string;
+			params: string[];
+		},
 		collection: Collection,
 		client: MongoClient,
 		validator: ValidatorModel
 	) {
 		this._router = router;
-		this._route_name = route_name;
+		this._route = route;
 		this._collection = collection;
 		this._client = client;
 		this._validator = validator;
@@ -48,9 +54,9 @@ export class Controller {
 	}
 
 	protected init(): void {
-		this._router.route(this._route_name)
+		this._router.get(`${this._route.name}${this._route.params.map(param => `/:${param}`).join('')}`, this.get.bind(this));
+		this._router.route(this._route.name)
 			.all(this.validate.bind(this))
-			.get(this.get.bind(this))
 			.post(this.post.bind(this))
 			.put(this.put.bind(this))
 			.patch(this.patch.bind(this))

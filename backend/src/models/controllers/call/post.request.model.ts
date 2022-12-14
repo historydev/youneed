@@ -1,3 +1,3 @@
 export interface CallPostRequestModel {
-	members: string[];
+	meeting_id: string;
 }

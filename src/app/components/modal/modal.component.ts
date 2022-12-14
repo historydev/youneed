@@ -1,6 +1,7 @@
-import {Component, ElementRef, OnInit} from '@angular/core';
+import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import {ModalService} from "../../services/modal-service/modal.service";
 import {ModalModel} from "../../models/modal/modal.model";
+import {faStar} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
 	selector: 'app-modal',
@@ -8,6 +9,9 @@ import {ModalModel} from "../../models/modal/modal.model";
 	styleUrls: ['./modal.component.scss']
 })
 export class ModalComponent implements OnInit {
+
+	public star = faStar;
+	public rating_fields = ['Владение темой', 'Доступность', 'Красноречие', 'Опыт'];
 
 	constructor(
 		private modal_service: ModalService,

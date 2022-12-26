@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" host="h36.netangels.ru" id="e94b5eb3-00c6-4b71-bdac-96ddfc7303e1" port="22" nameFormat="DESCRIPTIVE" username="c62393" useOpenSSHConfig="true" />
+      <sshConfig authType="PASSWORD" host="80.249.129.86" id="2c8e5443-b4d3-4e65-8224-e1f4ff72d62d" port="6120" nameFormat="DESCRIPTIVE" username="root" useOpenSSHConfig="true" />
+    </configs>
+  </component>
+</project>

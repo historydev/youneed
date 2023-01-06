@@ -51,7 +51,7 @@ export class ChatComponent implements OnInit {
 		private store: Store<{count: number, messages: MessageOutputModel[]}>,
 		private element: ElementRef,
 		private call_notification: CallNotificationService,
-		private auth: AuthenticationService,
+		public auth: AuthenticationService,
 		private modal_service: ModalService,
 		private http: HttpClient,
 	) {
@@ -372,6 +372,10 @@ export class ChatComponent implements OnInit {
 		return this._call_status;
 	}
 
+	public get online(): boolean {
+		return this.meetings_list_service._online;
+	}
+
 	public member_data(members: MemberModel[]) {
 		return members.filter(member => member.id !== this.auth.user?.id)[0];
 	}
@@ -425,10 +429,48 @@ export class ChatComponent implements OnInit {
 		textarea.style.height = `${textarea.scrollHeight-20}px`;
 	}
 
+	private read_messages() {
+		const messages_box = this.element.nativeElement.querySelector('.messages');
+
+		if(messages_box) {
+			const line = this.element.nativeElement.querySelector('.read_line');
+
+			const marginBottom = line.getBoundingClientRect().top - messages_box.getBoundingClientRect().bottom;
+
+			const options = {
+				root: messages_box,
+				rootMargin: `0px 0px ${marginBottom}px 0px`,
+				threshold: 0
+			}
+
+			const callback = function(entries: any[], observer: any) {
+				entries.forEach((entry) => {
+					console.log(entry.target);
+					if(entry.isIntersecting && !entry.target.className.includes('owner') && !entry.target.className.includes('system')) entry.target.style.background = 'green';
+				});
+			};
+
+			const observer = new IntersectionObserver(callback, options);
+
+			messages_box.querySelectorAll('.message').forEach((item: Element) => {
+				observer.observe(item);
+			});
+
+
+		}
+	}
+
 	public scroll_to(val?:number): void {
 		const messages_box = this.element.nativeElement.querySelector('.messages');
 		if(messages_box) {
-			messages_box.scrollTo(0, val || messages_box.scrollHeight);
+			this.read_messages()
+			messages_box.querySelectorAll('.message').forEach((msg: any) => {
+				console.log(msg.className.includes('sent'))
+				if(!msg.className.includes('owner') && !msg.className.includes('system') && (msg.className.includes('sent') || msg.className.includes('received'))) {
+					msg.style.background = 'blue';
+				}
+			});
+			// messages_box.scrollTo(0, val || messages_box.scrollHeight);
 			return;
 		}
 		console.error('Message box error');
@@ -467,6 +509,10 @@ export class ChatComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
+	}
+
+	ngDoCheck() {
+
 	}
 
 }

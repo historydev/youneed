@@ -38,6 +38,7 @@ export class MeetingsListComponent implements OnInit {
 	) {
 		socket.on('message', (meeting_id: string) => {
 			this.request_meeting_messages(meeting_id);
+			this.meetings_service.request_meetings();
 		});
 		this.meetings_service.meetings_element = this.element;
 	}

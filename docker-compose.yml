@@ -1,0 +1,58 @@
+version: '3.6'
+# Deploys MongoDB with customization scripts and container with Mongo client
+# https://fabianlee.org/2018/05/20/docker-using-docker-compose-to-link-a-mongodb-server-and-client/
+#
+# usage:
+# sudo docker-compose build
+# sudo docker-compose up
+
+
+services:
+  my-mongodb:
+    image: 0850fead9327
+    container_name: my-mongodb
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=you_need
+      - MONGO_INITDB_ROOT_USERNAME=
+      - MONGO_INITDB_ROOT_PASSWORD=
+    volumes:
+      # seeding scripts
+      - ./mongo-entrypoint:/docker-entrypoint-initdb.d
+      # named volumes
+      - mongodb:/data/db
+      - mongoconfig:/data/configdb
+    networks:
+      - test
+
+  my-mongoclient:
+    # build will get tagged with 'image'
+    image: 714bff47ccdf
+    container_name: my-mongoclient
+    ports:
+      - 4200:4200
+    command: node dist/static_hoster/static.js
+    networks:
+      - test
+
+  my-mongoserver:
+    # build will get tagged with 'image'
+    image: 714bff47ccdf
+    container_name: my-mongoserver
+    ports:
+      - 4000:4000
+    command: node dist/backend/server.js
+    networks:
+      - test
+    depends_on:
+      - my-mongodb
+
+volumes:
+  # default dir on Ubuntu: /var/lib/docker/volumes
+  mongodb:
+  mongoconfig:
+
+networks:
+  test:
+    driver: bridge

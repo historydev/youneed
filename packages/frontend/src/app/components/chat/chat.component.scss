@@ -173,6 +173,15 @@
 			overflow-y: hidden;
 			padding-bottom: 10px;
 
+			.read_line {
+				width: 100%;
+				height: 50px;
+				background: red;
+				position: absolute;
+				z-index: -1;
+				bottom: 50px;
+			}
+
 			.message {
 				max-width: 90%;
 				min-width: 200px;

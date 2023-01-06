@@ -6,6 +6,6 @@ esbuild.build({
     bundle: true,
     platform: 'node',
     minify: true,
-    outfile: '../../dist/static_hoster/main.js',
+    outfile: '../../dist/static_hoster/static.js',
     plugins: [nodeExternalsPlugin()],
 });

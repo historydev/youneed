@@ -1,7 +1,12 @@
 import { MongoClient } from "mongodb";
 import { QueryModel } from "../../models/databases/mongodb/query.model";
+import * as path from "path";
+import * as dotenv from 'dotenv';
+dotenv.config({path: path.resolve(__dirname, '..', '..', '..', '.env')});
 
-const url = 'mongodb://localhost:27017';
+console.log(process.env.MONGO_IP)
+
+const url = `mongodb://${process.env.MONGO_IP}`;
 const dbName = 'you_need';
 
 export async function query(collection_name: string): Promise<QueryModel> {

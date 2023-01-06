@@ -2,6 +2,7 @@ import {query} from "../databases/mongodb";
 import {v4 as uuidv4} from "uuid";
 import {get_message_with_time} from "./helpers/get_message_with_time";
 import {NextFunction, Request, Response} from "express";
+import {io} from "../main";
 
 function get_date_and_time() {
 	const months = [
@@ -57,7 +58,7 @@ export function message_controller(req: Request, res: Response, next: NextFuncti
 	query('meetings').then(data => {
 		const id = uuidv4();
 		if(receivers && receivers.length) {
-			data.collection.insertOne({
+			const meeting = {
 				id: id,
 				type: receivers.length <= 2 ? 'private' : 'group',
 				members: [...receivers, user.id],
@@ -70,8 +71,11 @@ export function message_controller(req: Request, res: Response, next: NextFuncti
 					full_date,
 					status: 'sent'
 				},
-				unread_messages_count: 0
-			}).then(console.log).catch(console.error);
+				unread_messages_count: 1
+			};
+			data.collection.insertOne(meeting).then(console.log).then(_ => {
+				receivers.forEach((member: string) => io.to(member).emit('new_meeting', meeting));
+			}).catch(console.error);
 
 			return {id, data}
 
@@ -89,8 +93,10 @@ export function message_controller(req: Request, res: Response, next: NextFuncti
 				full_date,
 				status: 'sent'
 			};
+			const meetings = await query('meetings');
+			const m = await meetings.collection.findOne({id: response.id})
 			await data.collection.insertOne(message);
-			await response.data.collection.updateOne({id: response.id}, { $set: { last_message: message }});
+			await response.data.collection.updateOne({id: response.id}, { $set: { last_message: message, unread_messages_count: m.unread_messages_count + 1 }});
 			res.send(message);
 		}).then(console.log).catch(_ => console.error('messages', _));
 

@@ -1,5 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import * as JWT from 'jsonwebtoken';
+import {io} from "../main";
 
 function user_undefined(res: Response) {
 	res.locals['user'] = undefined;
@@ -46,8 +47,6 @@ export function jwt_authentication_controller(req: Request, res: Response, next:
 				}
 
 			}
-
-			// console.log(data);
 
 			res.locals['user'] = data;
 			return next();

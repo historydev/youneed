@@ -5,13 +5,18 @@
     "packages/*"
   ],
   "scripts": {
-    "start_server": "node dist/backend/main.js",
-    "start_hoster": "node dist/static_hoster/main.js",
+    "start_server": "node dist/backend/server.js",
+    "start_hoster": "node dist/static_hoster/static.js",
     "start": "concurrently \"npm run start_server\" \"npm run start_hoster\"",
     "dev": "lerna run start",
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "params": "node test.js"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.47.1",
+    "@typescript-eslint/parser": "^5.47.1",
+    "concurrently": "^7.6.0",
+    "eslint": "^8.30.0",
     "lerna": "^6.1.0"
   }
 }

@@ -1,13 +1,7 @@
-import {Server, Socket} from "socket.io";
-import * as http from 'http';
+import {Socket} from "socket.io";
 import {query} from "../databases/mongodb";
 
-export default function(http_server: http.Server) {
-	const io = new Server(http_server, {
-		cors: {
-			origin: 'http://localhost:4200'
-		}
-	});
+export default function(io: any) {
 
 	io.on('connection', (socket: Socket) => {
 
@@ -53,6 +47,16 @@ export default function(http_server: http.Server) {
 			}, 10);
 
 		});
+
+		socket.on('you_online', (user_id: string, member_id: string) => {
+			socket.to(member_id).emit('you_online', user_id);
+			console.log('you_online', 'user:' + user_id, 'member: ' + member_id);
+		});
+
+		socket.on('im_online', (user_id: string, member_id: string) => {
+			socket.to(user_id).emit('im_online', member_id);
+			console.log('im_online', 'user:' + user_id, 'member: ' + member_id)
+		})
 
 		socket.on('stop_timer', () => {
 			clearInterval(interval);
@@ -135,6 +139,6 @@ export default function(http_server: http.Server) {
 
 	});
 
-	return
+	return io
 
 }

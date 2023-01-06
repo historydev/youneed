@@ -3,7 +3,7 @@
 	<div class="top_bar" *ngIf="selected_meeting">
 		<div class="left_side">
 			<a routerLink="/expert-tape" class="user_name">{{ member_data(selected_meeting.members).first_name }} {{ member_data(selected_meeting.members).last_name[0] }}.</a>
-			<div class="status status_online"><div class="status_circle"></div> В сети</div>
+			<div [ngClass]="['status', online ? 'status_online' : '']"><div class="status_circle"></div> {{ online ? 'В сети' : 'Не в сети' }}</div>
 		</div>
 		<div class="right_side">
 			<button *ngIf="!call_status" id="appoint_meeting"><a href="#"><fa-icon [icon]="icons.faCalendar"></fa-icon> Предложить встречу</a></button>
@@ -20,7 +20,8 @@
 	<div class="content" *ngIf="selected_meeting">
 		<div class="date">15 Января</div>
 		<div class="messages" (scroll)="on_scroll_messages()">
-			<div *ngFor="let message of messages | async" [ngClass]="['message', message.type === 'user' && message.is_owner ? 'owner' : message.type, message.status]" [id]="message.id">
+			<div class="read_line"></div>
+			<div *ngFor="let message of messages | async; let index = index" [ngClass]="['message', message.type === 'user' && message.sender_id === auth.user?.id ? 'owner' : message.type, message.status]" [id]="index">
 <!--				<div class="attachments" *ngIf="message.attachments.length">-->
 <!--					<div class="attachment" *ngFor="let attachment of message.attachments">-->
 <!--						<img [src]="attachment" alt="">-->
@@ -29,7 +30,7 @@
 				<div class="message_content">
 					<img src="https://variety.com/wp-content/uploads/2022/02/Screen-Shot-2022-05-09-at-10.04.13-AM.png?w=681&h=383&crop=1&resize=681%2C383" alt="User Image">
 					<div class="text">{{ message.message }}</div>
-					<div class="time">{{ message.time }} <fa-icon *ngIf="message.is_owner" [icon]="message_icon(message)"></fa-icon> </div>
+					<div class="time">{{ message.time }} <fa-icon *ngIf="message.sender_id === auth.user?.id" [icon]="message_icon(message)"></fa-icon> </div>
 				</div>
 			</div>
 		</div>

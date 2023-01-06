@@ -22,8 +22,25 @@ import {CallController} from "./controllers/call.controller";
 import {query} from './databases/mongodb';
 import AuthReqSchema from "./models/controllers/authentication/request.schema.json";
 import RegReqSchema from "./models/controllers/register/request.schema.json";
+import {Server} from "socket.io";
+import socket_io from "./socket.io/socket_io";
+import {meeting_controller} from "./controllers/meeting.controller";
 
-const port = process.env.PORT;
+const PORT = process.env.PORT;
+const HOST = process.env.HOST;
+const app = express();
+const http_server = http.createServer(app);
+
+export const io = socket_io(
+	new Server(
+		http_server,
+		{
+			cors: {
+				origin: HOST
+			}
+		}
+	)
+);
 
 const mongo_data = async(name: string) => {
 	const calls = await query(name);
@@ -34,10 +51,6 @@ const mongo_data = async(name: string) => {
 }
 
 (async function() {
-
-	const app = express();
-	const http_server = http.createServer(app);
-	socket_io_listener(http_server);
 
 	const { validate } = new Validator({});
 	const schema = (file_path: string) => JSON.parse(fs.readFileSync(__dirname + '/models' + file_path).toString());
@@ -50,7 +63,7 @@ const mongo_data = async(name: string) => {
 	app.use(express.static(path.resolve(__dirname, '../dist')));
 	app.use(express.json());
 	app.use(cors({
-		origin: ['http://localhost:4200'],
+		origin: [HOST],
 		exposedHeaders: ['Authentication']
 	}));
 // app.use(basic_authentication_controller);
@@ -59,7 +72,7 @@ const mongo_data = async(name: string) => {
 	app.use('/auth', brute_force_defense({freeRetries: 1}));
 // app.use('/call', brute_force_defense({freeRetries: 1}));
 	app.use('/register', brute_force_defense({freeRetries: 1}));
-	app.use('/messages', brute_force_defense({freeRetries: 80}));
+	// app.use('/messages', brute_force_defense({freeRetries: 80}));
 
 
 	new CallController(
@@ -81,6 +94,7 @@ const mongo_data = async(name: string) => {
 	app.post('/user', user_controller);
 	app.post('/meetings', meetings_controller)
 	app.post('/users', users_controller);
+	app.post('/meeting', meeting_controller);
 	// @ts-ignore
 	app.post('/auth', validate({body: AuthReqSchema}), authentication_controller);
 	// @ts-ignore
@@ -90,8 +104,8 @@ const mongo_data = async(name: string) => {
 	app.use(validation_middleware);
 
 
-	http_server.listen(port, () => {
-		console.log(`You-Need server listening on port: ${port}`);
+	http_server.listen(PORT, () => {
+		console.log(`You-Need server listening on port: ${PORT}`);
 	});
 
 })();

@@ -15,6 +15,5 @@ export async function user_controller(req: Request, res: Response, next: NextFun
 		}
 	}
 
-	res.send(res.locals['user']);
-	res.end();
+	res.status(200).send(res.locals['user']).end();
 }

@@ -6,7 +6,7 @@
 	<nav>
 		<a routerLink="/expert-tape" routerLinkActive="active"><fa-icon [icon]="icons.faUserGroup"></fa-icon> Лента Экспертов</a>
 		<div class="tip">Вы здесь! <div class="rect"></div> </div>
-		<a routerLink="/meetings" routerLinkActive="active"><fa-icon [icon]="icons.faComment"></fa-icon> <div class="notifications">23</div> Встречи</a>
+		<a routerLink="/meetings" routerLinkActive="active"><fa-icon [icon]="icons.faComment"></fa-icon> <div class="notifications">{{ unread_meetings }}</div> Встречи</a>
 		<div class="tip">Вы здесь! <div class="rect"></div> </div>
 		<a routerLink="/profile" routerLinkActive="active"><fa-icon [icon]="icons.faUserCircle"></fa-icon> Мой Профиль</a>
 		<div class="tip">Вы здесь! <div class="rect"></div> </div>

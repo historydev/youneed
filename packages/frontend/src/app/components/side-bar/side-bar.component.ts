@@ -11,6 +11,7 @@ import {
 	faQuestionCircle
 } from "@fortawesome/free-solid-svg-icons";
 import {AuthenticationService} from "../../services/authentication/authentication.service";
+import {MeetingsListService} from "../../services/meetings-list/meetings-list.service";
 
 @Component({
 	selector: 'app-side-bar',
@@ -36,7 +37,8 @@ export class SideBarComponent implements OnInit {
 
 	constructor(
 		private elem: ElementRef,
-		private auth: AuthenticationService
+		private auth: AuthenticationService,
+		private meetings_list_service: MeetingsListService
 	) {
 		auth.user_sub.subscribe(user => {
 			this._user = user;
@@ -45,6 +47,10 @@ export class SideBarComponent implements OnInit {
 
 	public get user() {
 		return this._user;
+	}
+
+	public get unread_meetings(): number {
+		return this.meetings_list_service._unread_meetings;
 	}
 
 	click() {

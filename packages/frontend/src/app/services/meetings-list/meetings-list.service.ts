@@ -18,12 +18,25 @@ export class MeetingsListService {
 	private _meetings:MeetingModel[] = [];
 	private _selected_meeting?: MeetingModel;
 	private _meetings_element?: ElementRef;
+	public _online: boolean = false;
+	public _unread_meetings: number = 0;
 
 	constructor(
 		private http: HttpClient,
 		private store: Store<{messages: MessageOutputModel[]}>,
-		private auth: AuthenticationService
+		private auth: AuthenticationService,
+		private socket: Socket
 	) {
+
+		this.socket.on('im_online', (user_id: string) => {
+			console.log('im_online', user_id);
+			this._online = true;
+		});
+
+		this.socket.on('new_meeting', (meeting: MeetingModel) => {
+			this.request_meetings();
+		});
+
 		this.store.select('messages').subscribe(messages => {
 			const meeting = this._meetings.find(m => m.id === messages[messages.length-1].meeting_id);
 			if(meeting) meeting.last_message = messages[messages.length-1];
@@ -52,7 +65,30 @@ export class MeetingsListService {
 			}
 		}).subscribe(res => {
 			if(res.body && res.body.message.length) {
-				this._meetings = res.body.message;
+				const data = res.body.message.map(el => {
+					if(el.last_message?.sender_id === this.auth.user?.id) {
+						return {
+							...el,
+							unread_messages_count: 0
+						}
+					}
+					return el
+				});
+
+				this._unread_meetings = 0;
+
+				data.forEach(el => {
+					if(el.unread_messages_count > 0) {
+						this._unread_meetings++;
+					}
+				});
+
+				const m = this._selected_meeting?.id;
+
+				this._meetings = data;
+
+				if(m) this.select_meeting(m);
+
 			}
 		}, console.error);
 
@@ -67,19 +103,58 @@ export class MeetingsListService {
 		return this._selected_meeting;
 	}
 
-	public select_meeting(id: string): void {
+	public async select_meeting(id: string): Promise<void> {
 		if(id !== 'temporary') {
 			this._receivers = [];
 		}
 		this._selected_meeting = this._meetings.find(meeting => meeting.id === id);
-		if(this._selected_meeting && this._selected_meeting.unread_messages_count > 0) this._selected_meeting.unread_messages_count = 0;
-		this._meetings_element?.nativeElement.querySelectorAll('.meeting').forEach((meeting: HTMLElement) => {
-			if(meeting.dataset['id'] === this._selected_meeting?.id) {
-				meeting.classList.add('meeting_active');
-				return;
+		console.log('SELECTED', this._selected_meeting);
+		if(this._selected_meeting) {
+
+			if(this._unread_meetings > 0) this._unread_meetings--;
+
+			if(this._selected_meeting.last_message?.sender_id === this.auth.user?.id) {
+				this._selected_meeting.unread_messages_count = 0
+			} else {
+				const token = document.cookie
+					.split('; ')
+					.find((row) => row.startsWith('yn_token='))
+					?.split('=')[1];
+
+				await this.http.post<any>(environment.server_url + '/meeting', {
+					meeting_id: this._selected_meeting.id
+				}, {
+					observe: 'response',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authentication': token || ''
+					}
+				}).subscribe(console.log, console.error);
 			}
-			meeting.classList.remove('meeting_active');
-		});
+
+			if(this._selected_meeting.unread_messages_count > 0) {
+				this._selected_meeting.unread_messages_count = 0;
+			}
+			const members = this._selected_meeting.members.filter(m => m.id !== this.auth.user?.id);
+			if(members.length > 0) {
+				console.log('you_online', this.auth.user?.id, members[0].id)
+				this._online = false;
+				this.socket.emit('you_online', this.auth.user?.id, members[0].id);
+			}
+		}
+
+		const interval = setInterval(() => {
+			if(this._meetings_element) {
+				clearInterval(interval);
+				this._meetings_element.nativeElement.querySelectorAll('.meeting').forEach((meeting: HTMLElement) => {
+					if(meeting.dataset['id'] === this._selected_meeting?.id) {
+						meeting.classList.add('meeting_active');
+						return;
+					}
+					meeting.classList.remove('meeting_active');
+				});
+			}
+		}, 200);
 	}
 
 	public set receivers(id_list: string[]) {

@@ -1,10 +1,11 @@
 
 .error {
 	width: 100%;
-	height: calc(100vh - 60px);
+	height: 100vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	flex-wrap: wrap;
 }
 
 .container {
@@ -30,23 +31,54 @@
 	}
 
 	app-chat {
+		width: 40vw;
 		height: calc(100vh - 90px);
 	}
 
-	::ng-deep .local_user_media {
+	::ng-deep app-chat {
+		.right_side {
+			button {
+				display: none !important;
+			}
 
-		.container {
-			position: absolute;
-			z-index: 999;
-			left: 0;
+			#complaint {
+				display: block !important;
+			}
 		}
-
-		video, img {
-			width: 300px;
-			height: 200px;
-		}
-
 	}
+
+	.local_user_media {
+		width: 350px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		position: absolute;
+		left: 0;
+		z-index: 99;
+	}
+
+	.remote_user_media {
+		width: 100vw;
+		height: calc(100vh - 90px);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	//::ng-deep .local_user_media {
+	//
+	//	.container {
+	//		position: absolute;
+	//		z-index: 999;
+	//		left: 0;
+	//	}
+	//
+	//	video, img {
+	//		width: 300px;
+	//		height: 200px;
+	//	}
+	//
+	//}
 
 	::ng-deep .localOffVideo {
 		.container {
@@ -58,14 +90,6 @@
 		img {
 			width: 300px;
 			height: 200px;
-		}
-	}
-
-	::ng-deep app-video {
-		video {
-			transform: scaleX(-1);
-			margin-right: auto;
-			object-fit: cover;
 		}
 	}
 
@@ -84,20 +108,21 @@
 		}
 	}
 
-	::ng-deep .remote_user_media {
-		.container {
-			width: 100%;
-			//position: absolute;
-			//left: 0;
-			//z-index: 888;
-
-			video, img {
-				width: 100%;
-				height: 100vh;
-			}
-		}
-
-	}
+	//::ng-deep .remote_user_media {
+	//	.container {
+	//		width: 100%;
+	//		z-index: 0;
+	//		//position: absolute;
+	//		//left: 0;
+	//		//z-index: 888;
+	//
+	//		video, img {
+	//			width: 100%;
+	//			height: 100vh;
+	//		}
+	//	}
+	//
+	//}
 
 	::ng-deep .remoteOffVideo {
 		.container {
@@ -109,10 +134,6 @@
 			}
 		}
 
-	}
-
-	::ng-deep app-video {
-		margin-right: auto;
 	}
 
 	::ng-deep app-button {

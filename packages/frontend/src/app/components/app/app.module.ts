@@ -149,6 +149,11 @@ export class AppModule {
 			this.notifications.add(data);
 		});
 
+		this.socket.on('you_online', (user_id: string) => {
+			console.log('YOU_ONLINE request', user_id)
+			this.socket.emit('im_online', user_id, this.auth.user?.id);
+		});
+
 		this.socket.on('connected', (/*id: string*/) => {
 			// this.Logger.info('Socket connection id', id);
 			// this.notifications.add({
@@ -158,6 +163,5 @@ export class AppModule {
 			// 	message: 'You are subscribed on ws server, your id: ' + id
 			// });
 		});
-
 	}
 }

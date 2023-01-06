@@ -1,0 +1,26 @@
+{
+    "name": "you_need_backend",
+    "version": "1.0.0",
+    "dependencies": {
+        "argon2": "^0.30.1",
+        "cors": "^2.8.5",
+        "express": "^4.18.1",
+        "express-brute": "^1.0.1",
+        "express-json-validator-middleware": "^3.0.1",
+        "jsonwebtoken": "^8.5.1",
+        "mongodb": "^4.10.0",
+        "rate-limiter-flexible": "^2.4.1",
+        "socket.io": "^4.5.1",
+        "uuid": "^9.0.0"
+    },
+    "devDependencies": {
+        "@types/express-brute": "^1.0.1",
+        "@types/jsonwebtoken": "^8.5.9",
+        "@types/uuid": "^8.3.4",
+        "dotenv": "^16.0.3",
+        "esbuild": "^0.16.10",
+        "esbuild-node-externals": "^1.6.0",
+        "typescript": "~4.9.4",
+        "nodemon": "^2.0.19"
+    }
+}

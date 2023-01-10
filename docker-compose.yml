@@ -9,7 +9,7 @@ version: '3.6'
 
 services:
   my-mongodb:
-    image: 0850fead9327
+    image: 23065a99dd4d
     container_name: my-mongodb
     ports:
       - 27017:27017
@@ -26,28 +26,38 @@ services:
     networks:
       - test
 
-  my-mongoclient:
+#  my-mongoclient:
+#    # build will get tagged with 'image'
+#    image: 714bff47ccdf
+#    container_name: my-mongoclient
+#    ports:
+#      - 4200:4200
+#    command: node dist/static_hoster/static.js
+#    networks:
+#      - test
+
+  frontend:
     # build will get tagged with 'image'
-    image: 714bff47ccdf
-    container_name: my-mongoclient
+    container_name: frontend
+    image: 18176b7a8c66
     ports:
       - 4200:4200
-    command: node dist/static_hoster/static.js
+    command: "npm run start"
     networks:
       - test
-
-  my-mongoserver:
+    depends_on:
+      - backend
+  backend:
     # build will get tagged with 'image'
-    image: 714bff47ccdf
-    container_name: my-mongoserver
+    container_name: backend
+    image: 18176b7a8c66
     ports:
       - 4000:4000
-    command: node dist/backend/server.js
+    command: "npm run start"
     networks:
       - test
     depends_on:
       - my-mongodb
-
 volumes:
   # default dir on Ubuntu: /var/lib/docker/volumes
   mongodb:

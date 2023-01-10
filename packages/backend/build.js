@@ -4,8 +4,6 @@ const path = require("path");
 const dotenv = require('dotenv');
 dotenv.config({path: path.resolve(__dirname, '.env')});
 
-console.log(process.env.MONGO_IP)
-
 esbuild.build({
     entryPoints: ['./src/main.ts'],
     bundle: true,
@@ -15,7 +13,7 @@ esbuild.build({
         "process.env.JWT_SECRET": "\"supercat\"",
         "process.env.PORT": "\"4000\"",
         "process.env.HOST": "\"http://localhost:4200\"",
-        "process.env.MONGO_IP": `\"my-mongodb\"`
+        "process.env.MONGO_IP": "\"my-mongodb\""
     },
     minify: true,
     outfile: '../../dist/backend/server.js',

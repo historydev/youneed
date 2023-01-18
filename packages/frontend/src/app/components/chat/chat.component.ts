@@ -24,6 +24,8 @@ import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {CallService} from "../../services/call/call.service";
 import {ButtonModel} from "../../models/modal/button.model";
+import {Socket} from "ngx-socket-io";
+import {change_message_status} from "../../@NGRX/actions/chat";
 
 @Component({
 	selector: 'app-chat',
@@ -54,15 +56,19 @@ export class ChatComponent implements OnInit {
 		public auth: AuthenticationService,
 		private modal_service: ModalService,
 		private http: HttpClient,
+		private socket: Socket
 	) {
-
 		const token = document.cookie
 			.split('; ')
 			.find((row) => row.startsWith('yn_token='))
 			?.split('=')[1];
 
+		socket.on('change_message_status', (msg: MessageOutputModel) => {
+			console.log('MESSAGE STATUS', msg)
+			this.store.dispatch(change_message_status({msg}));
+		});
 
-		this.chat_service.messages.subscribe(() => {
+		this.chat_service.messages.subscribe(messages => {
 			if(this.meetings_list_service.selected_meeting) {
 				const res = this.http.get<any>( environment.server_url + `/call/${this.meetings_list_service.selected_meeting.id}/1/1`, {
 					observe: 'body',
@@ -429,6 +435,18 @@ export class ChatComponent implements OnInit {
 		textarea.style.height = `${textarea.scrollHeight-20}px`;
 	}
 
+	private debounce(func: Function, timeout = 300){
+		let timer: any;
+		return (...args: any) => {
+			clearTimeout(timer);
+			timer = setTimeout(() => { func.apply(this, args); }, timeout);
+		};
+	}
+
+	private check_msg_classname(_class: string): boolean {
+		return !_class.includes('owner') && !_class.includes('system') && !_class.includes('read');
+	}
+
 	private read_messages() {
 		const messages_box = this.element.nativeElement.querySelector('.messages');
 
@@ -443,36 +461,45 @@ export class ChatComponent implements OnInit {
 				threshold: 0
 			}
 
-			const callback = function(entries: any[], observer: any) {
+			const callback = this.debounce((entries: any[], observer: any) => {
 				entries.forEach((entry) => {
-					console.log(entry.target);
-					if(entry.isIntersecting && !entry.target.className.includes('owner') && !entry.target.className.includes('system')) entry.target.style.background = 'green';
+					const _class = entry.target.className;
+					if(entry.isIntersecting && this.check_msg_classname(_class)) {
+						this.socket.emit('change_message_status', entry.target.id);
+						entry.target.className = entry.target.className.replace('sent', '').replace('received', '') + 'read';
+					}
 				});
-			};
+			}, 0);
 
-			const observer = new IntersectionObserver(callback, options);
-
-			messages_box.querySelectorAll('.message').forEach((item: Element) => {
-				observer.observe(item);
-			});
-
+			return {callback, options};
 
 		}
+
+		return {};
 	}
 
 	public scroll_to(val?:number): void {
 		const messages_box = this.element.nativeElement.querySelector('.messages');
 		if(messages_box) {
-			this.read_messages()
-			messages_box.querySelectorAll('.message').forEach((msg: any) => {
-				console.log(msg.className.includes('sent'))
-				if(!msg.className.includes('owner') && !msg.className.includes('system') && (msg.className.includes('sent') || msg.className.includes('received'))) {
-					msg.style.background = 'blue';
+			const {callback, options} = this.read_messages();
+			const messages = messages_box.querySelectorAll('.message');
+			if(callback && options) {
+				const observer = new IntersectionObserver(callback, options);
+				for (let i = 0; i < messages.length; i++) {
+					observer.observe(messages[i]);
 				}
-			});
-			// messages_box.scrollTo(0, val || messages_box.scrollHeight);
+			}
+			const unread = [...messages].filter((msg: Element) => !msg.className.includes('owner') && !msg.className.includes('read') && !msg.className.includes('system'));
+			if(unread.length > 0) {
+				unread[0].querySelector('.text').innerText = 'HERE';
+				console.log(unread[0].offsetTop-messages_box.clientHeight, unread[0].querySelector('.text').innerText);
+				messages_box.scrollTo(0, unread[0].offsetTop-messages_box.clientHeight+50);
+			} else {
+				messages_box.scrollTo(0, val || messages_box.scrollHeight);
+			}
 			return;
 		}
+
 		console.error('Message box error');
 	}
 

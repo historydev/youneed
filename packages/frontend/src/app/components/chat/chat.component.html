@@ -21,7 +21,8 @@
 		<div class="date">15 Января</div>
 		<div class="messages" (scroll)="on_scroll_messages()">
 			<div class="read_line"></div>
-			<div *ngFor="let message of messages | async; let index = index" [ngClass]="['message', message.type === 'user' && message.sender_id === auth.user?.id ? 'owner' : message.type, message.status]" [id]="index">
+
+			<div *ngFor="let message of messages | async; let index = index" [ngClass]="['message', message.type === 'user' && message.sender_id === auth.user?.id ? 'owner' : message.type, message.status]" [id]="message._id">
 <!--				<div class="attachments" *ngIf="message.attachments.length">-->
 <!--					<div class="attachment" *ngFor="let attachment of message.attachments">-->
 <!--						<img [src]="attachment" alt="">-->

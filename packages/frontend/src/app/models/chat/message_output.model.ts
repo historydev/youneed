@@ -1,4 +1,5 @@
 export interface MessageOutputModel {
+	_id: string;
 	id: string;
 	type: 'user' | 'system';
 	meeting_id: string;

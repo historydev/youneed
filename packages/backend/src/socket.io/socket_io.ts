@@ -1,13 +1,27 @@
 import {Socket} from "socket.io";
 import {query} from "../databases/mongodb";
+import {ObjectId} from "mongodb";
 
-export default function(io: any) {
+export default function (io: any) {
 
-	io.on('connection', (socket: Socket) => {
+	io.on('connection', async (socket: Socket) => {
+
+		const messages = await query('messages');
 
 		console.log(socket.id, ' connected')
 
 		let interval:any;
+		socket.on('change_message_status', async (id: string) => {
+			console.log('change_message_status', id);
+			const message = await messages.collection.findOne({_id: new ObjectId(id)});
+			console.log(message);
+			const updated = await messages.collection.updateOne({_id: new ObjectId(id)}, {$set: { status: 'read' }});
+			console.log(updated);
+			socket.to(message.sender_id).emit('change_message_status', {
+				...message,
+				status: 'read'
+			});
+		});
 
 		socket.on('start_timer', (data) => {
 			const timer = {
@@ -55,8 +69,8 @@ export default function(io: any) {
 
 		socket.on('im_online', (user_id: string, member_id: string) => {
 			socket.to(user_id).emit('im_online', member_id);
-			console.log('im_online', 'user:' + user_id, 'member: ' + member_id)
-		})
+			console.log('im_online', 'user:' + user_id, 'member: ' + member_id);
+		});
 
 		socket.on('stop_timer', () => {
 			clearInterval(interval);

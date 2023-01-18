@@ -2,8 +2,7 @@ import express from 'express';
 import * as http from "http";
 import * as path from "path";
 import * as dotenv from 'dotenv';
-dotenv.config({path: path.resolve(__dirname, './.env')});
-import socket_io_listener from "./socket.io/socket_io";
+dotenv.config({path: path.resolve(__dirname, '..', 'environment', '.env')});
 import cors from 'cors';
 import * as fs from "fs";
 import {Validator} from "express-json-validator-middleware";
@@ -87,7 +86,7 @@ const mongo_data = async(name: string) => {
 		},
 		await mongo_data('calls'),
 		{
-			// 'post': validate({body: schema('/controllers/authentication/request.schema.json')}),
+			// 'post': validate({body: schema(path.resolve('/controllers/authentication/request.schema.json'))}),
 		}
 	);
 

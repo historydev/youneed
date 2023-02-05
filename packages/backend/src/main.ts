@@ -91,7 +91,7 @@ const mongo_data = async(name: string) => {
 	);
 
 	app.post('/user', user_controller);
-	app.post('/meetings', meetings_controller)
+	app.post('/meetings', meetings_controller);
 	app.post('/users', users_controller);
 	app.post('/meeting', meeting_controller);
 	// @ts-ignore

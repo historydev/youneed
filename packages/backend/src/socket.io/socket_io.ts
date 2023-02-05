@@ -12,10 +12,10 @@ export default function (io: any) {
 
 		let interval:any;
 		socket.on('change_message_status', async (id: string) => {
-			console.log('change_message_status', id);
-			const message = await messages.collection.findOne({_id: new ObjectId(id)});
+			const _id = id.replace('id', '');
+			const message = await messages.collection.findOne({_id: new ObjectId(_id)});
 			console.log(message);
-			const updated = await messages.collection.updateOne({_id: new ObjectId(id)}, {$set: { status: 'read' }});
+			const updated = await messages.collection.updateOne({_id: new ObjectId(_id)}, {$set: { status: 'read' }});
 			console.log(updated);
 			socket.to(message.sender_id).emit('change_message_status', {
 				...message,

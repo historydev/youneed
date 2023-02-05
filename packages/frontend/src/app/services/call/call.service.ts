@@ -9,7 +9,7 @@ import {Socket} from "ngx-socket-io";
 import {MediaStreamElementModel} from "../../models/call/media-stream-element.model";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
-import {MeetingsListService} from "../../components/meetings/services/meetings-list/meetings-list.service";
+import {MeetingsService} from "../../components/meetings/services/meetings/meetings.service";
 
 @Injectable({
 	providedIn: 'root'
@@ -35,7 +35,7 @@ export class CallService {
 		private route: ActivatedRoute,
 		private socket: Socket,
 		private http: HttpClient,
-		private meeting_list_service: MeetingsListService
+		private meeting_list_service: MeetingsService
 	) {
 		user_media_p2p.socket_input_name = 'p2p_user_media_message';
 		//display_media_p2p.socket_input_name = 'p2p_display_media_message';

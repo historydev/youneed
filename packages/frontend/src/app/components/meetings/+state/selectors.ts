@@ -4,11 +4,11 @@ import {MeetingsStateModel} from "./meetings.models";
 
 export const meetingsFeatureKey = '[Meetings/Api] Key';
 
-export const selectFeature =
+export const selectMeetingsState =
 	createFeatureSelector<MeetingsStateModel>(meetingsFeatureKey);
 
 const selector = <T>(mapping: (state: MeetingsStateModel) => T) =>
-	createSelector(selectFeature, mapping);
+	createSelector(selectMeetingsState, mapping);
 
 const { selectAll, selectEntities } = adapter.getSelectors();
 

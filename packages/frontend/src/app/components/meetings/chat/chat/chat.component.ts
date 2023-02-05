@@ -13,16 +13,16 @@ import {
 import {Store} from "@ngrx/store";
 import {Socket} from "ngx-socket-io";
 import {Observable} from "rxjs";
-import {HttpClient} from "@angular/common/http";
 import {MeetingModel, MemberModel} from "../../+state/meetings.models";
 import {CallNotificationService} from "../../../../services/call-notification/call-notification.service";
 import {ModalService} from "../../../../services/modal-service/modal.service";
 import {MessageOutputModel} from "../../../../models/chat/message_output.model";
 import {ButtonModel} from "../../../../models/modal/button.model";
 import {AuthenticationService} from "../../../../services/authentication/authentication.service";
-import {MeetingsListService} from "../../services/meetings-list/meetings-list.service";
+import {MeetingsService} from "../../services/meetings/meetings.service";
 import {ChatService} from "../services/chat/chat.service";
 import {environment} from "../../../../../environments/environment";
+import {HttpClientService} from "../../../../services/httpClient/http-client.service";
 
 @Component({
 	selector: 'app-chat',
@@ -44,34 +44,22 @@ export class ChatComponent implements OnInit {
 	}
 
 	private _call_status: 'expert' | 'client' | false = false;
-	private readonly _messages: MessageOutputModel[] = [];
-	private readonly _messages_obs: Observable<MessageOutputModel[]>;
-	public _selected_meeting: MeetingModel[] = [];
-	private updater:any = [];
 
 	constructor(
-		private meetings_list_service: MeetingsListService,
+		private meetings_list_service: MeetingsService,
 		private chat_service: ChatService,
 		private store: Store<{ count: number, messages: MessageOutputModel[] }>,
 		private element: ElementRef,
 		private call_notification: CallNotificationService,
 		public auth: AuthenticationService,
 		private modal_service: ModalService,
-		private http: HttpClient,
+		private http: HttpClientService,
 		private socket: Socket
 	) {
-		this._messages_obs = chat_service.messages_obs;
 		const token = document.cookie
 			.split('; ')
 			.find((row) => row.startsWith('yn_token='))
 			?.split('=')[1];
-		this.meetings_list_service.selected_meeting_obs.subscribe(meeting => {
-			if(!this._selected_meeting[0]) {
-				this._selected_meeting.push(meeting);
-				console.log("M", meeting);
-				this.updater.push(1);
-			}
-		});
 
 		socket.on('change_message_status', (msg: MessageOutputModel) => {
 			console.log('MESSAGE STATUS', msg);
@@ -88,16 +76,7 @@ export class ChatComponent implements OnInit {
 
 		this.chat_service.messages_obs.subscribe(messages => {
 			if (this.meetings_list_service.selected_meeting) {
-				console.log('selected', this.meetings_list_service.selected_meeting);
-				console.log("MESSAGES", messages);
-				this._messages.push(...messages.filter(({id}) => !this._messages.find(msg => msg.id === id)));
-				console.log(this._messages);
-				const res = this.http.get<any>(environment.server_url + `/call/${this.meetings_list_service.selected_meeting.id}/1/1`, {
-					observe: 'body',
-					headers: {
-						'Authentication': token || ''
-					}
-				});
+				const res = this.http.get<any>(environment.server_url + `/call/${this.meetings_list_service.selected_meeting.id}/1/1`);
 				res.subscribe(({data}) => {
 					console.log(' MEETINGS DATA', data);
 					if (data.length > 0) {

@@ -5,7 +5,7 @@ import { meetingsReducer } from './+state/reducers';
 import { meetingsFeatureKey } from './+state/selectors';
 import {MeetingsComponent} from "./meetings/meetings.component";
 import {ChatService} from "./chat/services/chat/chat.service";
-import {MeetingsListService} from "./services/meetings-list/meetings-list.service";
+import {MeetingsService} from "./services/meetings/meetings.service";
 import {MeetingComponent} from "./meeting/meeting.component";
 import {MeetingsListComponent} from "./meetings-list/meetings-list.component";
 import {ChatComponent} from "./chat/chat/chat.component";
@@ -25,7 +25,7 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 	],
 	providers: [
 		ChatService,
-		MeetingsListService
+		MeetingsService
 	],
 	exports: [
 		MeetingsComponent,

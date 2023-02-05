@@ -1,6 +1,6 @@
 import { createEntityAdapter, EntityAdapter } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
-import {AddMeetings, SelectMeeting} from "./actions";
+import {AddMeetings, SetSelectedMeeting} from "./actions";
 import {MeetingModel, MeetingsStateModel} from "./meetings.models";
 
 export const adapter: EntityAdapter<MeetingModel> =
@@ -16,7 +16,7 @@ export const initialState: MeetingsStateModel = adapter.getInitialState({
 
 export const meetingsReducer = createReducer(
 	initialState,
-	on(SelectMeeting, (state, {id}) => {
+	on(SetSelectedMeeting, (state, {id}) => {
 		return {...state, selectedMeetingId: id};
 	}),
 	on(AddMeetings, (state, {meetings}) => {

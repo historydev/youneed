@@ -5,7 +5,7 @@ import {AppComponent} from './app.component';
 import {CallComponent} from '../call/call.component';
 import {VideoComponent} from '../video/video.component';
 import {SearchEngineComponent} from '../search-engine/search-engine.component';
-import {KeysPipe} from "../../pipes/keys.pipe";
+import {KeysPipe} from "../../shared/pipes/keys.pipe";
 import { HeaderComponent } from '../header/header.component';
 import {SocketIoModule, SocketIoConfig, Socket} from 'ngx-socket-io';
 import {LoggerService} from "../../services/logger/logger.service";
@@ -31,7 +31,7 @@ import { ExpertTapeComponent } from '../expert-tape/expert-tape.component';
 import { ModalComponent } from '../modal/modal.component';
 import {TimerComponent} from "../timer/timer.component";
 import {MeetingsModule} from "../meetings/meetings.module";
-import {MeetingsListService} from "../meetings/services/meetings-list/meetings-list.service";
+import {MeetingsService} from "../meetings/services/meetings/meetings.service";
 import {MeetingsComponent} from "../meetings/meetings/meetings.component";
 
 
@@ -99,7 +99,7 @@ export class AppModule {
 		private router: Router,
 		private auth: AuthenticationService,
 		private location: Location,
-		private meetings_service: MeetingsListService
+		private meetings_service: MeetingsService
 	) {
 
 		if(!auth.user) auth.check_user();

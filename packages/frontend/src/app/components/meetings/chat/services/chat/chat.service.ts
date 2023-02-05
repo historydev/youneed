@@ -5,7 +5,7 @@ import {Socket} from "ngx-socket-io";
 import {HttpClient, HttpResponse} from "@angular/common/http";
 import {add_message} from "../../../../../@NGRX/actions/chat";
 import {MessageOutputModel} from "../../../../../models/chat/message_output.model";
-import {MeetingsListService} from "../../../services/meetings-list/meetings-list.service";
+import {MeetingsService} from "../../../services/meetings/meetings.service";
 import {MessageInputModel} from "../../../../../models/chat/message_input.model";
 import {environment} from "../../../../../../environments/environment";
 import {UserModel} from "../../../../../models/chat/user.model";
@@ -20,7 +20,7 @@ export class ChatService {
 
 	constructor(
 		private store: Store<{messages: MessageOutputModel[]}>,
-		private meetings_list_service: MeetingsListService,
+		private meetings_list_service: MeetingsService,
 		private socket: Socket,
 		private http: HttpClient
 	) {

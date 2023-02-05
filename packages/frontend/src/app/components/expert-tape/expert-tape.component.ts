@@ -6,7 +6,7 @@ import {environment} from "../../../environments/environment";
 import {Router} from "@angular/router";
 import {AuthenticationService} from "../../services/authentication/authentication.service";
 import {CallNotificationService} from "../../services/call-notification/call-notification.service";
-import {MeetingsListService} from "../meetings/services/meetings-list/meetings-list.service";
+import {MeetingsService} from "../meetings/services/meetings/meetings.service";
 
 @Component({
 	selector: 'app-expert-tape',
@@ -19,7 +19,7 @@ export class ExpertTapeComponent implements OnInit {
 
 	constructor(
 		private http: HttpClient,
-		private meetings_list_service: MeetingsListService,
+		private meetings_list_service: MeetingsService,
 		private router: Router,
 		private auth: AuthenticationService
 	) {

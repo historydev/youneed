@@ -8,13 +8,13 @@ import {set_messages} from "../../../@NGRX/actions/chat";
 import {selectAllMeetings, selectSelectedMeetingId} from "../+state/selectors";
 import {MeetingModel, MemberModel} from "../+state/meetings.models";
 import {MessageOutputModel} from "../../../models/chat/message_output.model";
-import {AddMeetings, SelectMeeting} from "../+state/actions";
+import {AddMeetings, SetSelectedMeeting} from "../+state/actions";
 import {AuthenticationService} from "../../../services/authentication/authentication.service";
-import {MeetingsListService} from "../services/meetings-list/meetings-list.service";
+import {MeetingsService} from "../services/meetings/meetings.service";
 import {environment} from "../../../../environments/environment";
 
 @Component({
-	selector: 'app-meetings-list',
+	selector: 'app-meetings',
 	templateUrl: './meetings-list.component.html',
 	styleUrls: ['./meetings-list.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush
@@ -30,7 +30,7 @@ export class MeetingsListComponent implements OnInit {
 	}
 
 	constructor(
-		private meetings_service: MeetingsListService,
+		private meetings_service: MeetingsService,
 		private element: ElementRef,
 		private store: Store,
 		private socket: Socket,
@@ -41,7 +41,6 @@ export class MeetingsListComponent implements OnInit {
 			this.request_meeting_messages(meeting_id);
 			this.meetings_service.request_meetings();
 		});
-		this.meetings_service.meetings_element = this.element;
 	}
 
 	public member_data(members: MemberModel[]) {
@@ -78,7 +77,7 @@ export class MeetingsListComponent implements OnInit {
 	}
 
 	public select_meeting(id: string): void {
-		this.store.dispatch(SelectMeeting({id}));
+		this.store.dispatch(SetSelectedMeeting({id}));
 	}
 
 	public message_icon(message: MessageOutputModel): IconDefinition {
@@ -101,27 +100,6 @@ export class MeetingsListComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-
-		const token = document.cookie
-			.split('; ')
-			.find((row) => row.startsWith('yn_token='))
-			?.split('=')[1];
-
-		this.meetings_service.request_meetings().then(_ => {
-			this.meetings_service.meetings.forEach(meeting => {
-				const res = this.http.get<any>( environment.server_url + `/call/${meeting.id}/1/1`, {
-					observe: 'body',
-					headers: {
-						'Authentication': token || ''
-					}
-				});
-				res.subscribe(({data}) => {
-					if(data.length > 0) {
-						meeting.last_call_status = data[0].status;
-					}
-				}, console.error);
-			});
-		});
 
 		this.$selectedMeetingId.subscribe(id => {
 			if(id) {

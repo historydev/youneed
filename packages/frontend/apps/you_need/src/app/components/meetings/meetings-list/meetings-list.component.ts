@@ -15,7 +15,7 @@ import {selectAllMeetings, selectMeeting, selectSelectedMeetingId} from "../+sta
 import {AddMeetings, SelectMeeting} from "../+state/actions";
 
 @Component({
-	selector: 'app-meetings-list',
+	selector: 'app-meetings',
 	templateUrl: './meetings-list.component.html',
 	styleUrls: ['./meetings-list.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush

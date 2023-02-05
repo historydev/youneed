@@ -1,5 +1,5 @@
 import { PipeTransform, Pipe } from '@angular/core';
-import {LogsModel} from "../models/logger/logs.model";
+import {LogsModel} from "../../models/logger/logs.model";
 
 @Pipe({name: 'keys'})
 export class KeysPipe implements PipeTransform {

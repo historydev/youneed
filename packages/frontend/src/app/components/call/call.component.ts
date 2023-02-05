@@ -22,7 +22,7 @@ import {Socket} from "ngx-socket-io";
 import {environment} from "../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {ChatService} from "../meetings/chat/services/chat/chat.service";
-import {MeetingsListService} from "../meetings/services/meetings-list/meetings-list.service";
+import {MeetingsService} from "../meetings/services/meetings/meetings.service";
 
 @Component({
 	selector: 'app-call',
@@ -56,7 +56,7 @@ export class CallComponent implements OnInit {
 		private call_notification: CallNotificationService,
 		private auth: AuthenticationService,
 		private chat_service: ChatService,
-		private meeting_service: MeetingsListService,
+		private meeting_service: MeetingsService,
 		private socket: Socket,
 		private http: HttpClient,
 	) {

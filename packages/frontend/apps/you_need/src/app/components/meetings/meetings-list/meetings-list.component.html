@@ -1,0 +1,15 @@
+<div [ngClass]="['container', !meetings.length && 'meetings_empty' || '' ]">
+
+	{{ $meetings | async | json }}
+
+	<div *ngIf="!meetings.length" class="empty_text">
+		<div class="text">
+			Список встреч пуст, напишите первым!
+		</div>
+		<br>
+		<button>
+			<a routerLink="/expert-tape">Выбрать эксперта</a>
+		</button>
+	</div>
+	<app-meeting *ngFor="let meeting of $meetings | async" [meeting]="meeting"></app-meeting>
+</div>

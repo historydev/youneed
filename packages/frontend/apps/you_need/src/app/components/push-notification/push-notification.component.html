@@ -1,0 +1,8 @@
+<div class="container">
+	<div class="notification" *ngFor="let notification of notifications.list">
+		<div class="title">{{ notification.title }}
+			<div class="close" (click)="notifications.remove(notification.id)">x</div>
+		</div>
+		<div class="message">{{ notification.message }}</div>
+	</div>
+</div>

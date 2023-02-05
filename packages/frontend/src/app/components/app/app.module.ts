@@ -19,9 +19,6 @@ import {NotificationModel} from "../../models/push-notification/notification.mod
 import { CallNotificationComponent } from '../call-notification/call-notification.component';
 import { StoreModule } from '@ngrx/store';
 import {P2pConnectorService} from "../../services/p2p/p2p-connector.service";
-import {MeetingsComponent} from "../meetings/meetings.component";
-import {MeetingsListComponent} from "../meetings-list/meetings-list.component";
-import {ChatComponent} from "../chat/chat.component";
 import {SideBarComponent} from "../side-bar/side-bar.component";
 import all from '../../@NGRX/reducers/all';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
@@ -31,10 +28,11 @@ import {HttpClientModule} from "@angular/common/http";
 import {AuthenticationService} from "../../services/authentication/authentication.service";
 import {Location} from "@angular/common";
 import { ExpertTapeComponent } from '../expert-tape/expert-tape.component';
-import {MeetingsListService} from "../../services/meetings-list/meetings-list.service";
 import { ModalComponent } from '../modal/modal.component';
-import {ChatService} from "../../services/chat/chat.service";
 import {TimerComponent} from "../timer/timer.component";
+import {MeetingsModule} from "../meetings/meetings.module";
+import {MeetingsListService} from "../meetings/services/meetings-list/meetings-list.service";
+import {MeetingsComponent} from "../meetings/meetings/meetings.component";
 
 
 const config: SocketIoConfig = { url: environment.server_url, options: {} };
@@ -59,9 +57,6 @@ const routes = [
 		PushNotificationComponent,
 		HomeComponent,
   		CallNotificationComponent,
-		MeetingsComponent,
-		MeetingsListComponent,
-		ChatComponent,
 		SideBarComponent,
 		AuthenticationComponent,
   		ExpertTapeComponent,
@@ -77,7 +72,8 @@ const routes = [
 		FormsModule,
 		StoreModule.forRoot(all, {}),
 		ReactiveFormsModule,
-		HttpClientModule
+		HttpClientModule,
+		MeetingsModule,
 	],
 	providers: [
 		LoggerService,
@@ -89,9 +85,7 @@ const routes = [
 			provide: 'display_media',
 			useClass: P2pConnectorService
 		},
-		AuthenticationService,
-		MeetingsListService,
-		ChatService
+		AuthenticationService
 	],
 	bootstrap: [AppComponent]
 })

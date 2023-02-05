@@ -18,11 +18,11 @@ import {LoggerService} from "../../services/logger/logger.service";
 import {ActivatedRoute} from "@angular/router";
 import {CallNotificationService} from "../../services/call-notification/call-notification.service";
 import {AuthenticationService} from "../../services/authentication/authentication.service";
-import {ChatService} from "../../services/chat/chat.service";
-import {MeetingsListService} from "../../services/meetings-list/meetings-list.service";
 import {Socket} from "ngx-socket-io";
 import {environment} from "../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
+import {ChatService} from "../meetings/chat/services/chat/chat.service";
+import {MeetingsListService} from "../meetings/services/meetings-list/meetings-list.service";
 
 @Component({
 	selector: 'app-call',

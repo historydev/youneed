@@ -3,10 +3,10 @@ import {HttpClient} from "@angular/common/http";
 import {UserModel} from "../../models/expert-tape/user.model";
 import {UsersResponseModel} from "../../models/expert-tape/users_response.model";
 import {environment} from "../../../environments/environment";
-import {MeetingsListService} from "../../services/meetings-list/meetings-list.service";
 import {Router} from "@angular/router";
 import {AuthenticationService} from "../../services/authentication/authentication.service";
 import {CallNotificationService} from "../../services/call-notification/call-notification.service";
+import {MeetingsListService} from "../meetings/services/meetings-list/meetings-list.service";
 
 @Component({
 	selector: 'app-expert-tape',

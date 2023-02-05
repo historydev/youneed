@@ -1,0 +1,82 @@
+.container {
+	width: 100%;
+	min-height: calc(100vh - 61px);
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	background: #f2f2f2;
+
+	.user {
+		width: 400px;
+		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
+		flex-wrap: wrap;
+		align-content: flex-start;
+		background: #fff;
+		margin-left: 1%;
+		margin-top: 20px;
+		border-radius: 4px;
+		padding: 20px 0 0 20px;
+
+		.left_side {
+			width: 90px;
+
+			img {
+				width: 70px;
+				height: 70px;
+				border-radius: 50%;
+				background: #f2f2f2;
+			}
+
+		}
+
+		.right_side {
+			width: calc(100% - 90px);
+
+			.user_name {
+				width: 100%;
+				height: 30px;
+				color: #0D4489;
+				font-weight: bold;
+			}
+
+			.service_price {
+				width: 100%;
+				height: 30px;
+				color: #4F4F4F;
+			}
+
+		}
+
+		.bottom {
+			width: 100%;
+			display: flex;
+			justify-content: flex-end;
+			align-items: flex-end;
+			flex-direction: column;
+
+			button {
+				min-width: 200px;
+				height: 40px;
+				background: #3e6af1;
+				color: #fff;
+				font-weight: bold;
+				border: 0;
+				transition-property: min-width;
+				transition-duration: 0.5s;
+				transition-delay: 0s;
+				border-bottom-right-radius: 4px;
+			}
+
+			button:hover {
+				min-width: 230px;
+				transition-delay: 0s;
+			}
+
+		}
+
+	}
+
+}

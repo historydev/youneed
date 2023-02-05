@@ -1,0 +1,53 @@
+<div class="container">
+	<div class="modal" *ngFor="let modal of modals;" [id]="modal.id">
+		<div class="title">{{ modal.title }}</div>
+		<div class="content" *ngIf="modal.text_content">
+			{{ modal.text_content }}
+			<div class="complaint" *ngIf="modal.title === 'Подать жалобу'">
+				<div class="complaint_title">Основания для возврата средств:</div>
+				<li>Эксперт грубо нарушал простые <a href="https://you-need.ru/privacy"> правила </a> делового общения на You-need;</li>
+				<li>Эксперт намеренно тянул время;</li>
+				<li>Эксперт уходил от ответов;</li>
+				<li>Эксперт не владеет темой консультации;</li>
+				<li>Эксперт не соответствует заявленному уровню экспертности.</li>
+				<textarea cols="30" rows="10" placeholder="Напишите здесь, почему Вы считаете, что консультация оказалась бесполезной?"></textarea>
+			</div>
+			<div class="expert_rating" *ngIf="modal.title === 'Оценка Эксперта'">
+
+				<div class="rating_item" *ngFor="let name of rating_fields; index as i">
+					<div class="rating_title">
+						{{ name }}
+					</div>
+					<div class="review_stars">
+						<input [id]="'start-4'+i" type="radio" name="stars"/>
+						<label title="Отлично" [for]="'start-4'+i">
+							<fa-icon [icon]="star"></fa-icon>
+						</label>
+						<input [id]="'start-3'+i" type="radio" name="stars"/>
+						<label title="Хорошо" [for]="'start-3'+i">
+							<fa-icon [icon]="star"></fa-icon>
+						</label>
+						<input [id]="'start-2'+i" type="radio" name="stars" />
+						<label title="Нормально" [for]="'start-2'+i">
+							<fa-icon [icon]="star"></fa-icon>
+						</label>
+						<input [id]="'start-1'+i" type="radio" name="stars"/>
+						<label title="Плохо" [for]="'start-1'+i">
+							<fa-icon [icon]="star"></fa-icon>
+						</label>
+						<input [id]="'start-0'+i" type="radio" name="stars"/>
+						<label title="Ужасно" [id]="'start-0'+i">
+							<fa-icon [icon]="star"></fa-icon>
+						</label>
+					</div>
+				</div>
+
+				<textarea cols="30" rows="10" placeholder="Пожалуйста, оставьте отзыв о Эксперте."></textarea>
+
+			</div>
+		</div>
+		<div class="buttons">
+			<button *ngFor="let button of modal.buttons" [ngClass]="button.style" (click)="button.onclick(); remove_modal(modal.id)">{{ button.name }}</button>
+		</div>
+	</div>
+</div>

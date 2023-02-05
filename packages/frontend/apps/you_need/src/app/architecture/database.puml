@@ -1,0 +1,57 @@
+@startuml
+
+title MongoDB - you_need
+
+interface CallModel {
+	id: string;
+	type: 'private' | 'group';
+	date: string;
+	time: string;
+	full_date: Date;
+	expires: Date;
+	members: string[];
+	experts?: string[];
+	status: 'active' | 'not_active' | 'finished';
+}
+
+interface MeetingMemberModel {
+	id:string;
+	image:string;
+	first_name:string;
+	last_name:string;
+}
+
+interface MeetingModel {
+	id:string;
+	members:MeetingMemberModel[];
+	last_message:MessageModel;
+	unread_messages_count:number;
+	type: 'private' | 'group';
+}
+
+interface MessageModel {
+	id:string;
+	meeting_id:string;
+	sender_id:string;
+	message:string;
+	attachments:[];
+	date:Date;
+	status: 'sent' | 'received' | 'read';
+}
+
+interface UserModel {
+	id:string;
+	first_name:string;
+	last_name:string;
+	email:string;
+	password:string;
+	service_price:number;
+	access:boolean;
+	access_rights: 'user' | 'administrator' | 'moderator';
+}
+
+
+MeetingMemberModel -[#red]-* MeetingModel::members
+MessageModel -[#red]-* MeetingModel::last_message
+
+@enduml

@@ -187,35 +187,35 @@ export class CallService {
 
 				if(this.user_media_p2p.is_call_creator) {
 
-					const token = document.cookie
-						.split('; ')
-						.find((row) => row.startsWith('yn_token='))
-						?.split('=')[1];
-
-					const call = this.http.get<any>(`${environment.server_url}/call/${this.meeting_list_service.selected_meeting?.id}/1/1`, {
-						observe: 'body',
-						headers: {
-							'Authentication': token || ''
-						}
-					});
-
-					call.subscribe(({data}) => {
-						console.log('CALL DATA', data);
-						if(data.length > 0 && data[0].status === 'finished') {
-							const res = this.http.post<any>(`${environment.server_url}/call`, {
-								meeting_id: this.meeting_list_service.selected_meeting?.id || ''
-							}, {
-								observe: 'body',
-								headers: {
-									'Authentication': token || ''
-								}
-							});
-
-							res.subscribe(data => {
-								console.log(data);
-							}, console.error);
-						}
-					}, console.error);
+					// const token = document.cookie
+					// 	.split('; ')
+					// 	.find((row) => row.startsWith('yn_token='))
+					// 	?.split('=')[1];
+					//
+					// const call = this.http.get<any>(`${environment.server_url}/call/${this.meeting_list_service.selected_meeting?.id}/1/1`, {
+					// 	observe: 'body',
+					// 	headers: {
+					// 		'Authentication': token || ''
+					// 	}
+					// });
+					//
+					// call.subscribe(({data}) => {
+					// 	console.log('CALL DATA', data);
+					// 	if(data.length > 0 && data[0].status === 'finished') {
+					// 		const res = this.http.post<any>(`${environment.server_url}/call`, {
+					// 			meeting_id: this.meeting_list_service.selected_meeting?.id || ''
+					// 		}, {
+					// 			observe: 'body',
+					// 			headers: {
+					// 				'Authentication': token || ''
+					// 			}
+					// 		});
+					//
+					// 		res.subscribe(data => {
+					// 			console.log(data);
+					// 		}, console.error);
+					// 	}
+					// }, console.error);
 				}
 
 				this.Logger.error('call-service', 'interval cleared', this.user_media_p2p.remote_media_stream.getTracks());

@@ -85,7 +85,7 @@ export class P2pConnectorService {
 				});
 				if(this._is_call_creator) {
 					this.Logger.debug('p2p-connector-service', 'try connect');
-					this.chat_service.send_message('Начало звонка', 'system');
+					// this.chat_service.send_message('Начало звонка', 'system');
 					this.socket.emit(this._socket_input_name, { id: this._receiver_id, type: 'connected', message: {} });
 				}
 				clearInterval(interval);

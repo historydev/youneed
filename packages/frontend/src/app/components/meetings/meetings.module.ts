@@ -10,6 +10,9 @@ import {MeetingComponent} from "./meeting/meeting.component";
 import {MeetingsListComponent} from "./meetings-list/meetings-list.component";
 import {ChatComponent} from "./chat/chat/chat.component";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {RouterLinkWithHref} from "@angular/router";
+import { EffectsModule } from '@ngrx/effects';
+import {MeetingsEffects} from "./+state/effects";
 
 @NgModule({
 	declarations: [
@@ -18,11 +21,13 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 		MeetingsListComponent,
 		ChatComponent,
 	],
-	imports: [
-		CommonModule,
-		StoreModule.forFeature(meetingsFeatureKey, meetingsReducer),
-		FontAwesomeModule,
-	],
+    imports: [
+        CommonModule,
+        StoreModule.forFeature(meetingsFeatureKey, meetingsReducer),
+		EffectsModule.forFeature([MeetingsEffects]),
+        FontAwesomeModule,
+        RouterLinkWithHref,
+    ],
 	providers: [
 		ChatService,
 		MeetingsService

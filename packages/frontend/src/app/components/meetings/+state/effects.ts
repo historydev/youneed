@@ -7,6 +7,7 @@ import * as fromMeetingsActions from './actions';
 import * as fromMeetingsSelectors from './selectors';
 import {MeetingsService} from "../services/meetings/meetings.service";
 import {map} from "rxjs";
+import {addMeetings} from "./actions";
 
 @Injectable()
 export class MeetingsEffects {
@@ -14,21 +15,23 @@ export class MeetingsEffects {
 
 	readonly loadMeetings$ = createEffect(() =>
 		this.actions$.pipe(
-			ofType(fromMeetingsActions.LoadMeetings),
+			ofType(fromMeetingsActions.loadMeetings),
 			concatLatestFrom(action => this.store.select(fromMeetingsSelectors.selectMeetingsState)),
 			fetch({
 				run: (action, state) => {
-					return this.meetingsService.request_meetings().pipe(map((feed) => {
-						return fromMeetingsActions.LoadSuccess({meetings: feed || []});
+					return this.meetingsService.getMeetings().pipe(map((feed) => {
+						this.store.dispatch(addMeetings({meetings: feed || []}));
+						return fromMeetingsActions.loadSuccess({meetings: feed || []});
 					}));
 				},
 				onError: (action, err) => {
-
+					return fromMeetingsActions.loadFailure();
 				}
 			})
-		),
-		{dispatch: false}
+		)
 	);
+
+	// readonly loadSuccess$ = createEffect
 
 	constructor(
 		private store: Store<MeetingsStateModel>,

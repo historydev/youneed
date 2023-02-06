@@ -74,28 +74,28 @@ export class ChatComponent implements OnInit {
 			// this.store.dispatch(change_message_status({msg}));
 		});
 
-		this.chat_service.messages_obs.subscribe(messages => {
-			if (this.meetings_list_service.selected_meeting) {
-				const res = this.http.get<any>(environment.server_url + `/call/${this.meetings_list_service.selected_meeting.id}/1/1`);
-				res.subscribe(({data}) => {
-					console.log(' MEETINGS DATA', data);
-					if (data.length > 0) {
-						if (data[0].status !== 'finished') {
-							this._call_status = data[0].experts.includes(this.auth.user?.id) ? 'expert' : 'client';
-						} else {
-							this._call_status = false;
-						}
-					} else {
-						this._call_status = false;
-					}
-
-				}, console.error);
-
-				setTimeout(() => {
-					this.scroll_to();
-				}, 80)
-			}
-		});
+		// this.chat_service.messages_obs.subscribe(messages => {
+		// 	if (this.meetings_list_service.selected_meeting) {
+		// 		const res = this.http.get<any>(environment.server_url + `/call/${this.meetings_list_service.selected_meeting.id}/1/1`);
+		// 		res.subscribe(({data}) => {
+		// 			console.log(' MEETINGS DATA', data);
+		// 			if (data.length > 0) {
+		// 				if (data[0].status !== 'finished') {
+		// 					this._call_status = data[0].experts.includes(this.auth.user?.id) ? 'expert' : 'client';
+		// 				} else {
+		// 					this._call_status = false;
+		// 				}
+		// 			} else {
+		// 				this._call_status = false;
+		// 			}
+		//
+		// 		}, console.error);
+		//
+		// 		setTimeout(() => {
+		// 			this.scroll_to();
+		// 		}, 80)
+		// 	}
+		// });
 	}
 
 	private create_modal(title: string, text_content: string, buttons: ButtonModel[]): Function {
@@ -308,31 +308,31 @@ export class ChatComponent implements OnInit {
 								.find((row) => row.startsWith('yn_token='))
 								?.split('=')[1];
 
-							const call = this.http.get<any>(`${environment.server_url}/call/${this.meetings_list_service.selected_meeting?.id}/1/1`, {
-								observe: 'body',
-								headers: {
-									'Authentication': token || ''
-								}
-							});
-
-							call.subscribe(({data}) => {
-								console.log('END MEETING DATA', data);
-								if (data.length > 0) {
-									const res = this.http.patch<any>(`${environment.server_url}/call`, {
-										id: data[0].id,
-										status: 'finished'
-									}, {
-										observe: 'body',
-										headers: {
-											'Authentication': token || ''
-										}
-									});
-
-									res.subscribe(({data}) => {
-										console.log('END MEETING RES DATA', data);
-									}, console.error);
-								}
-							}, console.error);
+							// const call = this.http.get<any>(`${environment.server_url}/call/${this.meetings_list_service.selected_meeting?.id}/1/1`, {
+							// 	observe: 'body',
+							// 	headers: {
+							// 		'Authentication': token || ''
+							// 	}
+							// });
+							//
+							// call.subscribe(({data}) => {
+							// 	console.log('END MEETING DATA', data);
+							// 	if (data.length > 0) {
+							// 		const res = this.http.patch<any>(`${environment.server_url}/call`, {
+							// 			id: data[0].id,
+							// 			status: 'finished'
+							// 		}, {
+							// 			observe: 'body',
+							// 			headers: {
+							// 				'Authentication': token || ''
+							// 			}
+							// 		});
+							//
+							// 		res.subscribe(({data}) => {
+							// 			console.log('END MEETING RES DATA', data);
+							// 		}, console.error);
+							// 	}
+							// }, console.error);
 						}, delay);
 					}
 				}
@@ -388,41 +388,41 @@ export class ChatComponent implements OnInit {
 	}
 
 	public call(receiver_id: string) {
-		this.chat_service.member_info(receiver_id).subscribe(data => {
-			if (!this.call_status) {
-				this.modal_service.add_modal({
-					id: 'my_modal1',
-					title: 'Подтвердить оплату',
-					text_content: `После начала разговора с вашей карты ****0134 будет списано ${data.body?.service_price || 0} рублей за час консультации.`,
-					buttons: [
-						{
-							name: 'Отмена',
-							onclick: () => {
-								//alert();
-							},
-							style: 'cancel'
-						},
-						{
-							name: 'Начать разговор',
-							onclick: () => {
-								this.call_notification.start_call({
-									title: `Звоним ${data.body?.first_name} ${data.body?.last_name[0]}.`,
-									sender_id: this.auth.user?.id || '',
-									receiver_id: receiver_id
-								});
-							},
-							style: 'accept'
-						},
-					]
-				});
-				return
-			}
-			this.call_notification.start_call({
-				title: `Звоним ${data.body?.first_name} ${data.body?.last_name[0]}.`,
-				sender_id: this.auth.user?.id || '',
-				receiver_id: receiver_id
-			});
-		}, console.error);
+		// this.chat_service.member_info(receiver_id).subscribe(data => {
+		// 	if (!this.call_status) {
+		// 		this.modal_service.add_modal({
+		// 			id: 'my_modal1',
+		// 			title: 'Подтвердить оплату',
+		// 			text_content: `После начала разговора с вашей карты ****0134 будет списано ${data.body?.service_price || 0} рублей за час консультации.`,
+		// 			buttons: [
+		// 				{
+		// 					name: 'Отмена',
+		// 					onclick: () => {
+		// 						//alert();
+		// 					},
+		// 					style: 'cancel'
+		// 				},
+		// 				{
+		// 					name: 'Начать разговор',
+		// 					onclick: () => {
+		// 						this.call_notification.start_call({
+		// 							title: `Звоним ${data.body?.first_name} ${data.body?.last_name[0]}.`,
+		// 							sender_id: this.auth.user?.id || '',
+		// 							receiver_id: receiver_id
+		// 						});
+		// 					},
+		// 					style: 'accept'
+		// 				},
+		// 			]
+		// 		});
+		// 		return
+		// 	}
+		// 	this.call_notification.start_call({
+		// 		title: `Звоним ${data.body?.first_name} ${data.body?.last_name[0]}.`,
+		// 		sender_id: this.auth.user?.id || '',
+		// 		receiver_id: receiver_id
+		// 	});
+		// }, console.error);
 
 	}
 
@@ -506,19 +506,11 @@ export class ChatComponent implements OnInit {
 
 	public send_message(message: string, type: 'user' | 'system'): false {
 		this.scroll_to();
-		this.chat_service.send_message(message, type);
+		// this.chat_service.send_message(message, type);
 		this.element.nativeElement.querySelector('.input_box textarea').value = '';
 		this.element.nativeElement.querySelector('.input_box textarea').style.height = '';
 
 		return false
-	}
-
-	public get messages(): MessageOutputModel[] {
-		return this._messages;
-	}
-
-	public get messages_obs(): Observable<MessageOutputModel[]> {
-		return this._messages_obs;
 	}
 
 	public message_icon(message: MessageOutputModel): IconDefinition {
@@ -535,10 +527,6 @@ export class ChatComponent implements OnInit {
 			default:
 				return this.icons.faCheck;
 		}
-	}
-
-	public get selected_meeting(): Observable<MeetingModel> {
-		return this.meetings_list_service.selected_meeting_obs;
 	}
 
 	ngOnInit(): void {

@@ -117,7 +117,7 @@ export class AppModule {
 
 					if(event instanceof NavigationEnd) {
 						if(this.meetings_service.selected_meeting && !this.router.url.includes('call')) {
-							this.meetings_service.select_meeting('');
+							// this.meetings_service.select_meeting('');
 						}
 					}
 

@@ -3,7 +3,6 @@ import {HttpClient} from "@angular/common/http";
 import {Store} from "@ngrx/store";
 import {Socket} from "ngx-socket-io";
 import {Observable, map} from "rxjs";
-import {AddMeetings, SetSelectedMeeting} from "../../+state/actions";
 import {
 	MeetingResponseModel
 } from "../../../../../../apps/you_need/src/app/models/meetings-list/meeting_response.model";
@@ -13,6 +12,7 @@ import {AuthenticationService} from "../../../../services/authentication/authent
 import {environment} from "../../../../../environments/environment";
 import {CallResponseModel} from "you_need_backend/src/models/controllers/call/response.model";
 import {selectMeeting} from "../../+state/selectors";
+import {setSelectedMeeting, updateMeeting} from "../../+state/actions";
 
 @Injectable({
 	providedIn: 'root'
@@ -36,7 +36,7 @@ export class MeetingsService {
 		});
 
 		this.socket.on('new_meeting', (meeting: MeetingModel) => {
-			this.request_meetings();
+			this.store.dispatch(updateMeeting({meeting}));
 		});
 
 		// this.store.select('messages').subscribe(messages => {
@@ -56,9 +56,11 @@ export class MeetingsService {
 	// }
 
 	public getMeetings() {
+		console.log('getMeetings')
 		return this.http.post<MeetingResponseModel>(environment.server_url + '/meetings', undefined)
 			.pipe(
 				map(body => {
+					console.log(body);
 					if(body && body.message.length) {
 						const data = body.message.map(this.getLastCallFromMeeting);
 						this._unread_meetings = 0;
@@ -98,11 +100,11 @@ export class MeetingsService {
 		return this.$selectedMeeting;
 	}
 
-	public async select_meeting(id: string): Promise<void> {
-		if(id !== 'temporary') {
-			this._receivers = [];
-		}
-		this.store.dispatch(SetSelectedMeeting({id}));
+	public async setSelectedMeeting(id: string): Promise<void> {
+		// if(id !== 'temporary') {
+		// 	this._receivers = [];
+		// }
+		this.store.dispatch(setSelectedMeeting({id}));
 		// if(this._selected_meeting) {
 		//
 		// 	if(this._unread_meetings > 0) this._unread_meetings--;

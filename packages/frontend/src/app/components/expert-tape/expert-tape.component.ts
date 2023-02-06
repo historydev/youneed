@@ -48,12 +48,12 @@ export class ExpertTapeComponent implements OnInit {
 
 	public write_message(user: UserModel) {
 
-		this.meetings_list_service.create_meeting({
-			id: 'temporary',
-			type: 'private',
-			members: [ user ],
-			unread_messages_count: 0,
-		});
+		// this.meetings_list_service.create_meeting({
+		// 	id: 'temporary',
+		// 	type: 'private',
+		// 	members: [ user ],
+		// 	unread_messages_count: 0,
+		// });
 
 		// @ts-ignore
 		const meeting = this.meetings_list_service.meetings.find(m => m.members.includes(user.id) && m.members.includes(this.auth.user?.id));
@@ -61,7 +61,7 @@ export class ExpertTapeComponent implements OnInit {
 		if(!meeting) this.meetings_list_service.receivers = [user.id];
 
 		this.router.navigate(['/meetings']).then(_ => {
-			this.meetings_list_service.select_meeting('temporary');
+			// this.meetings_list_service.select_meeting('temporary');
 		});
 	}
 

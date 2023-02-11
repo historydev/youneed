@@ -20,6 +20,7 @@ export class MeetingsEffects {
 			fetch({
 				run: (action, state) => {
 					return this.meetingsService.getMeetings().pipe(map((feed) => {
+						console.log(feed);
 						this.store.dispatch(addMeetings({meetings: feed || []}));
 						return fromMeetingsActions.loadSuccess({meetings: feed || []});
 					}));

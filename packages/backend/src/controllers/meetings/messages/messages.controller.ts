@@ -1,5 +1,5 @@
-import {query} from "../databases/mongodb";
-import {get_message_with_time} from "./helpers/get_message_with_time";
+import {query} from "../../../databases/mongodb";
+import {get_message_with_time} from "../../helpers/get_message_with_time";
 import {NextFunction, Request, Response} from "express";
 
 export function messages_controller(req: Request, res: Response, next: NextFunction) {

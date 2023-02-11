@@ -1,9 +1,9 @@
 import {NextFunction, Request, Response} from "express";
-import {RegisterRequestModel} from "../models/controllers/register/request.model";
-import {RegisterInsertModel} from "../models/controllers/register/insert.model";
+import {RegisterRequestModel} from "../../models/controllers/register/request.model";
+import {RegisterInsertModel} from "../../models/controllers/register/insert.model";
 import {v4 as uuidv4} from "uuid";
 import * as argon2 from "argon2";
-import {query} from "../databases/mongodb";
+import {query} from "../../databases/mongodb";
 
 
 

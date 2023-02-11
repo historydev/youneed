@@ -164,7 +164,7 @@ $meeting-active-bg: #5184ff;
 		}
 	}
 
-	.meeting_active {
+	.meetingSelected {
 		background: $meeting-active-bg;
 
 		.user_name {
@@ -193,7 +193,7 @@ $meeting-active-bg: #5184ff;
 		background: rgba(0, 123, 255, .1);
 	}
 
-	.meeting_active:hover {
+	.meetingSelected:hover {
 		background: $meeting-active-bg;
 	}
 

@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {query} from "../databases/mongodb";
+import {query} from "../../../databases/mongodb";
 
 export async function meeting_controller(req: Request, res: Response, next: NextFunction) {
 

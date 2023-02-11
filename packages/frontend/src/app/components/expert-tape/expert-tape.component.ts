@@ -9,7 +9,7 @@ import {CallNotificationService} from "../../services/call-notification/call-not
 import {MeetingsService} from "../meetings/services/meetings/meetings.service";
 
 @Component({
-	selector: 'app-expert-tape',
+	selector: 'app-experts-tape',
 	templateUrl: './expert-tape.component.html',
 	styleUrls: ['./expert-tape.component.scss']
 })

@@ -33,12 +33,12 @@ import {TimerComponent} from "../timer/timer.component";
 import {MeetingsModule} from "../meetings/meetings.module";
 import {MeetingsService} from "../meetings/services/meetings/meetings.service";
 import {MeetingsComponent} from "../meetings/meetings/meetings.component";
-
+import { EffectsModule } from '@ngrx/effects';
 
 const config: SocketIoConfig = { url: environment.server_url, options: {} };
 const routes = [
 	{path: 'auth', component: AuthenticationComponent},
-	{path: 'expert-tape', component: ExpertTapeComponent},
+	{path: 'experts-tape', component: ExpertTapeComponent},
 	{path: 'home', component: HomeComponent, data: { animation: 'openClose' }},
 	{path: 'call/:receiver_id', component: CallComponent},
 	{path: 'meetings', component: MeetingsComponent},
@@ -71,6 +71,7 @@ const routes = [
 		FontAwesomeModule,
 		FormsModule,
 		StoreModule.forRoot(all, {}),
+		EffectsModule.forRoot([]),
 		ReactiveFormsModule,
 		HttpClientModule,
 		MeetingsModule,

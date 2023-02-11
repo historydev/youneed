@@ -8,7 +8,6 @@ export const adapter: EntityAdapter<MessageModel> =
 	});
 
 export const initialState: ChatStateModel = adapter.getInitialState({
-	selectedMeetingId: '',
 	loaded: false,
 	loading: false,
 });

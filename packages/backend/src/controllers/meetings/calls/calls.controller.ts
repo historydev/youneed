@@ -1,18 +1,18 @@
 import {IRouter, NextFunction, Request, Response} from "express";
-import {Controller} from "./controller";
-import {ValidatorModel} from "../models/controllers/controller/validators.model";
+import {Controller} from "../../controller/controller";
+import {ValidatorModel} from "../../../models/controllers/controller/validators.model";
 import {Collection, MongoClient} from "mongodb";
-import {ControllerResponseModel} from "../models/controllers/response.model";
-import {CallResponseModel} from "../models/controllers/call/response.model";
+import {CallResponseModel} from "../../../models/controllers/call/response.model";
 import {v4 as uuidv4} from "uuid";
-import {CallPostRequestModel} from "../models/controllers/call/post.request.model";
-import {formatted_date_time} from "./helpers/formatted_date_time";
-import {CallPatchRequestModel} from "../models/controllers/call/patch.request.model";
-import {CallDeleteRequestModel} from "../models/controllers/call/delete.request.model";
-import {CallGetRequestModel} from "../models/controllers/call/get.request.model";
-import {query} from "../databases/mongodb";
+import {CallPostRequestModel} from "../../../models/controllers/call/post.request.model";
+import {formatted_date_time} from "../../helpers/formatted_date_time";
+import {CallPatchRequestModel} from "../../../models/controllers/call/patch.request.model";
+import {CallDeleteRequestModel} from "../../../models/controllers/call/delete.request.model";
+import {CallGetRequestModel} from "../../../models/controllers/call/get.request.model";
+import {query} from "../../../databases/mongodb";
+import {ControllerResponseModel} from "../../controller/controller.models";
 
-export class CallController extends Controller {
+export class CallsController extends Controller {
 
 	constructor(
 		router: IRouter,
@@ -39,8 +39,8 @@ export class CallController extends Controller {
 				if(+req.params.last) {
 					calls.reverse();
 				}
-				if(calls.length) res.status(200).send({ data: calls });
-				else res.status(200).send({ data: null });
+				if(calls.length) res.status(200).send({ message: calls });
+				else res.status(200).send({ message: null });
 				res.end();
 			} catch (error) {
 				res.status(500).send({ error }).end();
@@ -50,7 +50,7 @@ export class CallController extends Controller {
 
 		try {
 			const calls:CallResponseModel[] = await this._collection
-				.find({meeting_id: req.params.meeting_id}, { projection: {_id: 0}})
+				.find({ meeting_id: req.params.meeting_id }, { projection: { _id: 0 } })
 				.sort({_id: +req.params.last ? -1 : 1})
 				.limit(+req.params.limit || 50)
 				.toArray()
@@ -58,8 +58,8 @@ export class CallController extends Controller {
 			if(+req.params.last) {
 				calls.reverse();
 			}
-			if(calls.length) res.status(200).send({ data: calls });
-			else res.status(200).send({ data: null });
+			if(calls.length) res.status(200).send({ message: calls });
+			else res.status(200).send({ message: null });
 			res.end();
 		} catch (error) {
 			res.status(500).send({ error }).end();
@@ -86,7 +86,7 @@ export class CallController extends Controller {
 
 				console.log(res.locals['user'].id);
 
-				const data:CallResponseModel = {
+				const message:CallResponseModel = {
 					id: uuidv4(),
 					meeting_id,
 					type,
@@ -98,8 +98,8 @@ export class CallController extends Controller {
 					experts,
 					status: 'active'
 				}
-				await this._collection.insertOne(data);
-				res.status(200).send({ data }).end();
+				await this._collection.insertOne(message);
+				res.status(200).send({ message }).end();
 
 				return;
 			}
@@ -121,7 +121,7 @@ export class CallController extends Controller {
 				}
 			);
 			const call = await this._collection.findOne({id: req.body.id});
-			res.status(200).send({ data: JSON.parse(JSON.stringify(call)) }).end();
+			res.status(200).send({ message: JSON.parse(JSON.stringify(call)) }).end();
 		} catch (e) {
 			res.status(500).send({ error: e }).end();
 		}
@@ -131,7 +131,7 @@ export class CallController extends Controller {
 		try {
 			const call = await this._collection.findOne({id: req.body.id});
 			await this._collection.deleteOne({id: req.body.id});
-			res.status(200).send({ data: JSON.parse(JSON.stringify(call)) }).end();
+			res.status(200).send({ message: JSON.parse(JSON.stringify(call)) }).end();
 		} catch (e) {
 			res.status(500).send({ error: e }).end();
 		}

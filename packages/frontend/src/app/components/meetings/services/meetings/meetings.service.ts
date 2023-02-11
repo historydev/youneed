@@ -2,7 +2,7 @@ import {ElementRef, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Store} from "@ngrx/store";
 import {Socket} from "ngx-socket-io";
-import {Observable, map} from "rxjs";
+import {Observable, map, catchError} from "rxjs";
 import {
 	MeetingResponseModel
 } from "../../../../../../apps/you_need/src/app/models/meetings-list/meeting_response.model";
@@ -11,8 +11,9 @@ import {MeetingModel} from "../../+state/meetings.models";
 import {AuthenticationService} from "../../../../services/authentication/authentication.service";
 import {environment} from "../../../../../environments/environment";
 import {CallResponseModel} from "you_need_backend/src/models/controllers/call/response.model";
-import {selectMeeting} from "../../+state/selectors";
+import {selectSelectedMeeting} from "../../+state/selectors";
 import {setSelectedMeeting, updateMeeting} from "../../+state/actions";
+import {HttpClientService} from "../../../../services/httpClient/http-client.service";
 
 @Injectable({
 	providedIn: 'root'
@@ -20,12 +21,12 @@ import {setSelectedMeeting, updateMeeting} from "../../+state/actions";
 export class MeetingsService {
 
 	private _receivers:string[] = [];
-	private readonly $selectedMeeting = this.store.select(selectMeeting);
+	private readonly $selectedMeeting = this.store.select(selectSelectedMeeting);
 	public _online: boolean = false;
 	public _unread_meetings: number = 0;
 
 	constructor(
-		private http: HttpClient,
+		private http: HttpClientService,
 		private store: Store<{messages: MessageOutputModel[]}>,
 		private auth: AuthenticationService,
 		private socket: Socket
@@ -56,44 +57,48 @@ export class MeetingsService {
 	// }
 
 	public getMeetings() {
-		console.log('getMeetings')
-		return this.http.post<MeetingResponseModel>(environment.server_url + '/meetings', undefined)
+		return this.http.get<MeetingResponseModel>('/meetings', undefined)
 			.pipe(
 				map(body => {
 					console.log(body);
 					if(body && body.message.length) {
-						const data = body.message.map(this.getLastCallFromMeeting);
+						const data = body.message.map(m => this.getLastCallFromMeeting(m));
+						// Clear unreaded meetings
 						this._unread_meetings = 0;
 						// Increment unreaded meetings
-						data.forEach(meeting => meeting.unread_messages_count > 0 && this.incrementUnreadMeetingsCount());
+						data.forEach(meeting => meeting.unread_messages_count > 0 && this.incrementUnreadMeetingsCounter());
 						return data;
 					}
 					return [];
+				}),
+				catchError(error => {
+					console.log(error);
+					throw error
 				})
 			);
 	}
 
 	public getLastCallFromMeeting(meeting: MeetingModel) {
-		this.http.get<CallResponseModel[]>( environment.server_url + `/call/${meeting.id}/1/1`, ).pipe(map((response) => {
-			if(response.length > 0) {
-				meeting.last_call_status = response[0].status;
-			}
-		}));
-		if(meeting.last_message?.sender_id === this.auth.user?.id) {
-			return {
-				...meeting,
-				unread_messages_count: 0
-			}
-		}
+		this.http.get<CallResponseModel[]>( `/call/${meeting.id}/1/1`)
+			.pipe(
+				map((body) => {
+					if(body.length > 0) {
+						meeting.last_call_status = body[0].status;
+						if(meeting.last_message?.sender_id === this.auth.user?.id) {
+							meeting.unread_messages_count = 0;
+						}
+					}
+				})
+			);
 		return meeting;
 	}
 
-	public incrementUnreadMeetingsCount() {
-		this._unread_meetings -= 1;
+	public incrementUnreadMeetingsCounter(): void {
+		this._unread_meetings += 1;
 	}
 
-	public decrementUnreadMeetingsCount() {
-		this._unread_meetings += 1;
+	public decrementUnreadMeetingsCounter(): void {
+		this._unread_meetings -= 1;
 	}
 
 	public get selected_meeting(): Observable<MeetingModel | undefined> {

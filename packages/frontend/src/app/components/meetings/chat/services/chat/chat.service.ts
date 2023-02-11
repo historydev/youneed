@@ -94,18 +94,6 @@ export class ChatService {
 	// 	}).then(console.log).catch(console.error);
 	// }
 	//
-	// public member_info(member_id: string): Observable<HttpResponse<UserModel>> {
-	// 	const token = document.cookie
-	// 		.split('; ')
-	// 		.find((row) => row.startsWith('yn_token='))
-	// 		?.split('=')[1];
-	// 	return this.http.post<UserModel>(environment.server_url + '/user', {id: member_id}, {
-	// 		observe: 'response',
-	// 		headers: {
-	// 			'Content-Type': 'application/json',
-	// 			'Authentication': token || ''
-	// 		}
-	// 	});
-	// }
+
 
 }

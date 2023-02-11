@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, ElementRef, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
 import {
 	faCalendar,
 	faCheck,
@@ -12,8 +12,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {Store} from "@ngrx/store";
 import {Socket} from "ngx-socket-io";
-import {Observable} from "rxjs";
-import {MeetingModel, MemberModel} from "../../+state/meetings.models";
+import {map, Observable, takeUntil, ReplaySubject, switchMap, Subject} from "rxjs";
+import {MemberModel} from "../../+state/meetings.models";
 import {CallNotificationService} from "../../../../services/call-notification/call-notification.service";
 import {ModalService} from "../../../../services/modal-service/modal.service";
 import {MessageOutputModel} from "../../../../models/chat/message_output.model";
@@ -21,8 +21,9 @@ import {ButtonModel} from "../../../../models/modal/button.model";
 import {AuthenticationService} from "../../../../services/authentication/authentication.service";
 import {MeetingsService} from "../../services/meetings/meetings.service";
 import {ChatService} from "../services/chat/chat.service";
-import {environment} from "../../../../../environments/environment";
 import {HttpClientService} from "../../../../services/httpClient/http-client.service";
+import {selectSelectedMeeting} from "../../+state/selectors";
+import {UserModel} from "../../../../models/chat/user.model";
 
 @Component({
 	selector: 'app-chat',
@@ -30,7 +31,7 @@ import {HttpClientService} from "../../../../services/httpClient/http-client.ser
 	styleUrls: ['./chat.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
 
 	public readonly icons = {
 		faExclamationTriangle,
@@ -43,6 +44,10 @@ export class ChatComponent implements OnInit {
 		faPaperclip
 	}
 
+	$selectedMeeting = this.store.select(selectSelectedMeeting);
+	private destroy$: ReplaySubject<void> = new ReplaySubject<void>(1);
+
+	private subject = new Subject<number>();
 	private _call_status: 'expert' | 'client' | false = false;
 
 	constructor(
@@ -383,47 +388,79 @@ export class ChatComponent implements OnInit {
 		return this.meetings_list_service._online;
 	}
 
-	public member_data(members: MemberModel[]) {
-		return members.filter(member => member.id !== this.auth.user?.id)[0];
+	public get getSelectedMeetingMembersWithoutCurrentUser(): Observable<MemberModel[] | undefined> {
+		return this.$selectedMeeting
+			.pipe(
+				map(meeting => {
+					if(meeting) {
+						return meeting.members.filter(member => member.id !== this.auth.user?.id);
+					}
+					console.error('Meeting', meeting);
+					return;
+				}),
+				takeUntil(this.destroy$)
+			);
 	}
 
-	public call(receiver_id: string) {
-		// this.chat_service.member_info(receiver_id).subscribe(data => {
-		// 	if (!this.call_status) {
-		// 		this.modal_service.add_modal({
-		// 			id: 'my_modal1',
-		// 			title: 'Подтвердить оплату',
-		// 			text_content: `После начала разговора с вашей карты ****0134 будет списано ${data.body?.service_price || 0} рублей за час консультации.`,
-		// 			buttons: [
-		// 				{
-		// 					name: 'Отмена',
-		// 					onclick: () => {
-		// 						//alert();
-		// 					},
-		// 					style: 'cancel'
-		// 				},
-		// 				{
-		// 					name: 'Начать разговор',
-		// 					onclick: () => {
-		// 						this.call_notification.start_call({
-		// 							title: `Звоним ${data.body?.first_name} ${data.body?.last_name[0]}.`,
-		// 							sender_id: this.auth.user?.id || '',
-		// 							receiver_id: receiver_id
-		// 						});
-		// 					},
-		// 					style: 'accept'
-		// 				},
-		// 			]
-		// 		});
-		// 		return
-		// 	}
-		// 	this.call_notification.start_call({
-		// 		title: `Звоним ${data.body?.first_name} ${data.body?.last_name[0]}.`,
-		// 		sender_id: this.auth.user?.id || '',
-		// 		receiver_id: receiver_id
-		// 	});
-		// }, console.error);
+	public addAcceptPayModalWithMemberProfileInformation(member: UserModel): void {
+		this.modal_service.add_modal({
+			id: 'my_modal1',
+			title: 'Подтвердить оплату',
+			text_content: `После начала разговора с вашей карты ****0134 будет списано ${member.service_price || 0} рублей за час консультации.`,
+			buttons: [
+				{
+					name: 'Отмена',
+					onclick: () => {
+						//alert();
+					},
+					style: 'cancel'
+				},
+				{
+					name: 'Начать разговор',
+					onclick: () => {
+						this.call_notification.start_call({
+							title: `Звоним ${member.first_name} ${member.last_name[0]}.`,
+							sender_id: this.auth.user?.id || '',
+							receiver_id: member.id
+						});
+					},
+					style: 'accept'
+				},
+			]
+		});
+	}
 
+	public addCallModalWithMemberProfileInformation(member: UserModel): void {
+		this.call_notification.start_call({
+			title: `Звоним ${member.first_name} ${member.last_name[0]}.`,
+			sender_id: this.auth.user?.id || '',
+			receiver_id: member.id
+		});
+	}
+
+	public getMemberProfileInformation(id: string): Observable<UserModel> {
+		return this.http.post<UserModel>('/user', {id});
+	}
+
+	public call(): void {
+		const sub = this.getSelectedMeetingMembersWithoutCurrentUser
+			.pipe(
+				switchMap(members => {
+					const receiver = members![0];
+					return this.getMemberProfileInformation(receiver.id);
+				}),
+				map(member => {
+					if (!this.call_status) {
+						this.addAcceptPayModalWithMemberProfileInformation(member);
+						return
+					}
+					this.addCallModalWithMemberProfileInformation(member);
+				}),
+				takeUntil(this.destroy$)
+			).subscribe();
+		setTimeout(() => {
+			sub.unsubscribe();
+		}, 300)
 	}
 
 	public on_scroll_messages() {
@@ -530,11 +567,14 @@ export class ChatComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
+		this.$selectedMeeting.pipe(map(meeting => {
 
+		}));
 	}
 
-	ngDoCheck() {
-
+	ngOnDestroy() {
+		this.destroy$.next();
+		this.destroy$.complete();
 	}
 
 }

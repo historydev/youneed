@@ -1,4 +1,4 @@
-import {query} from "../databases/mongodb";
+import {query} from "../../databases/mongodb";
 import {NextFunction, Request, Response} from "express";
 
 export async function users_controller(req: Request, res: Response, next: NextFunction) {

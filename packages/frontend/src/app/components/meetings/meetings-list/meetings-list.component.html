@@ -1,7 +1,4 @@
 <div [ngClass]="['container', !($meetings | async)!.length && 'meetings_empty' || '' ]">
-
-	{{ $meetings | async | json }}
-
 	<div *ngIf="!($meetings | async)!.length" class="empty_text">
 		<div class="text">
 			Список встреч пуст, напишите первым!
@@ -11,7 +8,7 @@
 			<a routerLink="/expert-tape">Выбрать эксперта</a>
 		</button>
 	</div>
-	<div class="meeting" *ngFor="let meeting of $meetings | async" (click)="setSelectedMeeting(meeting.id)" [attr.data-id]="meeting.id" [ngClass]="meeting.last_message?.status || 'hide_last_message_dependencies'">
+	<div class="meeting" *ngFor="let meeting of $meetings | async" (click)="setSelectedMeeting(meeting.id)" [id]="'id' + meeting.id" [ngClass]="meeting.last_message?.status || 'hide_last_message_dependencies'">
 		<img [src]="member_data(meeting.members).image" alt="User Image">
 		<div class="content">
 			<div class="title">

@@ -9,7 +9,7 @@ import {AuthenticationService} from "../../services/authentication/authenticatio
 import {CallNotificationService} from "../../services/call-notification/call-notification.service";
 
 @Component({
-	selector: 'app-expert-tape',
+	selector: 'app-experts-tape',
 	templateUrl: './expert-tape.component.html',
 	styleUrls: ['./expert-tape.component.scss']
 })

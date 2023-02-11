@@ -43,7 +43,7 @@ import {EffectsModule} from "@ngrx/effects";
 const config: SocketIoConfig = { url: environment.server_url, options: {} };
 const routes = [
 	{path: 'auth', component: AuthenticationComponent},
-	{path: 'expert-tape', component: ExpertTapeComponent},
+	{path: 'experts-tape', component: ExpertTapeComponent},
 	{path: 'home', component: HomeComponent, data: { animation: 'openClose' }},
 	{path: 'call/:receiver_id', component: CallComponent},
 	{path: 'meetings', component: MeetingsComponent},

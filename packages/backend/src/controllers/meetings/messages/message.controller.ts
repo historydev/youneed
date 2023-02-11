@@ -1,8 +1,8 @@
-import {query} from "../databases/mongodb";
+import {query} from "../../../databases/mongodb";
 import {v4 as uuidv4} from "uuid";
-import {get_message_with_time} from "./helpers/get_message_with_time";
+import {get_message_with_time} from "../../helpers/get_message_with_time";
 import {NextFunction, Request, Response} from "express";
-import {io} from "../main";
+import {io} from "../../../main";
 
 function get_date_and_time() {
 	const months = [

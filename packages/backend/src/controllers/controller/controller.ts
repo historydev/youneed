@@ -1,7 +1,7 @@
 import {IRouter, NextFunction, Request, Response} from "express";
-import {ValidatorModel} from "../models/controllers/controller/validators.model";
+import {ValidatorModel} from "../../models/controllers/controller/validators.model";
 import {Collection, MongoClient} from "mongodb";
-import {ControllerResponseModel} from "../models/controllers/response.model";
+import {ControllerResponseModel} from "./controller.models";
 
 export class Controller {
 
@@ -33,9 +33,13 @@ export class Controller {
 		this.init();
 	}
 
-	protected async get(req: Request, res: Response, next: NextFunction): Promise<void> {}
+	protected async closeClient(): Promise<void> {
+		await this._client.close();
+	}
 
-	protected async post(req: Request, res: Response, next: NextFunction): Promise<void> {}
+	protected async get(req: Request, res: Response<ControllerResponseModel<any, any>>, next: NextFunction): Promise<void> {}
+
+	protected async post(req: Request, res: Response<ControllerResponseModel<any, any>>, next: NextFunction): Promise<void> {}
 
 	protected async put(req: Request, res: Response, next: NextFunction): Promise<void> {}
 

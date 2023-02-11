@@ -16,7 +16,7 @@ export const selectMeetingsEntities = selector((state) => selectEntities(state))
 export const selectAllMeetings = selector((state) => selectAll(state));
 export const selectSelectedMeetingId = selector((state) => state.selectedMeetingId);
 
-export const selectMeeting = createSelector(
+export const selectSelectedMeeting = createSelector(
 	selectMeetingsEntities,
 	selectSelectedMeetingId,
 	(entities, selectedId) => (selectedId ? entities[selectedId] : undefined)

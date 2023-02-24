@@ -1,0 +1,65 @@
+<div class="container">
+
+	<div class="top_bar" *ngIf="$selectedMeeting | async">
+		<div class="left_side">
+			<a routerLink="/expert-tape" class="user_name">
+				{{ (getSelectedMeetingMembersWithoutCurrentUser | async)![0].first_name }}
+				{{ (getSelectedMeetingMembersWithoutCurrentUser | async)![0].last_name[0]}}.
+			</a>
+			<div [ngClass]="['status', online ? 'status_online' : '']"><div class="status_circle"></div> {{ online ? 'В сети' : 'Не в сети' }}</div>
+		</div>
+		<div class="right_side">
+			<button *ngIf="!call_status" id="appoint_meeting"><a href="#"><fa-icon [icon]="icons.faCalendar"></fa-icon> Предложить встречу</a></button>
+			<button *ngIf="!call_status" id="start_meeting" (click)="call()">
+				<fa-icon [icon]="icons.faVideo"></fa-icon>
+				Начать встречу
+			</button>
+			<button *ngIf="call_status" id="proceed_meeting" (click)="call()">Продолжить встречу</button>
+			<button *ngIf="call_status && call_status !== 'expert'" id="complete_meeting" (click)="end_meeting()">Завершить встречу</button>
+			<button id="complaint" (click)="complaint()"><fa-icon [icon]="icons.faExclamationTriangle"></fa-icon></button>
+		</div>
+	</div>
+
+	<div class="content" *ngIf="$selectedMeeting | async">
+		<div class="date">15 Января</div>
+		<div class="messages" (scroll)="on_scroll_messages()">
+			<div class="read_line"></div>
+
+<!--			<div *ngFor="let message of messages; let index = index" [ngClass]="['message', message.type === 'user' && message.sender_id === auth.user?.id ? 'owner' : message.type, message.status]" [id]="'id' + message._id">-->
+<!--				&lt;!&ndash;				<div class="attachments" *ngIf="message.attachments.length">&ndash;&gt;-->
+<!--				&lt;!&ndash;					<div class="attachment" *ngFor="let attachment of message.attachments">&ndash;&gt;-->
+<!--				&lt;!&ndash;						<img [src]="attachment" alt="">&ndash;&gt;-->
+<!--				&lt;!&ndash;					</div>&ndash;&gt;-->
+<!--				&lt;!&ndash;				</div>&ndash;&gt;-->
+<!--				<div class="message_content">-->
+<!--					<img src="https://variety.com/wp-content/uploads/2022/02/Screen-Shot-2022-05-09-at-10.04.13-AM.png?w=681&h=383&crop=1&resize=681%2C383" alt="User Image">-->
+<!--					<div class="text">{{ message.message }}</div>-->
+<!--					<div class="time">{{ message.time }} <fa-icon *ngIf="message.sender_id === auth.user?.id" [icon]="message_icon(message)"></fa-icon> </div>-->
+<!--				</div>-->
+<!--			</div>-->
+		</div>
+	</div>
+
+	<div class="content meeting_not_selected" *ngIf="!($selectedMeeting | async)">
+		<div class="text">
+			Выберите встречу для общения
+		</div>
+	</div>
+
+	<div class="input_box" *ngIf="$selectedMeeting | async">
+		<button id="file">
+			<fa-icon [icon]="icons.faPaperclip"></fa-icon>
+		</button>
+		<textarea placeholder="Введите сообщение..." (input)="remove_scroll_textarea()" (keydown.enter)="send_message(message_text.value, 'user')" #message_text></textarea>
+		<button id="emoji" (click)="send_message(message_text.value, 'system')">
+			<fa-icon [icon]="icons.faFaceSmile"></fa-icon>
+		</button>
+		<button id="send" (click)="send_message(message_text.value, 'user')">
+			<div class="icon">
+				<fa-icon [icon]="icons.faPaperPlane"></fa-icon>
+			</div>
+		</button>
+	</div>
+
+</div>
+

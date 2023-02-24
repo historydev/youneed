@@ -18,11 +18,11 @@ import {LoggerService} from "../../services/logger/logger.service";
 import {ActivatedRoute} from "@angular/router";
 import {CallNotificationService} from "../../services/call-notification/call-notification.service";
 import {AuthenticationService} from "../../services/authentication/authentication.service";
-import {ChatService} from "../../services/chat/chat.service";
-import {MeetingsListService} from "../../services/meetings-list/meetings-list.service";
 import {Socket} from "ngx-socket-io";
 import {environment} from "../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
+import {ChatService} from "../meetings/chat/services/chat/chat.service";
+import {MeetingsService} from "../meetings/services/meetings/meetings.service";
 
 @Component({
 	selector: 'app-call',
@@ -56,7 +56,7 @@ export class CallComponent implements OnInit {
 		private call_notification: CallNotificationService,
 		private auth: AuthenticationService,
 		private chat_service: ChatService,
-		private meeting_service: MeetingsListService,
+		private meeting_service: MeetingsService,
 		private socket: Socket,
 		private http: HttpClient,
 	) {
@@ -67,7 +67,7 @@ export class CallComponent implements OnInit {
 		});
 		this.call.sender_id = this.auth.user?.id;
 		this.call.receiver_id = this.route.snapshot.paramMap.get('receiver_id')?.toString() || '';
-		meeting_service.find_and_select(this.call.receiver_id);
+		// meeting_service.find_and_select(this.call.receiver_id);
 		this.call_notification.in_call = true;
 	}
 
@@ -94,7 +94,7 @@ export class CallComponent implements OnInit {
 	}
 
 	public send_end_call_message(): void {
-		this.chat_service.send_message('Звонок завершён', 'system');
+		// this.chat_service.send_message('Звонок завершён', 'system');
 	}
 
 	public ngOnDestroy(): void {
@@ -105,31 +105,31 @@ export class CallComponent implements OnInit {
 			.find((row) => row.startsWith('yn_token='))
 			?.split('=')[1];
 
-		const call = this.http.get<any>(`${environment.server_url}/call/${this.meeting_service.selected_meeting?.id}/1/1`, {
-			observe: 'body',
-			headers: {
-				'Authentication': token || ''
-			}
-		});
-
-		call.subscribe(({data}) => {
-			console.log('CALL DATA', data);
-			if(data.length > 0) {
-				const res = this.http.patch<any>(`${environment.server_url}/call`, {
-					id: data[0].id,
-					status: 'not_active'
-				}, {
-					observe: 'body',
-					headers: {
-						'Authentication': token || ''
-					}
-				});
-
-				res.subscribe(({data}) => {
-					console.log('RES DATA', data);
-				}, console.error);
-			}
-		}, console.error);
+		// const call = this.http.get<any>(`${environment.server_url}/call/${this.meeting_service.selected_meeting?.id}/1/1`, {
+		// 	observe: 'body',
+		// 	headers: {
+		// 		'Authentication': token || ''
+		// 	}
+		// });
+		//
+		// call.subscribe(({data}) => {
+		// 	console.log('CALL DATA', data);
+		// 	if(data.length > 0) {
+		// 		const res = this.http.patch<any>(`${environment.server_url}/call`, {
+		// 			id: data[0].id,
+		// 			status: 'not_active'
+		// 		}, {
+		// 			observe: 'body',
+		// 			headers: {
+		// 				'Authentication': token || ''
+		// 			}
+		// 		});
+		//
+		// 		res.subscribe(({data}) => {
+		// 			console.log('RES DATA', data);
+		// 		}, console.error);
+		// 	}
+		// }, console.error);
 
 		this.call_notification.decline_call(`${this.call.receiver_id}-${this.call.sender_id}`);
 		this.call.user_media_p2p.disconnect();

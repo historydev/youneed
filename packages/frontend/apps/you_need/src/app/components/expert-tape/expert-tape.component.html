@@ -1,0 +1,18 @@
+<div class="container">
+	<div class="user" *ngFor="let user of users">
+		<div class="left_side">
+			<img [src]="user.image" alt="user image">
+		</div>
+		<div class="right_side">
+			<div class="user_name">
+				{{ user.first_name }} {{ user.last_name[0] }}.
+			</div>
+			<div class="service_price">
+				<b>{{ user.service_price }}р</b> за час консультации
+			</div>
+		</div>
+		<div class="bottom">
+			<button class="message" (click)="write_message(user)">Написать</button>
+		</div>
+	</div>
+</div>

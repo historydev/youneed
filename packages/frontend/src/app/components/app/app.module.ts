@@ -5,7 +5,7 @@ import {AppComponent} from './app.component';
 import {CallComponent} from '../call/call.component';
 import {VideoComponent} from '../video/video.component';
 import {SearchEngineComponent} from '../search-engine/search-engine.component';
-import {KeysPipe} from "../../pipes/keys.pipe";
+import {KeysPipe} from "../../shared/pipes/keys.pipe";
 import { HeaderComponent } from '../header/header.component';
 import {SocketIoModule, SocketIoConfig, Socket} from 'ngx-socket-io';
 import {LoggerService} from "../../services/logger/logger.service";
@@ -19,9 +19,6 @@ import {NotificationModel} from "../../models/push-notification/notification.mod
 import { CallNotificationComponent } from '../call-notification/call-notification.component';
 import { StoreModule } from '@ngrx/store';
 import {P2pConnectorService} from "../../services/p2p/p2p-connector.service";
-import {MeetingsComponent} from "../meetings/meetings.component";
-import {MeetingsListComponent} from "../meetings-list/meetings-list.component";
-import {ChatComponent} from "../chat/chat.component";
 import {SideBarComponent} from "../side-bar/side-bar.component";
 import all from '../../@NGRX/reducers/all';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
@@ -31,16 +28,17 @@ import {HttpClientModule} from "@angular/common/http";
 import {AuthenticationService} from "../../services/authentication/authentication.service";
 import {Location} from "@angular/common";
 import { ExpertTapeComponent } from '../expert-tape/expert-tape.component';
-import {MeetingsListService} from "../../services/meetings-list/meetings-list.service";
 import { ModalComponent } from '../modal/modal.component';
-import {ChatService} from "../../services/chat/chat.service";
 import {TimerComponent} from "../timer/timer.component";
-
+import {MeetingsModule} from "../meetings/meetings.module";
+import {MeetingsService} from "../meetings/services/meetings/meetings.service";
+import {MeetingsComponent} from "../meetings/meetings/meetings.component";
+import { EffectsModule } from '@ngrx/effects';
 
 const config: SocketIoConfig = { url: environment.server_url, options: {} };
 const routes = [
 	{path: 'auth', component: AuthenticationComponent},
-	{path: 'expert-tape', component: ExpertTapeComponent},
+	{path: 'experts-tape', component: ExpertTapeComponent},
 	{path: 'home', component: HomeComponent, data: { animation: 'openClose' }},
 	{path: 'call/:receiver_id', component: CallComponent},
 	{path: 'meetings', component: MeetingsComponent},
@@ -59,9 +57,6 @@ const routes = [
 		PushNotificationComponent,
 		HomeComponent,
   		CallNotificationComponent,
-		MeetingsComponent,
-		MeetingsListComponent,
-		ChatComponent,
 		SideBarComponent,
 		AuthenticationComponent,
   		ExpertTapeComponent,
@@ -76,8 +71,10 @@ const routes = [
 		FontAwesomeModule,
 		FormsModule,
 		StoreModule.forRoot(all, {}),
+		EffectsModule.forRoot([]),
 		ReactiveFormsModule,
-		HttpClientModule
+		HttpClientModule,
+		MeetingsModule,
 	],
 	providers: [
 		LoggerService,
@@ -89,9 +86,7 @@ const routes = [
 			provide: 'display_media',
 			useClass: P2pConnectorService
 		},
-		AuthenticationService,
-		MeetingsListService,
-		ChatService
+		AuthenticationService
 	],
 	bootstrap: [AppComponent]
 })
@@ -105,7 +100,7 @@ export class AppModule {
 		private router: Router,
 		private auth: AuthenticationService,
 		private location: Location,
-		private meetings_service: MeetingsListService
+		private meetings_service: MeetingsService
 	) {
 
 		if(!auth.user) auth.check_user();
@@ -123,7 +118,7 @@ export class AppModule {
 
 					if(event instanceof NavigationEnd) {
 						if(this.meetings_service.selected_meeting && !this.router.url.includes('call')) {
-							this.meetings_service.select_meeting('');
+							// this.meetings_service.select_meeting('');
 						}
 					}
 

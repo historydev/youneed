@@ -9,7 +9,7 @@ import {Socket} from "ngx-socket-io";
 import {MediaStreamElementModel} from "../../models/call/media-stream-element.model";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
-import {MeetingsListService} from "../meetings-list/meetings-list.service";
+import {MeetingsService} from "../../components/meetings/services/meetings/meetings.service";
 
 @Injectable({
 	providedIn: 'root'
@@ -35,7 +35,7 @@ export class CallService {
 		private route: ActivatedRoute,
 		private socket: Socket,
 		private http: HttpClient,
-		private meeting_list_service: MeetingsListService
+		private meeting_list_service: MeetingsService
 	) {
 		user_media_p2p.socket_input_name = 'p2p_user_media_message';
 		//display_media_p2p.socket_input_name = 'p2p_display_media_message';
@@ -187,35 +187,35 @@ export class CallService {
 
 				if(this.user_media_p2p.is_call_creator) {
 
-					const token = document.cookie
-						.split('; ')
-						.find((row) => row.startsWith('yn_token='))
-						?.split('=')[1];
-
-					const call = this.http.get<any>(`${environment.server_url}/call/${this.meeting_list_service.selected_meeting?.id}/1/1`, {
-						observe: 'body',
-						headers: {
-							'Authentication': token || ''
-						}
-					});
-
-					call.subscribe(({data}) => {
-						console.log('CALL DATA', data);
-						if(data.length > 0 && data[0].status === 'finished') {
-							const res = this.http.post<any>(`${environment.server_url}/call`, {
-								meeting_id: this.meeting_list_service.selected_meeting?.id || ''
-							}, {
-								observe: 'body',
-								headers: {
-									'Authentication': token || ''
-								}
-							});
-
-							res.subscribe(data => {
-								console.log(data);
-							}, console.error);
-						}
-					}, console.error);
+					// const token = document.cookie
+					// 	.split('; ')
+					// 	.find((row) => row.startsWith('yn_token='))
+					// 	?.split('=')[1];
+					//
+					// const call = this.http.get<any>(`${environment.server_url}/call/${this.meeting_list_service.selected_meeting?.id}/1/1`, {
+					// 	observe: 'body',
+					// 	headers: {
+					// 		'Authentication': token || ''
+					// 	}
+					// });
+					//
+					// call.subscribe(({data}) => {
+					// 	console.log('CALL DATA', data);
+					// 	if(data.length > 0 && data[0].status === 'finished') {
+					// 		const res = this.http.post<any>(`${environment.server_url}/call`, {
+					// 			meeting_id: this.meeting_list_service.selected_meeting?.id || ''
+					// 		}, {
+					// 			observe: 'body',
+					// 			headers: {
+					// 				'Authentication': token || ''
+					// 			}
+					// 		});
+					//
+					// 		res.subscribe(data => {
+					// 			console.log(data);
+					// 		}, console.error);
+					// 	}
+					// }, console.error);
 				}
 
 				this.Logger.error('call-service', 'interval cleared', this.user_media_p2p.remote_media_stream.getTracks());

@@ -1,0 +1,77 @@
+@startuml
+
+title Meetings
+
+together {
+
+	interface MessageModel {
+		id:string;
+		type: 'user' | 'system';
+		meeting_id:string;
+		sender_id:string;
+		message:string;
+		date:Date;
+		is_owner:boolean;
+		status: 'sent' | 'received' | 'read';
+	}
+
+	interface MeetingModel {
+		id:string;
+		members:[];
+		last_message:MessageModel;
+	}
+
+	class MeetingsComponent {
+
+	}
+
+	class MeetingsService {
+
+	}
+
+	class MeetingsListComponent {
+		+get meetings():MeetingModel[];
+		+select_meeting(id:string);
+	}
+
+	class MeetingsListService {
+		-_user_id?:string;
+		-_meetings:MeetingModel[] = [];
+		-_selected_meeting?:MeetingModel;
+		+set user_id();
+		+get user_id():string;
+
+		+get selected_meeting():MeetingModel | undefined;
+		+get meetings():MeetingModel[];
+
+		+select_meeting(id:string):void;
+
+		+create_meeting(meeting:MeetingModel):void;
+		+remove_meeting(id:string):void;
+
+		-find_user_meetings();
+	}
+
+	class ChatComponent {
+
+	}
+
+	class ChatService {
+		-_room_id:string;
+		-_messages:MessageModel[];
+	}
+
+	MeetingsComponent -[#green]-> MeetingsListComponent
+	MeetingsComponent .[#green].> MeetingsService
+	MeetingModel::last_message -[#red]-* MessageModel
+	MeetingsComponent -[#green]-> ChatComponent
+	MeetingsListComponent .[#green].> MeetingsListService
+	MeetingsListService::_meetings -[#red]-* MeetingModel
+	MeetingsListComponent::meetings -[#red]-* MeetingModel
+	ChatComponent .[#green].> ChatService
+	MessageModel *-[#red]- ChatService::_messages
+	MeetingsListComponent::select_meeting .[#green].> MeetingsListService::select_meeting
+
+}
+
+@enduml

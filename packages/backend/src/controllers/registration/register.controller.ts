@@ -7,7 +7,7 @@ import {query} from "../../databases/mongodb";
 
 
 
-export async function register_controller(req: Request<{}, {}, RegisterRequestModel>, res: Response, next: NextFunction) {
+export async function register_controller(req: Request<any, any, RegisterRequestModel>, res: Response, next: NextFunction) {
 	if(req.body) {
 
 		const default_image = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Faenza-avatar-default-symbolic.svg/1024px-Faenza-avatar-default-symbolic.svg.png';

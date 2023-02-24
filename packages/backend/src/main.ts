@@ -16,7 +16,9 @@ import {
 import {messages_controller} from "./controllers/meetings/messages/messages.controller";
 import {message_controller} from "./controllers/meetings/messages/message.controller";
 import {register_controller} from "./controllers/registration/register.controller";
-import {authentication_controller} from "./controllers/authentication/authentication.controller";
+import {
+	AuthenticationController
+} from "./controllers/authentication/authentication.controller";
 import ExpressBrute from 'express-brute';
 import {users_controller} from "./controllers/experts-tape/users.controller";
 import {MeetingsController} from "./controllers/meetings/meetings/meetings.controller";
@@ -27,7 +29,7 @@ import AuthReqSchema from "./models/controllers/authentication/request.schema.js
 import RegReqSchema from "./models/controllers/register/request.schema.json";
 import {Server} from "socket.io";
 import socket_io from "./socket.io/socket_io";
-import {meeting_controller} from "./controllers/meetings/meetings/meeting.controller";
+import {JSONSchema7} from "json-schema";
 
 const PORT = process.env.PORT;
 const HOST = process.env.HOST;
@@ -56,7 +58,6 @@ const mongo_data = async(name: string) => {
 (async function() {
 
 	const { validate } = new Validator({});
-	const schema = (file_path: string) => JSON.parse(fs.readFileSync(__dirname + '/models' + file_path).toString());
 
 	const brute_force_defense = (options: ExpressBrute.Options) => {
 		const store = new ExpressBrute.MemoryStore();
@@ -115,13 +116,9 @@ const mongo_data = async(name: string) => {
 	)
 
 	app.post('/user', user_controller);
-	// app.post('/meetings', meetings_controller);
 	app.post('/users', users_controller);
-	app.post('/meeting', meeting_controller);
-	// @ts-ignore
-	app.post('/auth', validate({body: AuthReqSchema}), authentication_controller);
-	// @ts-ignore
-	app.post('/register', validate({body: RegReqSchema}), register_controller);
+	app.post('/auth', validate({body: AuthReqSchema as JSONSchema7}), AuthenticationController);
+	app.post('/register', validate({body: RegReqSchema as JSONSchema7}), register_controller);
 	app.post('/messages', messages_controller);
 	app.post('/message', message_controller);
 	app.use(validation_middleware);

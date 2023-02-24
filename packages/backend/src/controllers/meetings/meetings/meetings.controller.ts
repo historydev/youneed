@@ -41,10 +41,8 @@ export class MeetingsController extends Controller {
 				.sort(last && {$natural: -1})
 				.limit(+count)
 				.toArray()) as MeetingResponseFromMongoDto[];
-			// await this.closeClient();
 			res.status(200).send({ message: meetingsFromMongo }).end();
 		} catch (error) {
-			// await this.closeClient();
 			res.status(200).send({ error }).end();
 		}
 	}
@@ -75,16 +73,28 @@ export class MeetingsController extends Controller {
 				unreadMessagesCount: 0,
 			};
 			await this._collection.insertOne(meeting);
-			// await this.closeClient();
 			res.send({ message: meeting }).end();
 		} catch (error) {
-			// await this.closeClient();
 			res.status(200).send({ error }).end();
 		}
 	}
 
-	private noIncludesValues<T>(filterTarget: T[], filterExpressionTarget: T[]) {
-		return filterTarget.filter(element => !filterExpressionTarget.includes(element));
+	private mergeArraysOfObjects(arr1: any[], arr2: any[]) {
+		if(arr1 && arr2) {
+			const mergedItems = arr1.map(item => {
+				const mergeTarget = arr2.find(m => m.id === item.id);
+				if(mergeTarget) {
+					return {
+						...item,
+						...mergeTarget
+					}
+				}
+				return item;
+			});
+			const newItems = arr2.filter(item => !arr1.find(m => m.id === item.id));
+			return [...mergedItems, ...newItems];
+		}
+		return []
 	}
 
 	override async patch(
@@ -95,42 +105,37 @@ export class MeetingsController extends Controller {
 		try {
 			const meetingUpdate: MeetingUpdateDto = req.body;
 			const {id, members, calls, messages, unreadMessagesCount} = meetingUpdate;
-			if(id) {
+			if(!id) throw 'Meeting id required';
 
-				if(!members && !calls && !messages && !unreadMessagesCount) throw 'You need at least one property to update';
+			if(!members && !calls && !messages && !unreadMessagesCount) throw 'You need at least one property to update';
 
-				const meetingFromMongo = (await this._collection.findOne({id})) as MeetingResponseFromMongoDto;
+			const meetingFromMongo = (await this._collection.findOne({id})) as MeetingResponseFromMongoDto;
 
-				if(!meetingFromMongo) throw 'Incorrect meeting id';
+			if(!meetingFromMongo) throw 'Incorrect meeting id';
 
-				const isLengthOfMembersGreaterThanTwo = [...meetingFromMongo.members, ...members].length > 2;
-				const type = isLengthOfMembersGreaterThanTwo ? 'private' : 'group';
-				await this._collection.updateOne(
-					{id},
-					{
-						type: type || meetingFromMongo.type,
-						unreadMessagesCount: unreadMessagesCount || meetingFromMongo.unreadMessagesCount,
-						$push: {
-							calls: calls ? {
-								$each: this.noIncludesValues<CallModel>(calls, meetingFromMongo.calls),
-							} : {},
-							members: members ? {
-								$each: this.noIncludesValues<MeetingMemberModel>(members, meetingFromMongo.members),
-							} : {},
-							messages: messages ? {
-								$each: this.noIncludesValues<MessageModel>(messages, meetingFromMongo.messages)
-							} : {}
+			const isLengthOfMembersGreaterThanTwo = [...meetingFromMongo.members, ...members].length > 2;
+			const type = isLengthOfMembersGreaterThanTwo ? 'private' : 'group';
+			const mergedMembers = this.mergeArraysOfObjects(meetingFromMongo.members, members);
+			const mergedCalls = this.mergeArraysOfObjects(meetingFromMongo.calls, calls);
+			const mergedMessages = this.mergeArraysOfObjects(meetingFromMongo.messages, messages);
+
+			await this._collection.updateOne(
+				{id},
+				{
+					$set: {
+							type: type || meetingFromMongo.type,
+							unreadMessagesCount: unreadMessagesCount || meetingFromMongo.unreadMessagesCount,
+							calls: mergedCalls,
+							members: mergedMembers,
+							messages: mergedMessages
 						}
+					},
+					{
+						upsert: true,
 					}
-				);
-				// await this.closeClient();
-
-				return;
-			}
-			throw 'Meeting id required';
+			);
 		} catch (error) {
 			console.error(error)
-			// await this.closeClient();
 			res.status(200).send({ error }).end();
 		}
 	}

@@ -2,9 +2,9 @@ import {query} from "../../databases/mongodb";
 import * as argon2 from "argon2";
 import * as JWT from "jsonwebtoken";
 import {NextFunction, Request, Response} from "express";
-import {UserModel, UserModelFromMongo} from "./authentication.models";
+import {UserModelFromMongo} from "./authentication.models";
 
-export function authentication_controller(req: Request, res: Response, next: NextFunction) {
+export function AuthenticationController(req: Request, res: Response, next: NextFunction) {
 
 	const JWT_secret = process.env['JWT_SECRET'];
 
@@ -12,34 +12,22 @@ export function authentication_controller(req: Request, res: Response, next: Nex
 		const userDataFromClient = req.body;
 
 		query('users').then(async data => {
-			const userDataFromDatabase = (await data.collection.findOne({
-				email: userDataFromClient.email
-			})) as UserModelFromMongo;
+			const userDataFromDatabase = (await data.collection.findOne(
+				{
+					email: userDataFromClient.email
+				},
+				{
+					projection: {_id: 0}
+				}
+			)) as UserModelFromMongo;
 
 			if(userDataFromDatabase && await argon2.verify(userDataFromDatabase.password, userDataFromClient.password)) {
-				const {
-					id,
-					firstName,
-					lastName,
-					email,
-					image,
-					password,
-					servicePrice
-				} = userDataFromDatabase;
+				if(!userDataFromDatabase.access) res.status(200).send({ error: 'User has been banned' });
 
-				const userDataForJWT = {
-					id,
-					firstName,
-					lastName,
-					email,
-					image,
-					servicePrice
-				};
+				delete userDataFromDatabase.access;
+				delete userDataFromDatabase.password;
 
-				console.log(req.headers)
-
-				JWT.sign(userDataForJWT, JWT_secret, { expiresIn: 60*60 }, (err, token) => {
-					console.log(token);
+				JWT.sign(userDataFromDatabase, JWT_secret, { expiresIn: 60*60 }, (err, token) => {
 					if(token) {
 						JWT.verify(token, JWT_secret, (err, payload: JWT.JwtPayload) => {
 							if(err) res.sendStatus(502).end();
@@ -47,9 +35,7 @@ export function authentication_controller(req: Request, res: Response, next: Nex
 						});
 						return;
 					}
-
 					res.status(502).send({ error: "Server can't proceed request" }).end();
-
 				});
 
 			} else res.status(401).send({ error: 'Unauthorized', message: 'Invalid email or password' }).end();
